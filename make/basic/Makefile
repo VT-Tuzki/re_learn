@@ -48,7 +48,7 @@ dest/%.txt: src/%.txt
 			@[ -d dest ] || mkdir dest
 			@ #echo "$<"
 			@ #echo "$@"
-			cp $< $a
+			cp $< $@
 
 destfiles := $(patsubst src/%.txt,dest/%.txt,$(srcfiles))
 destination: $(destfiles)
