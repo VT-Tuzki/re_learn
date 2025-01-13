@@ -2,14 +2,10 @@
 #include "def.h"
 
 
-
-
-
-
-
 int main(void)
 {
-				fa();
 				printf("hello simple make with C!\n");
+
+				fa();
 				return 0;
 }
