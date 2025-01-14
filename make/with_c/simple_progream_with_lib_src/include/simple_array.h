@@ -10,34 +10,48 @@
 #define __SIMPLE_ARRAY_H__
 
 #include <stddef.h>
+#include "cc_common.h"
 
-struct s_array{
+struct cc_array{
     unsigned char *data;
     size_t elem_nums;
     size_t elem_size;
 };
 
 
-int cc_array_init(struct s_array *self, unsigned char *data, size_t elem_nums, size_t elem_size);
-
-
+int cc_array_init(struct cc_array *self, unsigned char *data, size_t elem_nums, size_t elem_size);
 /***
  * @description:
- * @param {s_array} *
+ * @param {cc_array} *
  * @param {size_t} elem_nums
  * @param {size_t} elem_size
  * @return {*}
  */
-int cc_array_new(struct s_array **self, size_t elem_nums, size_t elem_size);
+int cc_array_new(struct cc_array **self, size_t elem_nums, size_t elem_size);
 
-int cc_array_delete(struct s_array *self);
+int cc_array_delete(struct cc_array *self);
 
 
-int cc_array_get_unsafe(struct s_array *self, size_t index, void *result);
-int cc_array_get_ref(struct s_array *self, size_t index, void **ref);
-int cc_array_get(struct s_array *self, size_t index, void *result);
+int cc_array_get_unsafe(struct cc_array *self, size_t index, void *result);
+int cc_array_get_ref(struct cc_array *self, size_t index, void **ref);
+int cc_array_get(struct cc_array *self, size_t index, void *result);
 
-int cc_array_set_unsafe(struct s_array *self, size_t index, void *value);
-int cc_array_set(struct s_array *self, size_t index, void *value);
+int cc_array_set_unsafe(struct cc_array *self, size_t index, void *value);
+int cc_array_set(struct cc_array *self, size_t index, void *value);
+
+int cc_array_is_vaild_index(struct cc_array *self, size_t index);
+int cc_array_cmp(struct cc_array *self, cc_cmp_fn_t cmp, size_t i, size_t j);
+int cc_array_swap(struct cc_array *self, size_t i, size_t j);
+int cc_array_reverse(struct cc_array *self, size_t start, size_t end);
+
+// struct cc_array_iter {
+//     struct cc_iter_i *iterator;
+//     struct cc_array *data;
+//     size_t cursor;
+// };
+
+// int cc_array_iterator_init(struct cc_array_iter *self, struct cc_array *data);
+// int cc_array_iterator_next(struct cc_array_iter *self,void **item, size_t *index);
+
 
 #endif

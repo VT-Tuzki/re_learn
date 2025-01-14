@@ -11,7 +11,7 @@ struct test_struct{
 
 int main(void)
 {
-    struct s_array *array;
+    struct cc_array *array;
     struct test_struct tmp;
     struct test_struct *tmpa;
 
