@@ -6,8 +6,8 @@
  * @FilePath: /simple_progream_with_lib_src/include/simple_array.h
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
-#ifndef __SIMPLE_ARRAY_H__
-#define __SIMPLE_ARRAY_H__
+#ifndef __CC_ARRAY_H__
+#define __CC_ARRAY_H__
 
 #include <stddef.h>
 #include "cc_common.h"
@@ -43,6 +43,9 @@ int cc_array_is_vaild_index(struct cc_array *self, size_t index);
 int cc_array_cmp(struct cc_array *self, cc_cmp_fn_t cmp, size_t i, size_t j);
 int cc_array_swap(struct cc_array *self, size_t i, size_t j);
 int cc_array_reverse(struct cc_array *self, size_t start, size_t end);
+
+
+int cc_array_copy_index(struct cc_array *array_a, struct cc_array * array_b, size_t index_a, size_t index_b);
 
 // struct cc_array_iter {
 //     struct cc_iter_i *iterator;

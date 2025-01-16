@@ -9,22 +9,31 @@ C_FLAGS += -g -Wall -Wextra -Wno-unused -ffunction-sections -fdata-sections \
 -Wp,-MMD,-MT"$@",-MF"$(@:.o=.d)",-MP \
 $(addprefix -I, $(C_INCLUDES))
 
-ifeq ($(DEBUG), 1)
-C_FLAGS += -g
-endif
-
-
 LD_FLAGS += -Wl,--gc-sections,-Map=$@.map
+
+
+
 TARGET ?= target
 BUILD_DIR ?= build
 CC = cc
 AR = ar
+
+ifeq ($(MEMCHECK), 1)
+MEMORY_CHECK_PROG = valgrind --leak-check=full --error-exitcode=1
+else ifeq ($(MEMCHECK), 2)
+MEMORY_CHECK_PROG = valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --error-exitcode=1
+endif
+
+ifeq ($(GDBTEST), 1)
+GDB_TEST_PROG = /bin/gdb
+endif
+
 .PHONY:clean all
 
 vpath %.c $(sort $(dir $(C_SOURCE_FILES)))
 vpath %.c $(WORK_DIR)/test
-vpath %.c ./test ./app
-
+vpath %.c ./test ./test/gdb
+vpath %.c ./app
 all: $(OBJECTS)
 
 $(BUILD_DIR)/%.c.o: %.c | build_dir
@@ -33,10 +42,10 @@ $(BUILD_DIR)/%.c.o: %.c | build_dir
 
 build/%: %.c $(OBJECTS) | build_dir
 	@/bin/echo -e "\tCC $<"
-	@$(CC) -o $@ $^ $(C_FLAGS) $(LD_FLAGS)
-	@/bin/echo -e "\t./$@\n"
-	@$(MEMORY_CHECK_PROG) $@
-	@rm $@
+	$(CC) -o $@ $^ $(C_FLAGS) $(LD_FLAGS)
+	$(MEMORY_CHECK_PROG) $@
+	@/bin/echo -e "\033[34m $@ \033[0m"
+	@$(GDB_TEST_PROG) ./$@
 
 build_dir:
 	@mkdir -p $(BUILD_DIR)

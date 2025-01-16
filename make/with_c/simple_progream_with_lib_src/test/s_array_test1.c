@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "simple_array.h"
+#include "cc_array.h"
 #include <assert.h>
 
 struct test_struct{
@@ -42,6 +42,6 @@ int main(void)
     printf("!!!!!!!!%d %d %d\n",tmpa->infoa,tmpa->infob,tmpa->infoc);
 
 
-
+    cc_array_delete(array);
     return 0;
 }

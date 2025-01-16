@@ -1,4 +1,4 @@
-#include "simple_array.h"
+#include "cc_array.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -44,8 +44,8 @@ int cc_array_delete(struct cc_array *self)
 {
     free((void *) (self->data));
     free(self);
-    self->data = NULL;
-    self = NULL;
+    // self->data = NULL;
+    // self = NULL;
     return 0;
 }
 
@@ -104,7 +104,7 @@ int cc_array_set(struct cc_array *self, size_t index, void *value)
 
 int cc_array_cmp(struct cc_array *self, cc_cmp_fn_t cmp, size_t i, size_t j)
 {
-    return cmp(self->data + i * self->elem_size,self->data + j * self->elem_size);
+    return cmp(self->data + i * self->elem_size, self->data + j * self->elem_size);
 }
 
 int cc_array_swap(struct cc_array *self, size_t i, size_t j)
@@ -133,5 +133,20 @@ int cc_array_reverse(struct cc_array *self, size_t start, size_t end)
     for(i = 0; i < mid; i++)
         cc_array_swap(self, start + i, end - i);
 
+    return 0;
+}
+
+
+
+int cc_array_copy_index(struct cc_array *array_a, struct cc_array * array_b, size_t index_a, size_t index_b)
+{
+    if(array_a->elem_size != array_b->elem_size) return 1;
+    if(!cc_array_is_vaild_index(array_a, index_a)) return 2;
+    if(!cc_array_is_vaild_index(array_b, index_b)) return 3;
+
+    unsigned char *tmp = malloc(array_a->elem_size);
+    cc_array_get_(array_a, index_a, tmp);
+    cc_array_set_(array_b, index_b, tmp);
+    free(tmp);
     return 0;
 }
