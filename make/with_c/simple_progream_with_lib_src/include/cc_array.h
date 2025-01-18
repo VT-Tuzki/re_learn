@@ -12,7 +12,7 @@
 #include <stddef.h>
 #include "cc_common.h"
 
-struct cc_array{
+struct cc_array {
     unsigned char *data;
     size_t elem_nums;
     size_t elem_size;
