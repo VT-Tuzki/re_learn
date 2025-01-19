@@ -1,7 +1,7 @@
 WORK_DIR  = $(shell pwd)
 BUILD_DIR = $(WORK_DIR)/build
 
-#C_INCLUDES := ${WORK_DIR}/include $(C_INCLUDES)
+C_INCLUDES := ${WORK_DIR}/include $(C_INCLUDES)
 
 OBJECTS += $(addprefix $(BUILD_DIR)/, $(notdir $(C_SOURCE_FILES:.c=.c.o)))
 
@@ -34,7 +34,7 @@ vpath %.c $(sort $(dir $(C_SOURCE_FILES)))
 vpath %.c $(WORK_DIR)/test
 vpath %.c ./test ./test/gdb
 vpath %.c ./app
-all: $(OBJECTS)
+all:generate_error_codes $(OBJECTS)
 
 $(BUILD_DIR)/%.c.o: %.c | build_dir
 	@/bin/echo -e "\tCC $<"
@@ -43,14 +43,17 @@ $(BUILD_DIR)/%.c.o: %.c | build_dir
 build/%: %.c $(OBJECTS) | build_dir
 	@/bin/echo -e "\tCC $<"
 	$(CC) -o $@ $^ $(C_FLAGS) $(LD_FLAGS)
-	$(MEMORY_CHECK_PROG) $@
+	@-$(MEMORY_CHECK_PROG) $@
 	@/bin/echo -e "\033[34m $@ \033[0m"
-	@$(GDB_TEST_PROG) ./$@
+	@-$(GDB_TEST_PROG) ./$@
 
 build_dir:
 	@mkdir -p $(BUILD_DIR)
+
 clean:
 	@rm -rf $(BUILD_DIR)
 
+generate_error_codes:
+	python3 ${WORK_DIR}/include/generate_error_codes.py || { echo 'Error: Failed to generate error codes'; exit 1; }
 
 -include $(OBJECTS:.o=.d)

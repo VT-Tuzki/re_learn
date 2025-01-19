@@ -18,7 +18,7 @@ parse_arguments() {
 
 
 run_test() {
-    echo "\033[33m [$1] "$2" \033[0m"
+    echo "\033[33m [$1] "$2" "$3"\033[0m"
     make clean
     make $MAKE_OPT $GDB_OPT build/$(basename $2 .c) || exit 1
     echo
@@ -30,14 +30,20 @@ if test -n $1 ; then
     parse_arguments $1
 fi
 
-if test $2 -eq 1; then
+if test $3 -eq 1; then
     GDB_OPT="GDBTEST=1"
+else
+    GDB_OPT=""
+fi
+
+
+if test $2 -eq 1; then
     for f in test/gdb/*.c; do
-        run_test "GDB" $f
+        run_test "GDB_DIR" $f
     done
 else
     for f in test/*.c; do
-        run_test "TEST" $f
+        run_test "TEST_DIR" $f
     done
 fi
 

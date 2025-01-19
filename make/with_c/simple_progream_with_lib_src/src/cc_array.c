@@ -95,7 +95,7 @@ int cc_array_set_unsafe(struct cc_array *self, size_t index, void *value)
 
 int cc_array_set(struct cc_array *self, size_t index, void *value)
 {
-    if(!cc_array_is_vaild_index(self,index)) return 1;
+    if(!(cc_array_is_vaild_index(self,index))) return 1;
     if(value == NULL) return 2;
 
     cc_array_set_(self,index,value);

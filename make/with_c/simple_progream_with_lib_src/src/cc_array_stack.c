@@ -14,7 +14,8 @@ struct cc_stack_i cc_array_stack_interface = {
 
 
 int cc_array_stack_push(struct cc_array_stack *self, void *item) {
-    if(cc_array_set(self->data, self->top + 1, item)) {
+    if(cc_array_set(self->data, self->top, item)) {
+        printf("---%d %d\n",self->data->elem_nums,self->top);
         return 1;
     }
     self->top++;
@@ -36,7 +37,7 @@ int cc_array_stack_peek(struct cc_array_stack *self, void *item) {
         return 1;
     }
 
-    cc_array_get_unsafe(self->data, self->top, item);
+    cc_array_get_unsafe(self->data, self->top - 1, item);
     return 0;
 }
 
@@ -73,7 +74,7 @@ int cc_array_stack_new(struct cc_array_stack **self, size_t elem_nums, size_t el
         goto fail2;
     }
 
-    if(cc_array_stack_init(tmp, *array)) {
+    if(cc_array_stack_init(tmp, array)) {
         goto fail3;
     }
 

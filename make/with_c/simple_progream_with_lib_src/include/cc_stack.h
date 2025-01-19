@@ -17,11 +17,11 @@ static inline int cc_stack_push(void *self, void *data) {
 }
 
 static inline int cc_stack_pop(void *self, void **result) {
-    return (*(struct cc_stack_i**)self)->pop(self, result);
+    return (*(struct cc_stack_i**)self)->pop(self, *result);
 }
 
 static inline int cc_stack_peek(void *self, void **result) {
-    return (*(struct cc_stack_i**)self)->peek(self, result);
+    return (*(struct cc_stack_i**)self)->peek(self, *result);
 }
 
 

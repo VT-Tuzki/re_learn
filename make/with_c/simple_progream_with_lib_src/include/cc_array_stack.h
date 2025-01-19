@@ -23,4 +23,18 @@ int cc_array_stack_peek(struct cc_array_stack *self, void *item);
 int cc_array_stack_elem_nums(struct cc_array_stack *self, size_t *elem_nums);
 int cc_array_stack_space(struct cc_array_stack *self, size_t *space);
 
+
+#define CC_ARRAY_STACK_cc_array_stack_new_MASK                  0x01U
+#define CC_ARRAY_STACK_cc_array_stack_delete_new_MASK           0x02U
+#define CC_ARRAY_STACK_cc_array_stack_init_new_MASK             0x03U
+#define CC_ARRAY_STACK_cc_array_stack_push_new_MASK             0x04U
+#define CC_ARRAY_STACK_cc_array_stack_pop_new_MASK              0x05U
+#define CC_ARRAY_STACK_cc_array_stack_peek_new_MASK             0x06U
+#define CC_ARRAY_STACK_cc_array_stack_elem_nums_new_MASK        0x07U
+#define CC_ARRAY_STACK_cc_array_stack_space_new_MASK            0x08U
+
+
+
+
+
 #endif
