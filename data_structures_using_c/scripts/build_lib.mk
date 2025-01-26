@@ -11,7 +11,7 @@ LIB_CC = gcc
 # $(addprefix -I, $(C_LIB_INCLUDES)) \
 # $(addprefix -D, $(C_LIB_DEFINES))
 
-C_LIB_TEST_FLAGS = -g -Wall -Wno-unused -ffunction-sections -fdata-sections -Wl,-Map=output.map\
+C_LIB_TEST_FLAGS = -g -Wall -Wno-unused -ffunction-sections -fdata-sections \
 $(addprefix -I, $(C_LIB_INCLUDES)) \
 
 #directories
@@ -55,7 +55,7 @@ lib_test: $(TARGET_LIB) $(TESTS_TARGET)
 build/_test/%_test : test/%_test.c
 	@echo "\033[1;32m   CC $@ $<\033[0m"
 	@mkdir -p $(dir $@)
-	@$(LIB_CC) $< $(C_LIB_TEST_FLAGS)  -o $@
+	@$(LIB_CC) $< $(C_LIB_TEST_FLAGS) -Wl,-Map=$@.map -o $@
 	@$@ > $@.log
 
 
