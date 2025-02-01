@@ -2,7 +2,7 @@
 APP_CC = gcc
 
 
-C_APP_FLAGS += $(addprefix -I, $(C_APP_INCLUDES)) \
+C_APP_FLAGS += $(addprefix -I, $(C_APP_INCLUDES))
 
 APP_DEVFLAGS = -g
 
@@ -28,7 +28,7 @@ build/_app_without_lib_src/%.o: src/%.c
 build/_app_without_lib/%:  app/%.c
 	@echo "\033[1;32m CC $@ $<\033[0m"
 	@mkdir -p $(dir $@)
-	@$(APP_CC) $(C_APP_FLAGS) -Wl,-Map=$@.map $(APP_LIB_OBJS) $< -o $@
+	$(APP_CC) $(C_APP_FLAGS) -Wl,-Map=$@.map $(APP_LIB_OBJS) $< -o $@
 	@echo "\033[1;32mfile: $@    map: $@.map \033[0m"
 build_app_dir:
 	@mkdir -p build

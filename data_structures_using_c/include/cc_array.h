@@ -17,9 +17,9 @@ struct cc_array {
     size_t elem_nums;
     size_t elem_size;
 };
+typedef struct cc_array cc_array_t;
 
-
-int cc_array_init(struct cc_array *self, unsigned char *data, size_t elem_nums, size_t elem_size);
+int cc_array_init(cc_array_t *self, unsigned char *data, size_t elem_nums, size_t elem_size);
 /***
  * @description:
  * @param {cc_array} *
@@ -27,33 +27,33 @@ int cc_array_init(struct cc_array *self, unsigned char *data, size_t elem_nums, 
  * @param {size_t} elem_size
  * @return {*}
  */
-int cc_array_new(struct cc_array **self, size_t elem_nums, size_t elem_size);
+int cc_array_new(cc_array_t **self, size_t elem_nums, size_t elem_size);
 
-int cc_array_delete(struct cc_array *self);
-
-
-int cc_array_get_unsafe(struct cc_array *self, size_t index, void *result);
-int cc_array_get_ref(struct cc_array *self, size_t index, void **ref);
-int cc_array_get(struct cc_array *self, size_t index, void *result);
-
-int cc_array_set_unsafe(struct cc_array *self, size_t index, void *value);
-int cc_array_set(struct cc_array *self, size_t index, void *value);
-
-int cc_array_is_vaild_index(struct cc_array *self, size_t index);
-int cc_array_cmp(struct cc_array *self, cc_cmp_fn_t cmp, size_t i, size_t j);
-int cc_array_swap(struct cc_array *self, size_t i, size_t j);
-int cc_array_reverse(struct cc_array *self, size_t start, size_t end);
+int cc_array_delete(cc_array_t *self);
 
 
-int cc_array_copy_index(struct cc_array *array_a, struct cc_array * array_b, size_t index_a, size_t index_b);
+int cc_array_get_unsafe(cc_array_t *self, size_t index, void *result);
+int cc_array_get_ref(cc_array_t *self, size_t index, void **ref);
+int cc_array_get(cc_array_t *self, size_t index, void *result);
+
+int cc_array_set_unsafe(cc_array_t *self, size_t index, void *value);
+int cc_array_set(cc_array_t *self, size_t index, void *value);
+
+int cc_array_is_vaild_index(cc_array_t *self, size_t index);
+int cc_array_cmp(cc_array_t *self, cc_cmp_fn_t cmp, size_t i, size_t j);
+int cc_array_swap(cc_array_t *self, size_t i, size_t j);
+int cc_array_reverse(cc_array_t *self, size_t start, size_t end);
+
+
+int cc_array_copy_index(cc_array_t *array_a, cc_array_t * array_b, size_t index_a, size_t index_b);
 
 // struct cc_array_iter {
 //     struct cc_iter_i *iterator;
-//     struct cc_array *data;
+//     cc_array_t *data;
 //     size_t cursor;
 // };
 
-// int cc_array_iterator_init(struct cc_array_iter *self, struct cc_array *data);
+// int cc_array_iterator_init(struct cc_array_iter *self, cc_array_t *data);
 // int cc_array_iterator_next(struct cc_array_iter *self,void **item, size_t *index);
 
 

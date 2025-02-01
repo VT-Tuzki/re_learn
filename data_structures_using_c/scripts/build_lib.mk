@@ -13,6 +13,7 @@ LIB_CC = gcc
 
 C_LIB_TEST_FLAGS = -g -Wall -Wno-unused -ffunction-sections -fdata-sections \
 $(addprefix -I, $(C_LIB_INCLUDES)) \
+-std=$(LANGUAGE_STANDARD)
 
 #directories
 TEST_SRCS = $(wildcard test/*_test.c)
@@ -48,14 +49,15 @@ build/_lib/%.o : src/%.c
 	@echo "\033[1;32m   CC $@ $<\033[0m"
 	@mkdir -p $(dir $@)
 	@$(LIB_CC) $(C_LIB_FLAGS) -c -o $@ $<
+	@chmod +x $@
 
 #------------------TEST_TARGETS------------------
 lib_test: C_LIB_TEST_FLAGS += $(addprefix -L, $(BUILD_DIR)/lib) -lvtuzki
 lib_test: $(TARGET_LIB) $(TESTS_TARGET)
-build/_test/%_test : test/%_test.c
+build/_test/%_test: test/%_test.c
 	@echo "\033[1;32m   CC $@ $<\033[0m"
 	@mkdir -p $(dir $@)
-	@$(LIB_CC) $< $(C_LIB_TEST_FLAGS) -Wl,-Map=$@.map -o $@
+	$(LIB_CC) $< $(C_LIB_TEST_FLAGS) -Wl,-Map=$@.map -o $@
 	@$@ > $@.log
 
 

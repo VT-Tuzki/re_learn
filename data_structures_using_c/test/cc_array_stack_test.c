@@ -56,11 +56,11 @@ int main() {
         assert(elem_nums == (size_t)(i + 1));
         assert(!cc_array_stack_space(stack, &empty_space));
         assert(empty_space == (size_t)(TEST_LEN - i - 1));
-        printf("i: %d top:%d\n",i,stack->top);
+        printf("i: %d top:%ld\n",i,stack->top);
     }
 
     assert(!cc_array_stack_space(stack, &empty_space));
-    printf("%d\n",empty_space);
+    printf("%ld\n",empty_space);
     assert(empty_space == (size_t)(0));
 
     assert(cc_stack_push(stack, &tmp) == 1);
