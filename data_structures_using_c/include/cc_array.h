@@ -19,6 +19,14 @@ struct cc_array {
 };
 typedef struct cc_array cc_array_t;
 
+typedef enum {
+    ERR_CC_ARRAY_OK = ERR_CC_COMMON_OK,
+    ERR_CC_ARRAY_INVALID_ARG = ERR_CC_COMMON_INVALID_ARG,
+    ERR_CC_ARRAY_MEM_ERR = ERR_CC_COMMON_MEM_ERR,
+    ERR_CC_ARRAY_EMPTY,
+} cc_array_err;
+
+
 int cc_array_init(cc_array_t *self, unsigned char *data, size_t elem_nums, size_t elem_size);
 /***
  * @description:
@@ -44,8 +52,11 @@ int cc_array_cmp(cc_array_t *self, cc_cmp_fn_t cmp, size_t i, size_t j);
 int cc_array_swap(cc_array_t *self, size_t i, size_t j);
 int cc_array_reverse(cc_array_t *self, size_t start, size_t end);
 
-
 int cc_array_copy_index(cc_array_t *array_a, cc_array_t * array_b, size_t index_a, size_t index_b);
+
+int cc_array_resize(cc_array_t *self, size_t new_elem_nums);
+
+
 
 // struct cc_array_iter {
 //     struct cc_iter_i *iterator;

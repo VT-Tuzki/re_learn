@@ -23,8 +23,10 @@ else
 	@echo "\033[1;33mbuild without lib\033[0m"
 endif
 
-all: print-message app_all
 
+MEMORY_CHECK_PROG = valgrind --leak-check=full --error-exitcode=1 --track-origins=yes
+
+all: print-message app_all
 
 _clean: clean_app clean_lib
 clean:

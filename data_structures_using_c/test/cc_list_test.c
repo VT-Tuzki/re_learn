@@ -7,7 +7,14 @@
 
 /*
     cc_list_new
-
+    cc_list_size
+    cc_list_is_empty
+    cc_list_insert_tail
+    cc_list_insert_head
+    cc_list_remove_head
+    cc_list_remove_tail
+    cc_list_concat
+    cc_list_destroy
 */
 
 

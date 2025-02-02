@@ -57,16 +57,15 @@ lib_test: $(TARGET_LIB) $(TESTS_TARGET)
 build/_test/%_test: test/%_test.c
 	@echo "\033[1;32m   CC $@ $<\033[0m"
 	@mkdir -p $(dir $@)
-	$(LIB_CC) $< $(C_LIB_TEST_FLAGS) -Wl,-Map=$@.map -o $@
-	@$@ > $@.log
-
+	@$(LIB_CC) $< $(C_LIB_TEST_FLAGS) -Wl,-Map=$@.map -o $@
+	@$(MEMORY_CHECK_PROG) --log-file=$@_leck_check.log $@ > $@.log
 
 
 #------------------INSTALL_TARGETS------------------
 install: install_local
 
 install_local:
-	@echo "   Installing library to local directory: $(LIB_LOCAL_INSTALL_DIR)"
+	@echo "\033[1;32m   Installing library directory: $(LIB_LOCAL_INSTALL_DIR) \033[0m"
 	@install -d $(LIB_LOCAL_INSTALL_DIR)
 	@install $(TARGET_LIB) $(LIB_LOCAL_INSTALL_DIR)
 

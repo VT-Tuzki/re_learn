@@ -73,7 +73,7 @@ int cc_list_node_remove_after(cc_list_node_t *self, void **result)
     return ERR_CC_LIST_OK;
 }
 
-int cc_list_node_delete_and_next(struct cc_list_node **current, cc_delete_fn_t remove_fn)
+int cc_list_node_delete_and_next(cc_list_node_t **current, cc_delete_fn_t remove_fn)
 {
 
 /*
@@ -152,7 +152,7 @@ int cc_list_destroy(cc_list_t *self, cc_delete_fn_t remove_fn)
     return ERR_CC_LIST_OK;
 }
 
-int cc_list_concat(struct cc_list *left, struct cc_list *right)
+int cc_list_concat(cc_list_t *left, cc_list_t *right)
 {
     if(left == NULL) {
         return ERR_CC_LIST_INVALID_ARG;

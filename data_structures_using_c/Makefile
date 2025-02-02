@@ -30,7 +30,7 @@ C_APP_LIB = ${WORK_DIR}/lib
 #configure.sh will chenge this line IS_C_APP_USE_LIB
 #configure.sh explain: set app use lib or not, such as yes <
 #configure.sh explain: set app use lib or not, such as yes <
-IS_C_APP_USE_LIB = no
+IS_C_APP_USE_LIB = yes
 #configure.sh explain: set app use lib or not, such as yes or no <
 
 
