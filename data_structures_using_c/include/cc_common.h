@@ -13,6 +13,10 @@ typedef enum {
     ERR_CC_COMMON_OK = 0,
     ERR_CC_COMMON_INVALID_ARG,
     ERR_CC_COMMON_MEM_ERR,
+
+
+
+    ERR_CC_STACK_BEGIN = 0xD0,
 } cc_common_err_e;
 
 typedef enum {

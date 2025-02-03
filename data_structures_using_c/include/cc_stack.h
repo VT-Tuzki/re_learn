@@ -11,17 +11,18 @@ struct cc_stack_i {
     cc_stack_pop_fn_t pop;
     cc_stack_peek_fn_t peek;
 };
+typedef struct cc_stack_i cc_stack_i_t;
 
 static inline int cc_stack_push(void *self, void *data) {
     return (*(struct cc_stack_i**)self)->push(self, data);
 }
 
 static inline int cc_stack_pop(void *self, void **result) {
-    return (*(struct cc_stack_i**)self)->pop(self, *result);
+    return (*(struct cc_stack_i**)self)->pop(self, result);
 }
 
 static inline int cc_stack_peek(void *self, void **result) {
-    return (*(struct cc_stack_i**)self)->peek(self, *result);
+    return (*(struct cc_stack_i**)self)->peek(self, result);
 }
 
 

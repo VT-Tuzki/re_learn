@@ -67,8 +67,8 @@ int main() {
     assert(cc_array_stack_push(stack, &tmp) == 1);
 
     tmp = TEST_LEN - 1 + offset;
-    tmp_ref = malloc(sizeof(float*));
-    assert(!cc_stack_peek(stack, (void **)&tmp_ref));
+    tmp_ref = malloc(sizeof(*tmp_ref));
+    assert(!cc_stack_peek(stack, (void **)tmp_ref));
     assert(float_cmp(&tmp,tmp_ref) == 0);
     printf("--%f\n",*tmp_ref);
     assert(!cc_array_stack_peek(stack, tmp_ref));
@@ -79,7 +79,7 @@ int main() {
     assert(float_cmp(&tmp,tmp_ref) == 0);
 
     for(i = 0; i < TEST_LEN; i++) {
-        assert(!cc_stack_pop(stack, (void **)&tmp_ref));
+        assert(!cc_stack_pop(stack, (void **)tmp_ref));
         tmp = TEST_LEN - i - 1 + offset;
         assert(float_cmp(&tmp,tmp_ref) == 0);
 
@@ -97,7 +97,7 @@ int main() {
     assert(!cc_array_stack_space(stack, &empty_space));
     assert(empty_space == (size_t)(TEST_LEN));
 
-    assert(cc_stack_pop(stack, (void **)&tmp_ref) == 1);
+    assert(cc_stack_pop(stack, (void **)tmp_ref) == 1);
     assert(cc_array_stack_pop(stack, tmp_ref) == 1);
 
     assert(!cc_array_stack_delete(stack));

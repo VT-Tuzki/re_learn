@@ -1,0 +1,76 @@
+#include "cc_list_stack.h"
+#include <assert.h>
+#include <stdint.h>
+
+#include <stdlib.h>
+#include <math.h>
+#include "cc_dbg.h"
+
+struct test_node {
+    size_t number;
+    char   name[20];
+};
+typedef struct test_node test_node_t;
+
+int print_list_node_data(test_node_t *data)
+{
+    if(data == NULL) {
+        log_warn("temp -> NULL");
+    }
+    printf("num: %ld name: %s\n",data->number,data->name);
+    return 0;
+}
+
+#define LOOP_LEN  3
+
+
+int main() {
+
+    cc_list_stack_t *list_stack;
+    test_node_t *temp = NULL;
+    assert(cc_list_stack_new(&list_stack) == ERR_CC_COMMON_OK);
+
+    assert(cc_stack_peek(list_stack, (void **)&temp) == ERR_CC_STACK_EMPTY);
+    assert(cc_stack_pop(list_stack, (void **)&temp) == ERR_CC_STACK_EMPTY);
+
+
+    temp = malloc(sizeof(*temp));
+    strcpy(temp->name,"list_stack");
+    temp->number = 1;
+    assert(cc_stack_push(list_stack, temp) == ERR_CC_COMMON_OK);
+
+    temp = NULL;
+    assert(cc_stack_peek(list_stack, (void **)&temp) == ERR_CC_COMMON_OK);
+    print_list_node_data(temp);
+    assert((temp->number == 1));
+    assert(cc_stack_pop(list_stack, (void **)&temp) == ERR_CC_COMMON_OK);
+    free(temp);
+    assert(cc_stack_pop(list_stack, (void **)&temp) == ERR_CC_STACK_EMPTY);
+
+    for(int i = 0; i < LOOP_LEN; i++) {
+        temp = malloc(sizeof(*temp));
+        check(temp,"temp malloc failed");
+        strcpy(temp->name,"list_stack");
+        temp->number = i;
+        assert(cc_stack_push(list_stack, temp) == ERR_CC_COMMON_OK);
+    }
+    temp = NULL;
+    assert(cc_stack_peek(list_stack, (void **)&temp) == ERR_CC_COMMON_OK);
+    assert(temp->number == LOOP_LEN - 1);
+
+    temp = NULL;
+    while(cc_stack_peek(list_stack, (void **)&temp) == ERR_CC_STACK_EMPTY)
+    {
+        assert(cc_stack_peek(list_stack, (void **)&temp) == ERR_CC_COMMON_OK);
+        print_list_node_data(temp);
+        free(temp);
+    }
+
+    cc_list_stack_delete(list_stack, (cc_delete_fn_t)free);
+
+    return 0;
+
+
+error:
+    exit(1);
+}
