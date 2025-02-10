@@ -45,9 +45,7 @@ int cc_array_queue_delete(cc_array_queue_t *self, cc_delete_fn_t remove_fn)
     int res = ERR_CC_COMMON_OK;
     if(self == NULL) return ERR_CC_COMMON_INVALID_ARG;
 
-    //TODO: 重构完cc_array_delete后添加
-    NOTUSED(remove_fn);
-    res = cc_array_delete(self->array);
+    res = cc_array_delete(self->array, remove_fn);
     if(res != ERR_CC_COMMON_OK) {
         goto fail1;
     }

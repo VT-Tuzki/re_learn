@@ -83,15 +83,15 @@ int cc_array_stack_new(struct cc_array_stack **self, size_t elem_nums, size_t el
     return 0;
 
 fail3:
-    cc_array_delete(array);
+    cc_array_delete(array, NULL);
 fail2:
     free(tmp);
 fail1:
     return 1;
 }
 
-int cc_array_stack_delete(struct cc_array_stack *self) {
-    if(cc_array_delete(self->data)) {
+int cc_array_stack_delete(struct cc_array_stack *self, cc_delete_fn_t remove_fn) {
+    if(cc_array_delete(self->data, remove_fn)) {
         return 1;
     }
     free(self);

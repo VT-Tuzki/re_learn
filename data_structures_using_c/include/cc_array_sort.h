@@ -8,6 +8,6 @@ int cc_array_sort_bubble(struct cc_array *self, cc_cmp_fn_t cmp);
 int cc_array_sort_quick(struct cc_array *self, cc_cmp_fn_t cmp);
 int cc_array_sort_selection(struct cc_array *self, cc_cmp_fn_t cmp);
 
-int cc_array_sort_merge(struct cc_array *self, cc_cmp_fn_t cmp);
+int cc_array_sort_merge(struct cc_array *self, cc_cmp_fn_t cmp, cc_delete_fn_t remove_fn);
 
 #endif

@@ -37,7 +37,7 @@ int cc_array_init(cc_array_t *self, unsigned char *data, size_t elem_nums, size_
  */
 int cc_array_new(cc_array_t **self, size_t elem_nums, size_t elem_size);
 
-int cc_array_delete(struct cc_array *self);
+int cc_array_delete(struct cc_array *self, cc_delete_fn_t remove_fn);
 
 
 int cc_array_get_unsafe(cc_array_t *self, size_t index, void *result);

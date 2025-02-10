@@ -42,6 +42,6 @@ int main(void)
     printf("!!!!!!!!%d %d %d\n",tmpa->infoa,tmpa->infob,tmpa->infoc);
 
 
-    cc_array_delete(array);
+    cc_array_delete(array, NULL);
     return 0;
 }

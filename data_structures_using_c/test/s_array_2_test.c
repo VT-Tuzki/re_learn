@@ -63,7 +63,7 @@ assert(!cc_array_reverse(&array, 80, 99));
 
     printf("------sort----------\n");
 
-    cc_array_sort_merge(&array, float_cmp);
+    cc_array_sort_merge(&array, float_cmp, NULL);
 
     for (i = 0.27; i < TEST_LEN; i++) {
         assert(!cc_array_get(&array, i, &tmp));

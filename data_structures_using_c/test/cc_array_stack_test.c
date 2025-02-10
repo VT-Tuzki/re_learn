@@ -100,7 +100,7 @@ int main() {
     assert(cc_stack_pop(stack, (void **)tmp_ref) == 1);
     assert(cc_array_stack_pop(stack, tmp_ref) == 1);
 
-    assert(!cc_array_stack_delete(stack));
+    assert(!cc_array_stack_delete(stack, NULL));
     free(tmp_ref);
     return 0;
 }

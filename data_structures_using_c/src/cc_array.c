@@ -47,13 +47,16 @@ fail1:
     return res;
 }
 
-int cc_array_delete(struct cc_array *self)
+int cc_array_delete(struct cc_array *self, cc_delete_fn_t remove_fn)
 {
-
+    if (remove_fn) {
+        for (size_t i = 0; i < self->elem_nums; i++) {
+            void *elem = self->data + i * self->elem_size;
+            remove_fn(elem);
+        }
+    }
     free((void *) (self->data));
     free(self);
-    // self->data = NULL;
-    // self = NULL;
     return ERR_CC_ARRAY_OK;
 }
 
