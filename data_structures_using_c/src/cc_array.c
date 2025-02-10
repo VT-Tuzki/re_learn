@@ -2,16 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/*
-struct cc_array {
-    unsigned char *data;
-    size_t elem_nums;
-    size_t elem_size;
-};
-typedef struct cc_array cc_array_t;
-
-*/
-
 
 int cc_array_init(struct cc_array *self, unsigned char *data, size_t elem_nums, size_t elem_size)
 {
@@ -59,6 +49,7 @@ fail1:
 
 int cc_array_delete(struct cc_array *self)
 {
+
     free((void *) (self->data));
     free(self);
     // self->data = NULL;
