@@ -69,8 +69,8 @@ int cc_array_queue_enqueue(cc_array_queue_t *self, void *data)
 {
     int res = ERR_CC_COMMON_OK;
 
-    if(self->now_size == 0) {
-        return ERR_CC_QUEUE_EMPTY;
+    if(cc_array_queue_is_full(self) == ERR_CC_QUEUE_IS_FULL) {
+        return ERR_CC_QUEUE_IS_FULL;
     }
 
     res = cc_array_set(self->array, self->now_rear, data);
