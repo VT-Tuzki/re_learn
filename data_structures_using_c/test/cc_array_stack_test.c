@@ -1,4 +1,4 @@
-#include <stddef.h>
+#include "cc_stdint.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include "cc_array.h"
@@ -37,15 +37,15 @@ float tmp_1;
 int main() {
 
 
-    size_t elem_nums = 0;
-    size_t empty_space = 0;
+    cc_size_t elem_nums = 0;
+    cc_size_t empty_space = 0;
     int i = 0;
     struct cc_array_stack *stack;
     assert(!cc_array_stack_new(&stack, TEST_LEN, TEST_SIZE));
 
     empty_space = 0;
     assert(!cc_array_stack_space(stack, &empty_space));
-    assert(empty_space == (size_t)(TEST_LEN));
+    assert(empty_space == (cc_size_t)(TEST_LEN));
 
     for(i = 0; i < TEST_LEN; i++) {
 
@@ -53,15 +53,15 @@ int main() {
         printf("i: %d tmp:%f\n",i,tmp);
         assert(!cc_stack_push(stack, &tmp));
         assert(!cc_array_stack_elem_nums(stack, &elem_nums));
-        assert(elem_nums == (size_t)(i + 1));
+        assert(elem_nums == (cc_size_t)(i + 1));
         assert(!cc_array_stack_space(stack, &empty_space));
-        assert(empty_space == (size_t)(TEST_LEN - i - 1));
-        printf("i: %d top:%ld\n",i,stack->top);
+        assert(empty_space == (cc_size_t)(TEST_LEN - i - 1));
+        printf("i: %d top:%d\n",i,stack->top);
     }
 
     assert(!cc_array_stack_space(stack, &empty_space));
-    printf("%ld\n",empty_space);
-    assert(empty_space == (size_t)(0));
+    printf("%d\n",empty_space);
+    assert(empty_space == (cc_size_t)(0));
 
     assert(cc_stack_push(stack, &tmp) == 1);
     assert(cc_array_stack_push(stack, &tmp) == 1);
@@ -84,18 +84,18 @@ int main() {
         assert(float_cmp(&tmp,tmp_ref) == 0);
 
         assert(!cc_array_stack_elem_nums(stack, &elem_nums));
-        assert(elem_nums == (size_t)(TEST_LEN - i - 1));
+        assert(elem_nums == (cc_size_t)(TEST_LEN - i - 1));
         assert(!cc_array_stack_space(stack, &empty_space));
-        assert(empty_space == (size_t)(i + 1));
+        assert(empty_space == (cc_size_t)(i + 1));
     }
 
 
     assert(!cc_array_stack_elem_nums(stack, &elem_nums));
-    assert(elem_nums == (size_t)(0));
+    assert(elem_nums == (cc_size_t)(0));
 
 
     assert(!cc_array_stack_space(stack, &empty_space));
-    assert(empty_space == (size_t)(TEST_LEN));
+    assert(empty_space == (cc_size_t)(TEST_LEN));
 
     assert(cc_stack_pop(stack, (void **)tmp_ref) == 1);
     assert(cc_array_stack_pop(stack, tmp_ref) == 1);

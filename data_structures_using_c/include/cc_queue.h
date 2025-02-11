@@ -1,13 +1,13 @@
 #ifndef __CC_QUEUE_H__
 #define __CC_QUEUE_H__
 
-#include <stddef.h>
+#include "cc_stdint.h"
 #include "cc_common.h"
 
 typedef int (*cc_queue_enqueue_fn_t) (void *self, void *data);
 typedef int (*cc_queue_dequeue_fn_t) (void *self, void **result);
 typedef int (*cc_queue_peek_fn_t) (void *self, void **result);
-typedef size_t (*cc_queue_size_fn_t) (void *self);
+typedef cc_size_t (*cc_queue_size_fn_t) (void *self);
 typedef int (*cc_queue_is_empty_fn_t) (void *self);
 typedef int (*cc_queue_is_full_fn_t) (void *self);
 
@@ -52,7 +52,7 @@ static inline int cc_queue_is_full (void *self) {
     return (*(cc_queue_i_t **)self)->is_full(self);
 }
 
-static inline size_t cc_queue_size (void *self) {
+static inline cc_size_t cc_queue_size (void *self) {
     return (*(cc_queue_i_t **)self)->size(self);
 }
 

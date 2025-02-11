@@ -93,7 +93,7 @@ int cc_list_queue_is_full(cc_list_queue_t *self)
     return ERR_CC_COMMON_NOT_DEFINE;
 }
 
-size_t cc_list_queue_size(cc_list_queue_t *self)
+cc_size_t cc_list_queue_size(cc_list_queue_t *self)
 {
     return cc_list_size(self->list);
 }

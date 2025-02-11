@@ -17,7 +17,7 @@ int float_cmp(void *left,void *right)
 int main(void) {
     struct cc_array array;
     unsigned char data[10 * sizeof(float)];
-    size_t index;
+    cc_size_t index;
 
     float i;
     float tmp = 0;

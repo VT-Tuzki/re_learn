@@ -32,7 +32,7 @@ int cc_list_stack_push(cc_list_stack_t *self, void *data);
 int cc_list_stack_pop(cc_list_stack_t *self, void **result);
 int cc_list_stack_peek(cc_list_stack_t *self, void **result);
 
-size_t cc_array_stack_elem_nums(cc_list_stack_t *self, size_t *elem_nums);
+cc_size_t cc_array_stack_elem_nums(cc_list_stack_t *self, cc_size_t *elem_nums);
 
 
 #endif

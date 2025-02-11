@@ -11,7 +11,7 @@ cc_queue_i_t cc_array_queue_interface = {
     .size = (cc_queue_size_fn_t) cc_array_queue_size,
 };
 
-int cc_array_queue_new(cc_array_queue_t **self, size_t elem_nums, size_t elem_size)
+int cc_array_queue_new(cc_array_queue_t **self, cc_size_t elem_nums, cc_size_t elem_size)
 {
     cc_array_queue_t *temp_array_queue;
     cc_array_t *temp_array;
@@ -120,7 +120,7 @@ int cc_array_queue_is_full(cc_array_queue_t *self)
     }
     return ERR_CC_COMMON_OK;
 }
-size_t cc_array_queue_size(cc_array_queue_t *self)
+cc_size_t cc_array_queue_size(cc_array_queue_t *self)
 {
     return self->now_size;
 }

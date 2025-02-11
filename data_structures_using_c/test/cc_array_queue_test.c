@@ -32,7 +32,7 @@ static void test_basic_operations(void) {
         // 入队操作
         result = cc_array_queue_enqueue(queue, &stack);
         assert(result == ERR_CC_COMMON_OK);
-        assert(cc_array_queue_size(queue) == (size_t)(i + 1));
+        assert(cc_array_queue_size(queue) == (cc_size_t)(i + 1));
     }
 
     // 验证非空状态

@@ -7,7 +7,7 @@
 #include "cc_dbg.h"
 
 struct test_node {
-    size_t number;
+    cc_size_t number;
     char   name[20];
 };
 typedef struct test_node test_node_t;
@@ -17,7 +17,7 @@ int print_list_node_data(test_node_t *data)
     if(data == NULL) {
         log_warn("temp -> NULL");
     }
-    printf("num: %ld name: %s\n",data->number,data->name);
+    printf("num: %d name: %s\n",data->number,data->name);
     return 0;
 }
 

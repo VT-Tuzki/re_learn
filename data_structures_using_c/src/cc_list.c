@@ -290,18 +290,18 @@ int cc_list_is_empty(cc_list_t *self)
 {
     return self->root.next == &self->root;
 }
-size_t cc_list_size(cc_list_t *self)
+cc_size_t cc_list_size(cc_list_t *self)
 {
     return self->root.size;
 }
 
 int cc_list_print_for(cc_list_t *self, int direction, cc_debug_print_fn_t cc_debug_print)
 {
-    size_t len = self->root.size;
+    cc_size_t len = self->root.size;
     cc_list_node_t *temp = NULL;
     if(direction == 1) {
         temp = self->root.next;
-        for(size_t i = 0; i < len; i++)
+        for(cc_size_t i = 0; i < len; i++)
         {
             cc_debug_print(temp->data);
             temp = temp->next;
@@ -309,7 +309,7 @@ int cc_list_print_for(cc_list_t *self, int direction, cc_debug_print_fn_t cc_deb
     }
     else {
         temp = self->root.prev;
-        for(size_t i = 0; i < len; i++)
+        for(cc_size_t i = 0; i < len; i++)
         {
             cc_debug_print(temp->data);
             temp = temp->prev;

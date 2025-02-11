@@ -6,14 +6,14 @@
 struct cc_array_ring_queue {
     cc_ring_queue_i_t *interface;
     cc_array_t *array;
-    size_t write_idx;
-    size_t read_idx;
+    cc_size_t write_idx;
+    cc_size_t read_idx;
 };
 typedef struct cc_array_ring_queue cc_array_ring_queue_t;
 
 
 
-int cc_array_ring_queue_new(cc_array_ring_queue_t **self, size_t elem_nums, size_t elem_size);
+int cc_array_ring_queue_new(cc_array_ring_queue_t **self, cc_size_t elem_nums, cc_size_t elem_size);
 int cc_array_ring_queue_delete(cc_array_ring_queue_t *self, cc_delete_fn_t remove_fn);
 int cc_array_ring_queue_init(cc_array_ring_queue_t *self, cc_array_t *data);
 int cc_array_ring_queue_enqueue(cc_array_ring_queue_t *self, void *data);
@@ -34,7 +34,7 @@ static inline int cc_array_ring_queue_is_full(cc_array_ring_queue_t *self)
     return ERR_CC_COMMON_OK;
 };
 
-static inline size_t cc_array_ring_queue_size(cc_array_ring_queue_t *self)
+static inline cc_size_t cc_array_ring_queue_size(cc_array_ring_queue_t *self)
 {
     if(self->write_idx < self->read_idx) {
         return self->array->elem_size - self->read_idx + self->write_idx;

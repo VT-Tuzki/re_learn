@@ -3,7 +3,7 @@
 #include <string.h>
 
 
-int cc_array_init(struct cc_array *self, unsigned char *data, size_t elem_nums, size_t elem_size)
+int cc_array_init(struct cc_array *self, unsigned char *data, cc_size_t elem_nums, cc_size_t elem_size)
 {
     self->data = data;
     self->elem_nums = elem_nums;
@@ -12,7 +12,7 @@ int cc_array_init(struct cc_array *self, unsigned char *data, size_t elem_nums, 
 }
 
 
-int cc_array_new(struct cc_array **self, size_t elem_nums, size_t elem_size)
+int cc_array_new(struct cc_array **self, cc_size_t elem_nums, cc_size_t elem_size)
 {
     int res = ERR_CC_ARRAY_OK;
     struct cc_array *tmp = NULL;
@@ -50,7 +50,7 @@ fail1:
 int cc_array_delete(struct cc_array *self, cc_delete_fn_t remove_fn)
 {
     if (remove_fn) {
-        for (size_t i = 0; i < self->elem_nums; i++) {
+        for (cc_size_t i = 0; i < self->elem_nums; i++) {
             void *elem = self->data + i * self->elem_size;
             remove_fn(elem);
         }
@@ -60,22 +60,22 @@ int cc_array_delete(struct cc_array *self, cc_delete_fn_t remove_fn)
     return ERR_CC_ARRAY_OK;
 }
 
-static inline void cc_array_get_(struct cc_array *self, size_t index, void *result)
+static inline void cc_array_get_(struct cc_array *self, cc_size_t index, void *result)
 {
     memcpy(result, self->data + index * self->elem_size, self->elem_size);
 }
 
-static inline void cc_array_set_(struct cc_array *self, size_t index, void *value)
+static inline void cc_array_set_(struct cc_array *self, cc_size_t index, void *value)
 {
     memcpy(self->data + index * self->elem_size, value, self->elem_size);
 }
 
-inline int cc_array_is_vaild_index(struct cc_array *self, size_t index)
+inline int cc_array_is_vaild_index(struct cc_array *self, cc_size_t index)
 {
     return index < self->elem_nums;
 }
 
-int cc_array_get_ref(struct cc_array *self, size_t index, void **ref)
+int cc_array_get_ref(struct cc_array *self, cc_size_t index, void **ref)
 {
     if(!cc_array_is_vaild_index(self,index)) return ERR_CC_ARRAY_INVALID_ARG;
 
@@ -83,13 +83,13 @@ int cc_array_get_ref(struct cc_array *self, size_t index, void **ref)
     return ERR_CC_ARRAY_OK;
 }
 
-int cc_array_get_unsafe(struct cc_array *self, size_t index, void *result)
+int cc_array_get_unsafe(struct cc_array *self, cc_size_t index, void *result)
 {
     cc_array_get_(self,index,result);
     return ERR_CC_ARRAY_OK;
 }
 
-int cc_array_get(struct cc_array *self, size_t index, void *result)
+int cc_array_get(struct cc_array *self, cc_size_t index, void *result)
 {
     if(!cc_array_is_vaild_index(self,index)) return ERR_CC_ARRAY_INVALID_ARG;
     if(result == NULL) return ERR_CC_ARRAY_INVALID_ARG;
@@ -98,13 +98,13 @@ int cc_array_get(struct cc_array *self, size_t index, void *result)
     return ERR_CC_ARRAY_OK;
 }
 
-int cc_array_set_unsafe(struct cc_array *self, size_t index, void *value)
+int cc_array_set_unsafe(struct cc_array *self, cc_size_t index, void *value)
 {
     cc_array_set_(self,index,value);
     return ERR_CC_ARRAY_OK;
 }
 
-int cc_array_set(struct cc_array *self, size_t index, void *value)
+int cc_array_set(struct cc_array *self, cc_size_t index, void *value)
 {
     if(!(cc_array_is_vaild_index(self,index))) return ERR_CC_ARRAY_INVALID_ARG;
     if(value == NULL) return ERR_CC_ARRAY_INVALID_ARG;
@@ -113,12 +113,12 @@ int cc_array_set(struct cc_array *self, size_t index, void *value)
     return ERR_CC_ARRAY_OK;
 }
 
-int cc_array_cmp(struct cc_array *self, cc_cmp_fn_t cmp, size_t i, size_t j)
+int cc_array_cmp(struct cc_array *self, cc_cmp_fn_t cmp, cc_size_t i, cc_size_t j)
 {
     return cmp(self->data + i * self->elem_size, self->data + j * self->elem_size);
 }
 
-int cc_array_swap(struct cc_array *self, size_t i, size_t j)
+int cc_array_swap(struct cc_array *self, cc_size_t i, cc_size_t j)
 {
     if(!cc_array_is_vaild_index(self, i)) return ERR_CC_ARRAY_INVALID_ARG;
     if(!cc_array_is_vaild_index(self, j)) return ERR_CC_ARRAY_INVALID_ARG;
@@ -130,9 +130,9 @@ int cc_array_swap(struct cc_array *self, size_t i, size_t j)
     return ERR_CC_ARRAY_OK;
 }
 
-int cc_array_reverse(struct cc_array *self, size_t start, size_t end)
+int cc_array_reverse(struct cc_array *self, cc_size_t start, cc_size_t end)
 {
-    size_t mid,i;
+    cc_size_t mid,i;
     if(!cc_array_is_vaild_index(self, start)) return ERR_CC_ARRAY_INVALID_ARG;
     if(!cc_array_is_vaild_index(self, end)) return ERR_CC_ARRAY_INVALID_ARG;
 
@@ -147,7 +147,7 @@ int cc_array_reverse(struct cc_array *self, size_t start, size_t end)
     return ERR_CC_ARRAY_OK;
 }
 
-int cc_array_copy_index(struct cc_array *array_a, struct cc_array * array_b, size_t index_a, size_t index_b)
+int cc_array_copy_index(struct cc_array *array_a, struct cc_array * array_b, cc_size_t index_a, cc_size_t index_b)
 {
     if(array_a->elem_size != array_b->elem_size) return ERR_CC_ARRAY_INVALID_ARG;
     if(!cc_array_is_vaild_index(array_a, index_a)) return ERR_CC_ARRAY_INVALID_ARG;
@@ -160,10 +160,10 @@ int cc_array_copy_index(struct cc_array *array_a, struct cc_array * array_b, siz
     return ERR_CC_ARRAY_OK;
 }
 
-int cc_array_resize_by_copy(cc_array_t *self, size_t new_elem_nums) {
+int cc_array_resize_by_copy(cc_array_t *self, cc_size_t new_elem_nums) {
     int res = ERR_CC_ARRAY_OK;
-    size_t copy_elements = (new_elem_nums < self->elem_nums) ? new_elem_nums : self->elem_nums;
-    size_t copy_len = copy_elements * self->elem_size;
+    cc_size_t copy_elements = (new_elem_nums < self->elem_nums) ? new_elem_nums : self->elem_nums;
+    cc_size_t copy_len = copy_elements * self->elem_size;
     unsigned char *temp = malloc(self->elem_size * new_elem_nums);
 
     if (temp == NULL) {

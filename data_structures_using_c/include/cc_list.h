@@ -3,14 +3,14 @@
 
 #include "cc_common.h"
 #include "cc_array.h"
-#include <stddef.h>
+#include "cc_stdint.h"
 
 struct cc_list_node {
     struct cc_list_node *next;
     struct cc_list_node *prev;
     union {
         void *data; // when self not head
-        size_t size; // when self is head (size of list)
+        cc_size_t size; // when self is head (size of list)
     };
 };
 typedef struct cc_list_node cc_list_node_t;
@@ -53,7 +53,7 @@ int cc_list_get_head(cc_list_t *self, void **data);
 int cc_list_get_tail(cc_list_t *self, void **data);
 
 int cc_list_is_empty(cc_list_t *self);
-size_t cc_list_size(cc_list_t *self);
+cc_size_t cc_list_size(cc_list_t *self);
 
 int cc_list_to_cc_array(cc_list_t *self, cc_array_t **result);
 

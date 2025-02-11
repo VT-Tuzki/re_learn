@@ -2,12 +2,12 @@
 #include "cc_array_sort.h"
 #include "stdio.h"
 #include <assert.h>
-#include <stddef.h>
+#include "cc_stdint.h"
 #include <strings.h>
 
-static size_t cc_array_sort_divide(struct cc_array *self,cc_cmp_fn_t cmp, size_t start, size_t end)
+static cc_size_t cc_array_sort_divide(struct cc_array *self,cc_cmp_fn_t cmp, cc_size_t start, cc_size_t end)
 {
-    size_t left,right,mid;
+    cc_size_t left,right,mid;
     left = start;
     right = end;
     mid = start;
@@ -24,9 +24,9 @@ static size_t cc_array_sort_divide(struct cc_array *self,cc_cmp_fn_t cmp, size_t
     return left;
 }
 
-static void cc_array_sort_quick_(struct cc_array *self, cc_cmp_fn_t cmp, size_t start, size_t end)
+static void cc_array_sort_quick_(struct cc_array *self, cc_cmp_fn_t cmp, cc_size_t start, cc_size_t end)
 {
-    size_t mid;
+    cc_size_t mid;
     if(start >= end)
         return;
 
@@ -50,7 +50,7 @@ int cc_array_sort_quick(struct cc_array *self, cc_cmp_fn_t cmp)
 
 int cc_array_sort_bubble(struct cc_array *self, cc_cmp_fn_t cmp)
 {
-    size_t i,j;
+    cc_size_t i,j;
     if(self == NULL) return 1;
     if(cmp == NULL) return 2;
 
@@ -62,9 +62,9 @@ int cc_array_sort_bubble(struct cc_array *self, cc_cmp_fn_t cmp)
     return 0;
 }
 
-static int cc_array_sort_merge_array_merge(struct cc_array *self, cc_cmp_fn_t cmp, cc_delete_fn_t remove_fn, size_t left, size_t mid,size_t right)
+static int cc_array_sort_merge_array_merge(struct cc_array *self, cc_cmp_fn_t cmp, cc_delete_fn_t remove_fn, cc_size_t left, cc_size_t mid,cc_size_t right)
 {
-    size_t i,j,k;
+    cc_size_t i,j,k;
 
     struct cc_array *tmp_array;
 
@@ -97,9 +97,9 @@ static int cc_array_sort_merge_array_merge(struct cc_array *self, cc_cmp_fn_t cm
     return 0;
 }
 
-int cc_array_sort_merge_(struct cc_array *self, cc_cmp_fn_t cmp, cc_delete_fn_t remove_fn, size_t start, size_t end)
+int cc_array_sort_merge_(struct cc_array *self, cc_cmp_fn_t cmp, cc_delete_fn_t remove_fn, cc_size_t start, cc_size_t end)
 {
-    size_t mid;
+    cc_size_t mid;
     if(end == start) return 0;
 
     mid = start + ((end - start) >> 1);

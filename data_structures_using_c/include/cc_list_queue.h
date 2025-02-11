@@ -18,6 +18,6 @@ int cc_list_queue_peek(cc_list_queue_t *self, void **result);
 
 int cc_list_queue_is_empty(cc_list_queue_t *self);
 int cc_list_queue_is_full(cc_list_queue_t *self);
-size_t cc_list_queue_size(cc_list_queue_t *self);
+cc_size_t cc_list_queue_size(cc_list_queue_t *self);
 
 #endif

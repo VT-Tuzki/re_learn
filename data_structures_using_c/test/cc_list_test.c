@@ -19,14 +19,14 @@
 
 
 struct list_node {
-    size_t number;
+    cc_size_t number;
     char   name[20];
 };
 typedef struct list_node list_node_t;
 
 int print_list_node_data(list_node_t *data)
 {
-    printf("num: %ld name: %s\n",data->number,data->name);
+    printf("num: %d name: %s\n",data->number,data->name);
     return 0;
 }
 
@@ -36,7 +36,7 @@ int main()
 {
     cc_list_t *test_list_a = NULL;
     cc_list_t *test_list_b = NULL;
-    size_t now_len = 0;
+    cc_size_t now_len = 0;
 
     assert(cc_list_new(&test_list_a) == ERR_CC_LIST_OK);
     assert(cc_list_new(&test_list_b) == ERR_CC_LIST_OK);
@@ -46,7 +46,7 @@ int main()
     assert(cc_list_is_empty(test_list_a) == 1);
 
 
-    for(size_t i = 0; i < LOOP_LEN; i++) {
+    for(cc_size_t i = 0; i < LOOP_LEN; i++) {
         list_node_t *temp_list_node = malloc(sizeof(*temp_list_node));
         assert(temp_list_node != NULL);
         temp_list_node->number = i;
@@ -61,10 +61,10 @@ int main()
     */
     now_len = cc_list_size(test_list_a);
     assert(now_len == LOOP_LEN);
-    printf("now_len -> %ld\n", now_len);
+    printf("now_len -> %d\n", now_len);
     assert(cc_list_print(test_list_a, 1, (cc_debug_print_fn_t) print_list_node_data) == ERR_CC_LIST_OK);
 
-    for(size_t i = 0; i < LOOP_LEN; i++) {
+    for(cc_size_t i = 0; i < LOOP_LEN; i++) {
         list_node_t *temp_list_node = malloc(sizeof(*temp_list_node));
         assert(temp_list_node != NULL);
         temp_list_node->number = i;
@@ -80,7 +80,7 @@ int main()
     */
     now_len = cc_list_size(test_list_a);
     assert(now_len == LOOP_LEN*2);
-    printf("now_len -> %ld\n", now_len);
+    printf("now_len -> %d\n", now_len);
     assert(cc_list_print(test_list_a, 1, (cc_debug_print_fn_t) print_list_node_data) == ERR_CC_LIST_OK);
 
 
@@ -135,7 +135,7 @@ int main()
 
     assert(cc_list_remove_tail(test_list_a, (void **) &(temp)) == ERR_CC_LIST_EMPTY);
 
-    for(size_t i = 0; i < LOOP_LEN; i++) {
+    for(cc_size_t i = 0; i < LOOP_LEN; i++) {
         list_node_t *temp_list_node = malloc(sizeof(*temp_list_node));
         assert(temp_list_node != NULL);
         temp_list_node->number = i;
@@ -147,7 +147,7 @@ int main()
     assert(cc_list_print(test_list_a, 1, (cc_debug_print_fn_t) print_list_node_data) == ERR_CC_LIST_OK);
 
 
-    for(size_t i = 0; i < LOOP_LEN; i++) {
+    for(cc_size_t i = 0; i < LOOP_LEN; i++) {
         list_node_t *temp_list_node = malloc(sizeof(*temp_list_node));
         assert(temp_list_node != NULL);
         temp_list_node->number = i;
