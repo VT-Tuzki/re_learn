@@ -9,6 +9,7 @@ cc_ring_queue_i_t cc_array_ring_queue_interface = {
     .is_empty = (cc_ring_queue_is_empty_fn_t) cc_array_ring_queue_is_empty,
     .is_full = (cc_ring_queue_is_full_fn_t) cc_array_ring_queue_is_full,
     .size = (cc_ring_queue_size_fn_t) cc_array_ring_queue_size,
+    .capacity = (cc_ring_queue_capacity_fn_t) cc_array_ring_queue_capacity,
 };
 
 int cc_array_ring_queue_new(cc_array_ring_queue_t **self, cc_size_t elem_nums, cc_size_t elem_size)

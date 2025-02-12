@@ -28,7 +28,7 @@ static inline int cc_array_ring_queue_is_empty(cc_array_ring_queue_t *self)
 
 static inline int cc_array_ring_queue_is_full(cc_array_ring_queue_t *self)
 {
-    if(self->write_idx + 1 == self->read_idx) {
+    if ((self->write_idx + 1) % self->array->elem_nums == self->read_idx) {
         return ERR_CC_QUEUE_IS_FULL;
     }
     return ERR_CC_COMMON_OK;
@@ -43,5 +43,21 @@ static inline cc_size_t cc_array_ring_queue_size(cc_array_ring_queue_t *self)
         return self->write_idx - self->read_idx;
     }
 };
+
+static inline cc_size_t cc_array_ring_queue_capacity(cc_array_ring_queue_t *self)
+{
+    return self->array->elem_nums - 1;
+};
+
+#define CC_ARRAY_RING_QUEUE_STATIC_DECLARE(name, elem_num, elem_size) \
+    CC_ARRAY_STATIC_DECLARE(name##_array, elem_num, elem_size); \
+    cc_array_ring_queue_t name = { \
+        .interface = &cc_array_ring_queue_interface, \
+        .array = &name##_array, \
+        .write_idx = 0, \
+        .read_idx = 0 \
+    }
+
+
 
 #endif

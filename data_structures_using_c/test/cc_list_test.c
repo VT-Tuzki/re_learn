@@ -26,7 +26,7 @@ typedef struct list_node list_node_t;
 
 int print_list_node_data(list_node_t *data)
 {
-    printf("num: %d name: %s\n",data->number,data->name);
+    //printf("num: %d name: %s\n",data->number,data->name);
     return 0;
 }
 
@@ -61,7 +61,6 @@ int main()
     */
     now_len = cc_list_size(test_list_a);
     assert(now_len == LOOP_LEN);
-    printf("now_len -> %d\n", now_len);
     assert(cc_list_print(test_list_a, 1, (cc_debug_print_fn_t) print_list_node_data) == ERR_CC_LIST_OK);
 
     for(cc_size_t i = 0; i < LOOP_LEN; i++) {
@@ -80,7 +79,6 @@ int main()
     */
     now_len = cc_list_size(test_list_a);
     assert(now_len == LOOP_LEN*2);
-    printf("now_len -> %d\n", now_len);
     assert(cc_list_print(test_list_a, 1, (cc_debug_print_fn_t) print_list_node_data) == ERR_CC_LIST_OK);
 
 

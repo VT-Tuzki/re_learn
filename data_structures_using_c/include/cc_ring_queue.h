@@ -10,7 +10,7 @@ typedef int (*cc_ring_queue_peek_fn_t) (void *self, void **result);
 typedef cc_size_t (*cc_ring_queue_size_fn_t) (void *self);
 typedef int (*cc_ring_queue_is_empty_fn_t) (void *self);
 typedef int (*cc_ring_queue_is_full_fn_t) (void *self);
-
+typedef cc_size_t (*cc_ring_queue_capacity_fn_t) (void *self);
 struct cc_ring_queue_i {
     cc_ring_queue_enqueue_fn_t enqueue;
     cc_ring_queue_dequeue_fn_t dequeue;
@@ -18,6 +18,7 @@ struct cc_ring_queue_i {
     cc_ring_queue_is_empty_fn_t is_empty;
     cc_ring_queue_is_full_fn_t is_full;
     cc_ring_queue_size_fn_t size;
+    cc_ring_queue_capacity_fn_t capacity;
 };
 
 typedef struct cc_ring_queue_i cc_ring_queue_i_t;
@@ -54,6 +55,14 @@ static inline int cc_ring_queue_is_full (void *self) {
 
 static inline cc_size_t cc_ring_queue_size (void *self) {
     return (*(cc_ring_queue_i_t **)self)->size(self);
+}
+
+static inline cc_size_t cc_ring_queue_capacity (void *self) {
+    return (*(cc_ring_queue_i_t **)self)->capacity(self);
+}
+
+static inline cc_size_t cc_ring_queue_space (void *self) {
+    return cc_ring_queue_capacity(self) - cc_ring_queue_size(self);
 }
 
 #endif

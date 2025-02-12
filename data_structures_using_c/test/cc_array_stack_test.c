@@ -50,17 +50,17 @@ int main() {
     for(i = 0; i < TEST_LEN; i++) {
 
         tmp = i + offset;
-        printf("i: %d tmp:%f\n",i,tmp);
+        //printf("i: %d tmp:%f\n",i,tmp);
         assert(!cc_stack_push(stack, &tmp));
         assert(!cc_array_stack_elem_nums(stack, &elem_nums));
         assert(elem_nums == (cc_size_t)(i + 1));
         assert(!cc_array_stack_space(stack, &empty_space));
         assert(empty_space == (cc_size_t)(TEST_LEN - i - 1));
-        printf("i: %d top:%d\n",i,stack->top);
+        //printf("i: %d top:%d\n",i,stack->top);
     }
 
     assert(!cc_array_stack_space(stack, &empty_space));
-    printf("%d\n",empty_space);
+    //printf("%d\n",empty_space);
     assert(empty_space == (cc_size_t)(0));
 
     assert(cc_stack_push(stack, &tmp) == 1);
@@ -70,9 +70,9 @@ int main() {
     tmp_ref = cc_malloc(sizeof(*tmp_ref));
     assert(!cc_stack_peek(stack, (void **)tmp_ref));
     assert(float_cmp(&tmp,tmp_ref) == 0);
-    printf("--%f\n",*tmp_ref);
+    //printf("--%f\n",*tmp_ref);
     assert(!cc_array_stack_peek(stack, tmp_ref));
-    printf("--%f\n",*tmp_ref);
+    //printf("--%f\n",*tmp_ref);
     assert(float_cmp(&tmp,tmp_ref) == 0);
 
     assert(!cc_array_stack_peek(stack, tmp_ref));

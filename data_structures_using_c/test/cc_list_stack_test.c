@@ -17,7 +17,7 @@ int print_list_node_data(test_node_t *data)
     if(data == NULL) {
         log_warn("temp -> NULL");
     }
-    printf("num: %d name: %s\n",data->number,data->name);
+    //printf("num: %d name: %s\n",data->number,data->name);
     return 0;
 }
 
