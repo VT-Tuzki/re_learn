@@ -1,4 +1,5 @@
 #include "cc_array.h"
+#include "cc_common.h"
 #include "cc_mem.h"
 #include <string.h>
 #include "cc_atomic.h"
@@ -182,4 +183,65 @@ int cc_array_resize_by_copy(cc_array_t *self, cc_size_t new_elem_nums) {
 
 fail1:
     return res;
+}
+
+
+
+
+
+/*
+    iter
+
+
+*/
+
+cc_iter_i_t cc_array_iter_interface = {
+    .next = (cc_iter_next_fn_t) cc_array_iterator_next,
+};
+
+int cc_array_iterator_init(struct cc_array_iter *self, cc_array_t *data)
+{
+    if(data == NULL || self == NULL) return ERR_CC_COMMON_INVALID_ARG;
+
+    self->data = data;
+    self->cursor = 0;
+    self->iterator = &cc_array_iter_interface;
+
+    return ERR_CC_COMMON_OK;
+}
+
+
+int cc_array_iterator_new(struct cc_array_iter *self, cc_array_t *data)
+{
+    if(data == NULL) return ERR_CC_COMMON_INVALID_ARG;
+
+    cc_array_iter_t *temp = cc_malloc(sizeof(*temp));
+    if(temp == NULL) return ERR_CC_COMMON_MEM_ERR;
+
+    cc_array_iterator_init(self, data);
+
+    return ERR_CC_COMMON_OK;
+}
+
+int cc_array_iterator_delete(struct cc_array_iter *self)
+{
+    if(self == NULL) return ERR_CC_COMMON_INVALID_ARG;
+    free(self);
+    return ERR_CC_COMMON_OK;
+}
+
+int cc_array_iterator_next(struct cc_array_iter *self,void **item, cc_size_t *index)
+{
+    int res = ERR_CC_COMMON_OK;
+    if(self == NULL) return ERR_CC_COMMON_INVALID_ARG;
+    if(try_reset_double_p(item) != ERR_CC_COMMON_OK) return ERR_CC_COMMON_INVALID_ARG;
+
+    res = cc_array_get_ref(self->data, *index, item);
+    if(res != ERR_CC_COMMON_OK) return res;
+
+    if(index != NULL) {
+        *index = self->cursor;
+    }
+    self->cursor++;
+    return ERR_CC_COMMON_OK;
 }

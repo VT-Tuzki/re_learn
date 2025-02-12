@@ -11,7 +11,7 @@
 
 #include "cc_stdint.h"
 #include "cc_common.h"
-
+#include "cc_iter.h"
 struct cc_array {
     unsigned char *data;
     cc_size_t elem_nums;
@@ -58,14 +58,18 @@ int cc_array_resize(cc_array_t *self, cc_size_t new_elem_nums);
 
 
 
-// struct cc_array_iter {
-//     struct cc_iter_i *iterator;
-//     cc_array_t *data;
-//     cc_size_t cursor;
-// };
+struct cc_array_iter {
+    cc_iter_i_t *iterator;
+    cc_array_t *data;
+    cc_size_t cursor;
+};
+typedef struct cc_array_iter cc_array_iter_t;
 
-// int cc_array_iterator_init(struct cc_array_iter *self, cc_array_t *data);
-// int cc_array_iterator_next(struct cc_array_iter *self,void **item, cc_size_t *index);
+int cc_array_iterator_init(cc_array_iter_t *self, cc_array_t *data);
+int cc_array_iterator_new(cc_array_iter_t *self, cc_array_t *data);
+int cc_array_iterator_delete(cc_array_iter_t *self);
+
+int cc_array_iterator_next(cc_array_iter_t *self,void **item, cc_size_t *index);
 
 
 #endif

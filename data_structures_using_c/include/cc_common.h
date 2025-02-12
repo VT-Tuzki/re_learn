@@ -1,6 +1,8 @@
 #ifndef __CC_COMMON_H_
 #define __CC_COMMON_H_
 
+#include "cc_stdint.h"
+
 #ifndef NOTUSED
 #define NOTUSED(x) (void)(x);
 #endif
@@ -12,6 +14,8 @@ int cc_default_cmp_fn(void *left, void *right);
 typedef int (*cc_cmp_fn_t)(void *left, void *right);
 typedef int (*cc_delete_fn_t)(void *obj);
 typedef int (*cc_debug_print_fn_t)(void *value);
+
+
 
 typedef enum {
     ERR_CC_COMMON_NOT_DEFINE = -1,
@@ -35,5 +39,14 @@ typedef enum {
 } cc_element_err_e;
 
 #define ERR_CC_CONNECT(element, error) (element | error)
+
+
+static inline int try_reset_double_p(void *ptr) {
+    if (ptr == NULL)
+        return ERR_CC_COMMON_INVALID_ARG;
+
+    *(void **)ptr = NULL;
+    return 0;
+}
 
 #endif

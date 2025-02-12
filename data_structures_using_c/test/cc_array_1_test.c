@@ -40,8 +40,16 @@ int main(void)
         return 0;
     }
     printf("!!!!!!!!%d %d %d\n",tmpa->infoa,tmpa->infob,tmpa->infoc);
+    printf("------iter---------\n");
 
+    cc_array_iter_t iter;
+    cc_size_t index = 0;
+    assert(!cc_array_iterator_init(&iter, array));
+    while (!cc_array_iterator_next(&iter, (void **)&tmp, &index)) {
+        printf("i: %ld %d %d %d %f\n",index,tmp.infoa,tmp.infob,tmp.infoc,tmp.infod);
+    }
 
     cc_array_delete(array, NULL);
+
     return 0;
 }
