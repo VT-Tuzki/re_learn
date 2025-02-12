@@ -3,21 +3,18 @@
 /*------------------------------
   静态断言实现 (跨平台支持)
 ------------------------------*/
-#ifdef __cplusplus
-  /* C++环境直接使用static_assert */
-  #define CC_STATIC_ASSERT(cond, msg) static_assert(cond, msg)
+
+#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
+  /* C11及以上环境使用标准_Static_assert */
+  #define CC_STATIC_ASSERT(cond, msg) _Static_assert(cond, msg)
+#elif defined(__GNUC__)
+  /* 非C11标准的GCC/Clang编译器 */
+  #define CC_STATIC_ASSERT(cond, msg) typedef char __cc_assert_##__LINE__[(cond)?1:-1] __attribute__((unused))
 #else
-  #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L)
-    /* C11及以上环境使用标准_Static_assert */
-    #define CC_STATIC_ASSERT(cond, msg) _Static_assert(cond, msg)
-  #elif defined(__GNUC__)
-    /* 非C11标准的GCC/Clang编译器 */
-    #define CC_STATIC_ASSERT(cond, msg) typedef char __cc_assert_##__LINE__[(cond)?1:-1] __attribute__((unused))
-  #else
-    /* 通用回退方案 */
-    #define CC_STATIC_ASSERT(cond, msg) typedef char __cc_assert_##__LINE__[(cond)?1:-1]
-  #endif
-#endif  // __cplusplus
+  /* 通用回退方案 */
+  #define CC_STATIC_ASSERT(cond, msg) typedef char __cc_assert_##__LINE__[(cond)?1:-1]
+#endif
+
 
 
 /*------------------------------
