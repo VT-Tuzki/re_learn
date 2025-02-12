@@ -3,7 +3,7 @@
 #include "cc_common.h"
 #include <assert.h>
 #include <stdio.h>
-#include <stdlib.h>
+#include "cc_mem.h"
 
 #define TEST_QUEUE_CAPACITY 4
 
@@ -25,7 +25,7 @@ static void test_basic_operations(void) {
         cc_list_stack_new(&stack);
 
         // 在栈中压入测试数据
-        int *data = malloc(sizeof(int));
+        int *data = cc_malloc(sizeof(int));
         *data = i;
         cc_list_stack_push(stack, data);
 
@@ -49,8 +49,8 @@ static void test_basic_operations(void) {
         int *data;
         cc_list_stack_pop(stack, (void**)&data);
         assert(*data == i);
-        free(data);
-        cc_list_stack_delete(stack, (cc_delete_fn_t)free);
+        cc_free(data);
+        cc_list_stack_delete(stack, (cc_delete_fn_t)cc_free);
     }
 
     // 验证最终状态

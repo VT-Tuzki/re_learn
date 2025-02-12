@@ -1,6 +1,6 @@
 #include "cc_stdint.h"
 #include <stdio.h>
-#include <stdlib.h>
+#include "cc_mem.h"
 #include "cc_array.h"
 #include "cc_stack.h"
 #include "cc_array_stack.h"
@@ -67,7 +67,7 @@ int main() {
     assert(cc_array_stack_push(stack, &tmp) == 1);
 
     tmp = TEST_LEN - 1 + offset;
-    tmp_ref = malloc(sizeof(*tmp_ref));
+    tmp_ref = cc_malloc(sizeof(*tmp_ref));
     assert(!cc_stack_peek(stack, (void **)tmp_ref));
     assert(float_cmp(&tmp,tmp_ref) == 0);
     printf("--%f\n",*tmp_ref);
@@ -101,6 +101,6 @@ int main() {
     assert(cc_array_stack_pop(stack, tmp_ref) == 1);
 
     assert(!cc_array_stack_delete(stack, NULL));
-    free(tmp_ref);
+    cc_free(tmp_ref);
     return 0;
 }

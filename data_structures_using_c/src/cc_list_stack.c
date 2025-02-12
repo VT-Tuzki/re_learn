@@ -3,7 +3,7 @@
 #include "cc_stack.h"
 #include "cc_list_stack.h"
 #include "cc_dbg.h"
-#include <stdlib.h>
+#include "cc_mem.h"
 
 struct cc_stack_i cc_list_stack_interface = {
     .push = (cc_stack_push_fn_t)cc_list_stack_push,
@@ -16,7 +16,7 @@ int cc_list_stack_new(cc_list_stack_t **self)
     int res = ERR_CC_LIST_OK;
     cc_list_stack_t *temp = NULL;
 
-    temp = malloc(sizeof(*temp));
+    temp = cc_malloc(sizeof(*temp));
     if(temp == NULL) {
         res = ERR_CC_LIST_MEM_ERR;
         goto fail1;
@@ -33,10 +33,11 @@ int cc_list_stack_new(cc_list_stack_t **self)
     return ERR_CC_LIST_OK;
 
 fail2:
-    free(temp);
+    cc_free(temp);
 fail1:
     return res;
 }
+
 int cc_list_stack_delete(cc_list_stack_t *self, cc_delete_fn_t remove_fn)
 {
     int res = ERR_CC_LIST_OK;
@@ -48,7 +49,7 @@ int cc_list_stack_delete(cc_list_stack_t *self, cc_delete_fn_t remove_fn)
     }
 
     self->interface = NULL;
-    free(self);
+    cc_free(self);
     return res;
 }
 
@@ -61,6 +62,7 @@ int cc_list_stack_push(cc_list_stack_t *self, void *data)
 
     return res;
 }
+
 int cc_list_stack_pop(cc_list_stack_t *self, void **result)
 {
     int res = ERR_CC_LIST_OK;
@@ -74,6 +76,7 @@ int cc_list_stack_pop(cc_list_stack_t *self, void **result)
 
     return res;
 }
+
 int cc_list_stack_peek(cc_list_stack_t *self, void **result)
 {
     int res = ERR_CC_LIST_OK;

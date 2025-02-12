@@ -1,6 +1,4 @@
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
+#include "cc_mem.h"
 
 #include "cc_common.h"
 #include "cc_stack.h"
@@ -16,7 +14,6 @@ struct cc_stack_i cc_array_stack_interface = {
 
 int cc_array_stack_push(struct cc_array_stack *self, void *item) {
     if(cc_array_set(self->data, self->top, item)) {
-        printf("---%d %d\n",self->data->elem_nums,self->top);
         return 1;
     }
     self->top++;
@@ -65,7 +62,7 @@ int cc_array_stack_init(struct cc_array_stack *self, struct cc_array *data) {
 int cc_array_stack_new(struct cc_array_stack **self, cc_size_t elem_nums, cc_size_t elem_size) {
     struct cc_array_stack *tmp;
     struct cc_array *array;
-    tmp = malloc(sizeof( *tmp));
+    tmp = cc_malloc(sizeof( *tmp));
 
     if(tmp == NULL) {
         goto fail1;
@@ -85,7 +82,7 @@ int cc_array_stack_new(struct cc_array_stack **self, cc_size_t elem_nums, cc_siz
 fail3:
     cc_array_delete(array, NULL);
 fail2:
-    free(tmp);
+    cc_free(tmp);
 fail1:
     return 1;
 }
@@ -94,6 +91,6 @@ int cc_array_stack_delete(struct cc_array_stack *self, cc_delete_fn_t remove_fn)
     if(cc_array_delete(self->data, remove_fn)) {
         return 1;
     }
-    free(self);
+    cc_free(self);
     return 0;
 }

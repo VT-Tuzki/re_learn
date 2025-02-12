@@ -1,11 +1,11 @@
 #include "cc_list.h"
-#include <stdlib.h>
+#include "cc_mem.h"
 
 int cc_list_node_insert_before(cc_list_node_t *self, void *data)
 {
     cc_list_node_t *temp;
 
-    temp = (cc_list_node_t *)malloc(sizeof(cc_list_node_t));
+    temp = (cc_list_node_t *)cc_malloc(sizeof(cc_list_node_t));
     if (temp == NULL) {
         return ERR_CC_LIST_INVALID_ARG;
     }
@@ -18,11 +18,12 @@ int cc_list_node_insert_before(cc_list_node_t *self, void *data)
 
     return ERR_CC_LIST_OK;
 }
+
 int cc_list_node_insert_after(cc_list_node_t *self, void *data)
 {
     cc_list_node_t *temp;
 
-    temp = (cc_list_node_t *)malloc(sizeof(cc_list_node_t));
+    temp = (cc_list_node_t *)cc_malloc(sizeof(cc_list_node_t));
     if (temp == NULL) {
         return ERR_CC_LIST_INVALID_ARG;
     }
@@ -51,9 +52,10 @@ int cc_list_node_remove_before(cc_list_node_t *self, void **result)
     self->prev = temp->prev;
 
 
-    free(temp);
+    cc_free(temp);
     return ERR_CC_LIST_OK;
 }
+
 int cc_list_node_remove_after(cc_list_node_t *self, void **result)
 {
     cc_list_node_t *temp;
@@ -69,7 +71,7 @@ int cc_list_node_remove_after(cc_list_node_t *self, void **result)
     temp->next->prev = self;
     self->next = temp->next;
 
-    free(temp);
+    cc_free(temp);
     return ERR_CC_LIST_OK;
 }
 
@@ -80,7 +82,7 @@ int cc_list_node_delete_and_next(cc_list_node_t **current, cc_delete_fn_t remove
     list: ...->others_before->current->others_after->....
     cc_list_node_t *temp = current
     cc_list_node_delete_and_next(&temp);
-    result: temp = others_after free(current);
+    result: temp = others_after cc_free(current);
     list: ...->others_before->others_after->....
 */
 
@@ -100,7 +102,7 @@ int cc_list_node_delete_and_next(cc_list_node_t **current, cc_delete_fn_t remove
 
     temp->prev->next = next;
     next->prev = temp->prev;
-    free(temp);
+    cc_free(temp);
 
     *current = next;
     return ERR_CC_LIST_OK;
@@ -119,10 +121,11 @@ int cc_list_init(cc_list_t *self)
 
     return ERR_CC_LIST_OK;
 }
+
 int cc_list_new(cc_list_t **self)
 {
     cc_list_t *temp;
-    temp = (cc_list_t *)malloc(sizeof(cc_list_t));
+    temp = (cc_list_t *)cc_malloc(sizeof(cc_list_t));
     if (temp == NULL) {
         return ERR_CC_LIST_INVALID_ARG;
     }
@@ -132,6 +135,7 @@ int cc_list_new(cc_list_t **self)
     *self = temp;
     return ERR_CC_LIST_OK;
 }
+
 int cc_list_destroy(cc_list_t *self, cc_delete_fn_t remove_fn)
 {
     int res = ERR_CC_LIST_OK;
@@ -148,7 +152,7 @@ int cc_list_destroy(cc_list_t *self, cc_delete_fn_t remove_fn)
         return res;
     }
 
-    free(self);
+    cc_free(self);
     return ERR_CC_LIST_OK;
 }
 
@@ -270,6 +274,7 @@ int cc_list_get_head(cc_list_t *self, void **data)
 
     return res;
 }
+
 int cc_list_get_tail(cc_list_t *self, void **data)
 {
     int res = ERR_CC_LIST_OK;
@@ -290,6 +295,7 @@ int cc_list_is_empty(cc_list_t *self)
 {
     return self->root.next == &self->root;
 }
+
 cc_size_t cc_list_size(cc_list_t *self)
 {
     return self->root.size;

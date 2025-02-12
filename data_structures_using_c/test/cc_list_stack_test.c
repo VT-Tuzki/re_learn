@@ -2,7 +2,7 @@
 #include <assert.h>
 #include <stdint.h>
 
-#include <stdlib.h>
+#include "cc_mem.h"
 #include <math.h>
 #include "cc_dbg.h"
 
@@ -34,7 +34,7 @@ int main() {
     assert(cc_stack_pop(list_stack, (void **)&temp) == ERR_CC_STACK_EMPTY);
 
 
-    temp = malloc(sizeof(*temp));
+    temp = cc_malloc(sizeof(*temp));
     strcpy(temp->name,"list_stack");
     temp->number = 1;
     assert(cc_stack_push(list_stack, temp) == ERR_CC_COMMON_OK);
@@ -44,12 +44,12 @@ int main() {
     print_list_node_data(temp);
     assert((temp->number == 1));
     assert(cc_stack_pop(list_stack, (void **)&temp) == ERR_CC_COMMON_OK);
-    free(temp);
+    cc_free(temp);
     assert(cc_stack_pop(list_stack, (void **)&temp) == ERR_CC_STACK_EMPTY);
 
     for(int i = 0; i < LOOP_LEN; i++) {
-        temp = malloc(sizeof(*temp));
-        check(temp,"temp malloc failed");
+        temp = cc_malloc(sizeof(*temp));
+        check(temp,"temp cc_malloc failed");
         strcpy(temp->name,"list_stack");
         temp->number = i;
         assert(cc_stack_push(list_stack, temp) == ERR_CC_COMMON_OK);
@@ -63,10 +63,10 @@ int main() {
     {
         assert(cc_stack_peek(list_stack, (void **)&temp) == ERR_CC_COMMON_OK);
         print_list_node_data(temp);
-        free(temp);
+        cc_free(temp);
     }
 
-    cc_list_stack_delete(list_stack, (cc_delete_fn_t)free);
+    cc_list_stack_delete(list_stack, (cc_delete_fn_t)cc_free);
 
     return 0;
 

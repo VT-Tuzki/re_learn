@@ -1,5 +1,5 @@
 #include "cc_array.h"
-#include <stdlib.h>
+#include "cc_mem.h"
 #include <string.h>
 
 
@@ -18,13 +18,13 @@ int cc_array_new(struct cc_array **self, cc_size_t elem_nums, cc_size_t elem_siz
     struct cc_array *tmp = NULL;
     unsigned char* data = NULL;
 
-    tmp = malloc(sizeof(struct cc_array));
+    tmp = cc_malloc(sizeof(struct cc_array));
     if(tmp == NULL) {
         res = ERR_CC_ARRAY_MEM_ERR;
         goto fail1;
     }
 
-    data = malloc(elem_size * elem_nums);
+    data = cc_malloc(elem_size * elem_nums);
     if(data == NULL) {
         res = ERR_CC_ARRAY_MEM_ERR;
         goto fail2;
@@ -40,9 +40,9 @@ int cc_array_new(struct cc_array **self, cc_size_t elem_nums, cc_size_t elem_siz
 
 
 fail3:
-    free(data);
+    cc_free(data);
 fail2:
-    free(tmp);
+    cc_free(tmp);
 fail1:
     return res;
 }
@@ -55,8 +55,8 @@ int cc_array_delete(struct cc_array *self, cc_delete_fn_t remove_fn)
             remove_fn(elem);
         }
     }
-    free((void *) (self->data));
-    free(self);
+    cc_free((void *) (self->data));
+    cc_free(self);
     return ERR_CC_ARRAY_OK;
 }
 
@@ -153,10 +153,10 @@ int cc_array_copy_index(struct cc_array *array_a, struct cc_array * array_b, cc_
     if(!cc_array_is_vaild_index(array_a, index_a)) return ERR_CC_ARRAY_INVALID_ARG;
     if(!cc_array_is_vaild_index(array_b, index_b)) return ERR_CC_ARRAY_INVALID_ARG;
 
-    unsigned char *tmp = malloc(array_a->elem_size);
+    unsigned char *tmp = cc_malloc(array_a->elem_size);
     cc_array_get_(array_a, index_a, tmp);
     cc_array_set_(array_b, index_b, tmp);
-    free(tmp);
+    cc_free(tmp);
     return ERR_CC_ARRAY_OK;
 }
 
@@ -164,7 +164,7 @@ int cc_array_resize_by_copy(cc_array_t *self, cc_size_t new_elem_nums) {
     int res = ERR_CC_ARRAY_OK;
     cc_size_t copy_elements = (new_elem_nums < self->elem_nums) ? new_elem_nums : self->elem_nums;
     cc_size_t copy_len = copy_elements * self->elem_size;
-    unsigned char *temp = malloc(self->elem_size * new_elem_nums);
+    unsigned char *temp = cc_malloc(self->elem_size * new_elem_nums);
 
     if (temp == NULL) {
         res = ERR_CC_ARRAY_MEM_ERR;
@@ -172,7 +172,7 @@ int cc_array_resize_by_copy(cc_array_t *self, cc_size_t new_elem_nums) {
     }
 
     memcpy(temp, self->data, copy_len);
-    free(self->data);
+    cc_free(self->data);
     self->data = temp;
     self->elem_nums = new_elem_nums; // 更新元素数量
 

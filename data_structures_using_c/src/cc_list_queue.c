@@ -3,7 +3,7 @@
 #include "cc_list_queue.h"
 
 #include <stdio.h>
-#include <stdlib.h>
+#include "cc_mem.h"
 
 cc_queue_i_t cc_list_queue_interface = {
     .enqueue = (cc_queue_enqueue_fn_t) cc_list_queue_enqueue,
@@ -17,7 +17,7 @@ cc_queue_i_t cc_list_queue_interface = {
 int cc_list_queue_new(cc_list_queue_t **self)
 {
     int res = ERR_CC_COMMON_OK;
-    cc_list_queue_t *temp = malloc(sizeof(*temp));
+    cc_list_queue_t *temp = cc_malloc(sizeof(*temp));
     if(temp == NULL) {
         res = ERR_CC_COMMON_MEM_ERR;
         goto fail1;
@@ -33,7 +33,7 @@ int cc_list_queue_new(cc_list_queue_t **self)
     return ERR_CC_LIST_OK;
 
 fail2:
-    free(temp);
+    cc_free(temp);
 fail1:
     return res;
 }
@@ -48,7 +48,7 @@ int cc_list_queue_delete(cc_list_queue_t *self, cc_delete_fn_t remove_fn)
         return res;
     }
 
-    free(self);
+    cc_free(self);
 
 
     return ERR_CC_COMMON_OK;

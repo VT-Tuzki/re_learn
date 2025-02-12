@@ -1,6 +1,6 @@
 #include "cc_array_queue.h"
 #include "cc_array.h"
-#include <stdlib.h>
+#include "cc_mem.h"
 
 cc_queue_i_t cc_array_queue_interface = {
     .enqueue = (cc_queue_enqueue_fn_t) cc_array_queue_enqueue,
@@ -16,7 +16,7 @@ int cc_array_queue_new(cc_array_queue_t **self, cc_size_t elem_nums, cc_size_t e
     cc_array_queue_t *temp_array_queue;
     cc_array_t *temp_array;
     int res = ERR_CC_COMMON_OK;
-    temp_array_queue = malloc(sizeof(*temp_array_queue));
+    temp_array_queue = cc_malloc(sizeof(*temp_array_queue));
     if(temp_array_queue == NULL) {
         res = ERR_CC_COMMON_MEM_ERR;
         goto fail1;
@@ -34,12 +34,13 @@ int cc_array_queue_new(cc_array_queue_t **self, cc_size_t elem_nums, cc_size_t e
     *self = temp_array_queue;
     return ERR_CC_COMMON_OK;
 fail3:
-    free(temp_array);
+    cc_free(temp_array);
 fail2:
-    free(temp_array_queue);
+    cc_free(temp_array_queue);
 fail1:
     return res;
 }
+
 int cc_array_queue_delete(cc_array_queue_t *self, cc_delete_fn_t remove_fn)
 {
     int res = ERR_CC_COMMON_OK;
@@ -49,12 +50,13 @@ int cc_array_queue_delete(cc_array_queue_t *self, cc_delete_fn_t remove_fn)
     if(res != ERR_CC_COMMON_OK) {
         goto fail1;
     }
-    free(self);
+    cc_free(self);
 
     return ERR_CC_COMMON_OK;
 fail1:
     return res;
 }
+
 int cc_array_queue_init(cc_array_queue_t *self, cc_array_t *data)
 {
     self->interface = &cc_array_queue_interface;
@@ -80,6 +82,7 @@ int cc_array_queue_enqueue(cc_array_queue_t *self, void *data)
 
     return res;
 }
+
 int cc_array_queue_dequeue(cc_array_queue_t *self, void **result)
 {
     int res = ERR_CC_COMMON_OK;
@@ -95,6 +98,7 @@ int cc_array_queue_dequeue(cc_array_queue_t *self, void **result)
 
     return res;
 }
+
 int cc_array_queue_peek(cc_array_queue_t *self, void **result)
 {
     int res = ERR_CC_COMMON_OK;

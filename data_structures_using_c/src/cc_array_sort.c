@@ -1,9 +1,6 @@
 #include "cc_array.h"
 #include "cc_array_sort.h"
-#include "stdio.h"
-#include <assert.h>
 #include "cc_stdint.h"
-#include <strings.h>
 
 static cc_size_t cc_array_sort_divide(struct cc_array *self,cc_cmp_fn_t cmp, cc_size_t start, cc_size_t end)
 {
