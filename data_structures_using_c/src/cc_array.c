@@ -1,10 +1,11 @@
 #include "cc_array.h"
 #include "cc_mem.h"
 #include <string.h>
-
+#include "cc_atomic.h"
 
 int cc_array_init(struct cc_array *self, unsigned char *data, cc_size_t elem_nums, cc_size_t elem_size)
 {
+    if(data == NULL || elem_size == 0) return ERR_CC_COMMON_INVALID_ARG;
     self->data = data;
     self->elem_nums = elem_nums;
     self->elem_size = elem_size;
@@ -141,8 +142,11 @@ int cc_array_reverse(struct cc_array *self, cc_size_t start, cc_size_t end)
     start = (start < end)? start : end;
 
     mid = (end - start) / 2;
-    for(i = 0; i < mid; i++)
+    for(i = 0; i < mid; i++) {
+        CC_ATOMIC_BEGIN();
         cc_array_swap(self, start + i, end - i);
+        CC_ATOMIC_END();
+    }
 
     return ERR_CC_ARRAY_OK;
 }
