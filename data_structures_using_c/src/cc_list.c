@@ -1,6 +1,6 @@
-#include "cc_list.h"
-#include "cc_common.h"
-#include "cc_mem.h"
+#include "ds/list/cc_list.h"
+#include "core/cc_common.h"
+#include "core/cc_mem.h"
 
 int cc_list_node_insert_before(cc_list_node_t *self, void *data)
 {

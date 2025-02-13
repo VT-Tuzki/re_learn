@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "cc_array.h"
+#include "ds/array/cc_array.h"
 #include <assert.h>
 
 struct test_struct{

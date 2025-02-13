@@ -1,6 +1,6 @@
 #include "cc_array_queue.h"
-#include "cc_array.h"
-#include "cc_mem.h"
+#include "ds/array/cc_array.h"
+#include "core/cc_mem.h"
 
 cc_queue_i_t cc_array_queue_interface = {
     .enqueue = (cc_queue_enqueue_fn_t) cc_array_queue_enqueue,

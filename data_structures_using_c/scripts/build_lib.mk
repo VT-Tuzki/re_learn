@@ -3,19 +3,16 @@ BUILD_DIR ?= $(WORK_DIR)/build
 LIB_BUILD_DIR ?= $(BUILD_DIR)/lib
 LIB_LOCAL_INSTALL_DIR ?= $(WORK_DIR)/lib
 
-C_LIB_INCLUDES := ${WORK_DIR}/include
-C_LIB_DEFINES := NDEBUG
+C_LIB_DEFINES = NDEBUG
 
-C_LIB_CORE_INCLUDES := $(wildcard ${WORK_DIR}/include/core/*)
-C_LIB_DS_INCLUDES := $(wildcard ${WORK_DIR}/include/ds/*)
+
 
 # complier
 LIB_CC = gcc
 C_LIB_FLAGS = -Wall -Wextra -Wno-unused -ffunction-sections -fdata-sections \
 $(addprefix -I, $(C_LIB_INCLUDES)) \
-$(addprefix -I, $(C_LIB_CORE_INCLUDES)) \
-$(addprefix -I, $(C_LIB_DS_INCLUDES)) \
 -std=$(LANGUAGE_STANDARD)
+
 C_LIB_NDEBUG_FLAGS = $(addprefix -D, $(C_LIB_DEFINES))
 C_LIB_DEBUG_GLAGS = -g -rdynamic
 C_LIB_TEST_FLAGS = $(addprefix -L, $(BUILD_DIR)/lib) -lvtuzki

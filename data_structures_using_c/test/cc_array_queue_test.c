@@ -1,9 +1,9 @@
 #include "cc_array_queue.h"
-#include "cc_list_stack.h"
-#include "cc_common.h"
+#include "ds/stack/cc_list_stack.h"
+#include "core/cc_common.h"
 #include <assert.h>
 #include <stdio.h>
-#include "cc_mem.h"
+#include "core/cc_mem.h"
 
 #define TEST_QUEUE_CAPACITY 4
 

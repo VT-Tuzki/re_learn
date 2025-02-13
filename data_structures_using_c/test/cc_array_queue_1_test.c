@@ -1,5 +1,5 @@
 #include "cc_array_queue.h"
-#include "cc_list_stack.h"
+#include "ds/stack/cc_list_stack.h"
 #include <assert.h>
 #include <stdio.h>
 

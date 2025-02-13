@@ -1,10 +1,6 @@
-C_APP_INCLUDES = ${WORK_DIR}/include ${WORK_DIR}/app
-C_APP_LIB = ${WORK_DIR}/lib
 C_APP_FLAGS = -Wall -Wextra -Werror -Wno-unused -ffunction-sections -fdata-sections \
 -std=$(LANGUAGE_STANDARD)
 
-
-C_LIB_INCLUDES = ${WORK_DIR}/include
 C_LIB_FLAGS = -Wall -Wextra -Werror -Wno-unused -ffunction-sections -fdata-sections \
 -std=$(LANGUAGE_STANDARD)
 

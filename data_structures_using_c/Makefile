@@ -3,6 +3,7 @@ WORK_DIR = $(shell pwd)
 BUILD_DIR = $(WORK_DIR)/build
 LIB_BUILD_DIR = $(BUILD_DIR)/lib
 LIB_LOCAL_INSTALL_DIR = $(WORK_DIR)/lib
+ALL_DIRS_IN_LIB_INCLUDE = $(shell find $(WORK_DIR)/include -type d)
 
 #configure.sh > will chenge this line LANGUAGE_STANDARD
 LANGUAGE_STANDARD = c11
@@ -12,7 +13,9 @@ LANGUAGE_STANDARD = c11
 LIB_GOLBAL_INSTALL_DIR = /usr/local/lib
 #confiure.sh  explain: set lib install dir,such as /usr/local/lib <
 #-----------for lib---------------
-C_LIB_INCLUDES = ${WORK_DIR}/include
+C_LIB_CORE_INCLUDES =  $(filter $(WORK_DIR)/include/core%, $(ALL_DIRS_IN_LIB_INCLUDE))
+C_LIB_DS_INCLUDES =  $(filter $(WORK_DIR)/include/ds%, $(ALL_DIRS_IN_LIB_INCLUDE))
+C_LIB_INCLUDES = ${WORK_DIR}/include $(C_LIB_CORE_INCLUDES) $(C_LIB_DS_INCLUDES)
 #configure.sh > will chenge this line C_LIB_NAMES
 C_LIB_NAMES = vtuzki
 #configure.sh explain: set lib name, such as vtuzki->libvtuzki.a <
@@ -24,7 +27,8 @@ TEST_BUILD_DIR = $(BUILD_DIR)/_test
 #-----------for app---------------
 APP_FILE_DIR = $(WORK_DIR)/app
 APP_BUILD_DIR = $(BUILD_DIR)/_app
-C_APP_INCLUDES = ${WORK_DIR}/include ${WORK_DIR}/app
+C_APP_INCLUDE_LIB_ALL_DIR = $(filter $(WORK_DIR)/include%, $(ALL_DIRS_IN_LIB_INCLUDE))
+C_APP_INCLUDES = $(C_APP_INCLUDE_LIB_ALL_DIR) ${WORK_DIR}/app
 C_APP_LIB = ${WORK_DIR}/lib
 
 #configure.sh will chenge this line IS_C_APP_USE_LIB

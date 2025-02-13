@@ -1,8 +1,8 @@
 #ifndef __CC_RING_QUEUE_H__
 #define __CC_RING_QUEUE_H__
 
-#include "cc_stdint.h"
-#include "cc_common.h"
+#include "core/cc_stdint.h"
+#include "core/cc_common.h"
 
 typedef int (*cc_ring_queue_enqueue_fn_t) (void *self, void *data);
 typedef int (*cc_ring_queue_dequeue_fn_t) (void *self, void **result);

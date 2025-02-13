@@ -1,7 +1,7 @@
 #ifndef CC_MEM_H
 #define CC_MEM_H
 
-#include "cc_stdint.h" // 为了 size_t
+#include "core/cc_stdint.h" // 为了 size_t
 
 #ifdef __cplusplus
 extern "C" {

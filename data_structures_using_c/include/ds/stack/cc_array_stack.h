@@ -1,10 +1,10 @@
 #ifndef __CC_ARRAY_STACK_H
 #define __CC_ARRAY_STACK_H
 
-#include "cc_array.h"
-#include "cc_common.h"
-#include "cc_stdint.h"
-#include "cc_stack.h"
+#include "ds/array/cc_array.h"
+#include "core/cc_common.h"
+#include "core/cc_stdint.h"
+#include "ds/stack/cc_stack.h"
 struct cc_array_stack {
     cc_stack_i_t *interface;
     cc_array_t *data;

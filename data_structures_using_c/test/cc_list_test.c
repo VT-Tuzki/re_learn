@@ -1,8 +1,8 @@
 #include <stdio.h>
-#include "cc_common.h"
-#include "cc_list.h"
+#include "core/cc_common.h"
+#include "ds/list/cc_list.h"
 #include <string.h>
-#include "cc_mem.h"
+#include "core/cc_mem.h"
 #include <assert.h>
 
 /*

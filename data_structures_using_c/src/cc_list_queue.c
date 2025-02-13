@@ -1,9 +1,9 @@
-#include "cc_common.h"
-#include "cc_list.h"
+#include "core/cc_common.h"
+#include "ds/list/cc_list.h"
 #include "cc_list_queue.h"
 
 #include <stdio.h>
-#include "cc_mem.h"
+#include "core/cc_mem.h"
 
 cc_queue_i_t cc_list_queue_interface = {
     .enqueue = (cc_queue_enqueue_fn_t) cc_list_queue_enqueue,

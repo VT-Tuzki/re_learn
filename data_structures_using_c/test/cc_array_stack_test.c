@@ -1,8 +1,8 @@
-#include "cc_stdint.h"
+#include "core/cc_stdint.h"
 #include <stdio.h>
-#include "cc_mem.h"
-#include "cc_array.h"
-#include "cc_stack.h"
+#include "core/cc_mem.h"
+#include "ds/array/cc_array.h"
+#include "ds/stack/cc_stack.h"
 #include "cc_array_stack.h"
 
 

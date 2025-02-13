@@ -1,9 +1,9 @@
 #ifndef __CC_LIST_STACK_H__
 #define __CC_LIST_STACK_H__
 
-#include "cc_common.h"
-#include "cc_stack.h"
-#include "cc_list.h"
+#include "core/cc_common.h"
+#include "ds/stack/cc_stack.h"
+#include "ds/list/cc_list.h"
 
 typedef enum {
     ERR_CC_LIST_STACK_UNDEFINE = ERR_CC_LIST_STACK_BEGIN,

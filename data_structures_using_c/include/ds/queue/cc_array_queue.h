@@ -1,7 +1,7 @@
 #ifndef __CC_ARRAY_QUEUE_H__
 #define __CC_ARRAY_QUEUE_H__
 
-#include "cc_array.h"
+#include "ds/array/cc_array.h"
 #include "cc_queue.h"
 
 struct cc_array_queue {

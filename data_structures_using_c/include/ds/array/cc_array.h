@@ -9,9 +9,9 @@
 #ifndef __CC_ARRAY_H__
 #define __CC_ARRAY_H__
 
-#include "cc_stdint.h"
-#include "cc_common.h"
-#include "cc_iter.h"
+#include "core/cc_stdint.h"
+#include "core/cc_common.h"
+#include "ds/iter/cc_iter.h"
 struct cc_array {
     unsigned char *data;
     cc_size_t elem_nums;

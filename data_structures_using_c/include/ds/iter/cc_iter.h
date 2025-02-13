@@ -1,8 +1,8 @@
 #ifndef __CC_ITER_H__
 #define __CC_ITER_H__
 
-#include "cc_stdint.h"
-#include "cc_common.h"
+#include "core/cc_stdint.h"
+#include "core/cc_common.h"
 typedef int (*cc_iter_next_fn_t) (void *self, void **item, cc_size_t *index);
 
 struct cc_iter_i {

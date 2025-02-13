@@ -1,10 +1,10 @@
-#include "cc_list_stack.h"
+#include "ds/stack/cc_list_stack.h"
 #include <assert.h>
 #include <stdint.h>
 
-#include "cc_mem.h"
+#include "core/cc_mem.h"
 #include <math.h>
-#include "cc_dbg.h"
+#include "core/cc_dbg.h"
 
 struct test_node {
     cc_size_t number;

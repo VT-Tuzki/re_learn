@@ -1,8 +1,8 @@
-#include "cc_array.h"
+#include "ds/array/cc_array.h"
 #include "cc_array_ring_queue.h"
 #include <assert.h>
 
-#include "cc_dbg.h"
+#include "core/cc_dbg.h"
 #define TEST_LEN 8
 
 int main(void) {

@@ -1,9 +1,9 @@
-#include "cc_array.h"
-#include "cc_common.h"
-#include "cc_mem.h"
+#include "ds/array/cc_array.h"
+#include "core/cc_common.h"
+#include "core/cc_mem.h"
 #include <stdio.h>
 #include <string.h>
-#include "cc_atomic.h"
+#include "core/cc_atomic.h"
 
 int cc_array_init(struct cc_array *self, unsigned char *data, cc_size_t elem_nums, cc_size_t elem_size, cc_delete_fn_t remove_fn)
 {
