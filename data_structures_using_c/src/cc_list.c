@@ -1,4 +1,5 @@
 #include "cc_list.h"
+#include "cc_common.h"
 #include "cc_mem.h"
 
 int cc_list_node_insert_before(cc_list_node_t *self, void *data)
@@ -328,4 +329,77 @@ int cc_list_print_for(cc_list_t *self, int direction, cc_debug_print_fn_t cc_deb
 int cc_list_print(cc_list_t *self, int direction, cc_debug_print_fn_t cc_debug_print)
 {
     return cc_list_print_for(self, direction, cc_debug_print);
+}
+
+
+cc_iter_i_t cc_list_iter_interface = {
+    .next = (cc_iter_next_fn_t)cc_list_iter_next,
+};
+
+static inline void cc_list_iter_step(cc_list_iterator_t *self)
+{
+    if(self->direction) {
+        self->cursor = self->cursor->next;
+    }
+    else {
+        self->cursor = self->cursor->prev;
+    }
+}
+
+int cc_list_iter_init(cc_list_iterator_t *self, cc_list_t *list, int direction)
+{
+    if(self == NULL || list == NULL) return ERR_CC_COMMON_INVALID_ARG;
+    if((direction != 0) && (direction != 1)) return ERR_CC_COMMON_INVALID_ARG;
+
+    self->interface = &cc_list_iter_interface;
+    self->list = list;
+    self->index = 0;
+    self->direction = direction;
+    self->cursor = &self->list->root;
+
+    cc_list_iter_step(self);
+    return ERR_CC_COMMON_OK;
+}
+
+int cc_list_iter_new(cc_list_iterator_t **self, cc_list_t *list, int direction)
+{
+    int res = ERR_CC_COMMON_OK;
+    cc_list_iterator_t *temp = malloc(sizeof(*temp));
+    if(temp == NULL) return ERR_CC_COMMON_MEM_ERR;
+
+    res = cc_list_iter_init(temp, list, direction);
+    if (res != ERR_CC_COMMON_OK) {
+        free(temp);
+        return res;
+    }
+
+    *self = temp;
+    return ERR_CC_COMMON_OK;
+}
+int cc_list_iter_delete(cc_list_iterator_t *self)
+{
+    if(self == NULL) return ERR_CC_COMMON_INVALID_ARG;
+    free(self);
+    return ERR_CC_COMMON_OK;
+}
+
+int cc_list_iter_next(cc_list_iterator_t *self, void **item, cc_size_t *index)
+{
+    if(self == NULL) return ERR_CC_COMMON_INVALID_ARG;
+    if(try_reset_double_p(item) != ERR_CC_COMMON_OK) return ERR_CC_COMMON_INVALID_ARG;
+
+    if(self->cursor == &self->list->root) {
+        return ERR_CC_ITER_END;
+    }
+
+    *item = &self->cursor->data;
+
+    if(index != NULL) {
+        *index = self->index;
+    }
+
+    self->index++;
+    cc_list_iter_step(self);
+
+    return ERR_CC_COMMON_OK;
 }

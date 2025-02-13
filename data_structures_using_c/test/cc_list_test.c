@@ -26,7 +26,7 @@ typedef struct list_node list_node_t;
 
 int print_list_node_data(list_node_t *data)
 {
-    //printf("num: %d name: %s\n",data->number,data->name);
+    printf("num: %ld name: %s\n",data->number,data->name);
     return 0;
 }
 
@@ -165,6 +165,18 @@ int main()
     printf("concat b\n");
     assert(cc_list_print(test_list_b, 1, (cc_debug_print_fn_t) print_list_node_data) == ERR_CC_LIST_OK);
 
+
+    printf("iter\n");
+    cc_list_iterator_t *iter;
+    list_node_t **temp_list_node_iter ;
+    cc_size_t i = 0;
+    assert(cc_list_iter_new(&iter, test_list_a, 1) == ERR_CC_COMMON_OK);
+
+    while(cc_iter_next(iter, &temp_list_node_iter, &i) != ERR_CC_ITER_END) {
+        printf("index:%ld  ",i);
+        print_list_node_data(*temp_list_node_iter);
+    }
+    cc_list_iter_delete(iter);
     printf("distory\n");
 
     assert(cc_list_destroy(test_list_a, (cc_delete_fn_t) cc_free) == ERR_CC_LIST_OK);

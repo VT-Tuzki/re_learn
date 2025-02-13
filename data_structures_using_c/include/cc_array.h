@@ -73,7 +73,7 @@ struct cc_array_iter {
 typedef struct cc_array_iter cc_array_iter_t;
 
 int cc_array_iterator_init(cc_array_iter_t *self, cc_array_t *data);
-int cc_array_iterator_new(cc_array_iter_t *self, cc_array_t *data);
+int cc_array_iterator_new(cc_array_iter_t **self, cc_array_t *data);
 int cc_array_iterator_delete(cc_array_iter_t *self);
 
 int cc_array_iterator_next(cc_array_iter_t *self,void **item, cc_size_t *index);

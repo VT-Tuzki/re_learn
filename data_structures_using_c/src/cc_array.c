@@ -199,7 +199,7 @@ cc_iter_i_t cc_array_iter_interface = {
     .next = (cc_iter_next_fn_t) cc_array_iterator_next,
 };
 
-int cc_array_iterator_init(struct cc_array_iter *self, cc_array_t *data)
+int cc_array_iterator_init(cc_array_iter_t *self, cc_array_t *data)
 {
     if(data == NULL || self == NULL) return ERR_CC_COMMON_INVALID_ARG;
 
@@ -211,26 +211,27 @@ int cc_array_iterator_init(struct cc_array_iter *self, cc_array_t *data)
 }
 
 
-int cc_array_iterator_new(struct cc_array_iter *self, cc_array_t *data)
+int cc_array_iterator_new(cc_array_iter_t **self, cc_array_t *data)
 {
     if(data == NULL) return ERR_CC_COMMON_INVALID_ARG;
 
     cc_array_iter_t *temp = cc_malloc(sizeof(*temp));
     if(temp == NULL) return ERR_CC_COMMON_MEM_ERR;
 
-    cc_array_iterator_init(self, data);
+    cc_array_iterator_init(temp, data);
 
+    *self = temp;
     return ERR_CC_COMMON_OK;
 }
 
-int cc_array_iterator_delete(struct cc_array_iter *self)
+int cc_array_iterator_delete(cc_array_iter_t *self)
 {
     if(self == NULL) return ERR_CC_COMMON_INVALID_ARG;
     free(self);
     return ERR_CC_COMMON_OK;
 }
 
-int cc_array_iterator_next(struct cc_array_iter *self,void **item, cc_size_t *index)
+int cc_array_iterator_next(cc_array_iter_t *self,void **item, cc_size_t *index)
 {
     int res = ERR_CC_COMMON_OK;
     if(self == NULL) return ERR_CC_COMMON_INVALID_ARG;

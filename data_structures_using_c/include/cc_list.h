@@ -4,7 +4,7 @@
 #include "cc_common.h"
 #include "cc_array.h"
 #include "cc_stdint.h"
-
+#include "cc_iter.h"
 struct cc_list_node {
     struct cc_list_node *next;
     struct cc_list_node *prev;
@@ -58,6 +58,20 @@ cc_size_t cc_list_size(cc_list_t *self);
 int cc_list_to_cc_array(cc_list_t *self, cc_array_t **result);
 
 int cc_list_print(cc_list_t *self, int direction, cc_debug_print_fn_t cc_debug_print);
+
+struct cc_list_iterator {
+    cc_iter_i_t *interface;
+    cc_list_t *list;
+    cc_list_node_t *cursor;
+    cc_size_t index;
+    int direction;
+};
+typedef struct cc_list_iterator cc_list_iterator_t;
+
+int cc_list_iter_init(cc_list_iterator_t *self, cc_list_t *list, int direction);
+int cc_list_iter_new(cc_list_iterator_t **self, cc_list_t *list, int direction);
+int cc_list_iter_delete(cc_list_iterator_t *self);
+int cc_list_iter_next(cc_list_iterator_t *self, void **item, cc_size_t *index);
 
 
 
