@@ -5,16 +5,20 @@ LIB_LOCAL_INSTALL_DIR ?= $(WORK_DIR)/lib
 
 C_LIB_INCLUDES := ${WORK_DIR}/include
 C_LIB_DEFINES := NDEBUG
+
+C_LIB_CORE_INCLUDES := $(wildcard ${WORK_DIR}/include/core/*)
+C_LIB_DS_INCLUDES := $(wildcard ${WORK_DIR}/include/ds/*)
+
 # complier
 LIB_CC = gcc
-# C_LIB_FLAGS = -Wall -Wno-unused -ffunction-sections -fdata-sections -rdynamic \
-# $(addprefix -I, $(C_LIB_INCLUDES)) \
-# $(addprefix -D, $(C_LIB_DEFINES))
-
-C_LIB_TEST_FLAGS = -g -Wall -Wno-unused -ffunction-sections -fdata-sections \
+C_LIB_FLAGS = -Wall -Wextra -Wno-unused -ffunction-sections -fdata-sections \
 $(addprefix -I, $(C_LIB_INCLUDES)) \
+$(addprefix -I, $(C_LIB_CORE_INCLUDES)) \
+$(addprefix -I, $(C_LIB_DS_INCLUDES)) \
 -std=$(LANGUAGE_STANDARD)
-
+C_LIB_NDEBUG_FLAGS = $(addprefix -D, $(C_LIB_DEFINES))
+C_LIB_DEBUG_GLAGS = -g -rdynamic
+C_LIB_TEST_FLAGS = $(addprefix -L, $(BUILD_DIR)/lib) -lvtuzki
 #directories
 TEST_SRCS = $(wildcard test/*_test.c)
 TEST_OBJS = $(patsubst test/%.c,build/_test/%.o,$(TEST_SRCS))
@@ -31,11 +35,10 @@ SO_TARGET_LIB = $(patsubst %.a,%.so,$(TARGET_LIB))
 lib_all: $(TARGET_LIB) lib_test
 
 # lib_all: lib_test
-lib_dev: C_LIB_FLAGS = -g -Wall -Wextra $(OPTFLAGS)
+lib_dev: C_LIB_FLAGS_DEV = $(C_LIB_DEBUG_GLAGS) $(OPTFLAGS)
 lib_dev: lib_all install_local
 
 #------------------LIB_TARGETS------------------
-$(TARGET_LIB): C_LIB_FLAGS += -fPIC $(addprefix -I, $(C_LIB_INCLUDES))
 $(TARGET_LIB): build_lib_dir $(LIB_OBJS)
 	@echo "   Building static library: $@"
 	@ar rcsv $@ $(LIB_OBJS)
@@ -48,16 +51,15 @@ $(SO_TARGET_LIB): $(TARGET_LIB) $(LIB_OBJS)
 build/_lib/%.o : src/%.c
 	@echo "\033[1;32m   CC $@ $<\033[0m"
 	@mkdir -p $(dir $@)
-	@$(LIB_CC) $(C_LIB_FLAGS) -c -o $@ $<
+	$(LIB_CC) $(C_LIB_FLAGS_DEV) $(C_LIB_FLAGS) $(C_LIB_NDEBUG_FLAGS) -fPIC -c -o $@ $<
 	@chmod +x $@
 
 #------------------TEST_TARGETS------------------
-lib_test: C_LIB_TEST_FLAGS += $(addprefix -L, $(BUILD_DIR)/lib) -lvtuzki
 lib_test: $(TARGET_LIB) $(TESTS_TARGET)
 build/_test/%_test: test/%_test.c
 	@echo "\033[1;32m   CC $@ $<\033[0m"
 	@mkdir -p $(dir $@)
-	@$(LIB_CC) $< $(C_LIB_TEST_FLAGS) -Wl,-Map=$@.map -o $@
+	$(LIB_CC) $< $(C_LIB_DEBUG_GLAGS) $(C_LIB_FLAGS) $(C_LIB_TEST_FLAGS) -Wl,-Map=$@.map -o $@
 	@$(MEMORY_CHECK_PROG) --log-file=$@_leck_check.log $@ > $@.log
 
 
