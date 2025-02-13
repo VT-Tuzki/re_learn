@@ -26,12 +26,5 @@ int cc_array_queue_is_empty(cc_array_queue_t *self);
 int cc_array_queue_is_full(cc_array_queue_t *self);
 cc_size_t cc_array_queue_size(cc_array_queue_t *self);
 
-#define CC_ARRAY_STATIC_DECLARE(name, elem_num, elem_size) \
-    unsigned char name##_heap[(elem_num) * (elem_size)] = {0}; \
-    cc_array_t name = { \
-        .data = name##_heap, \
-        .elem_nums = (elem_num), \
-        .elem_size = (elem_size) \
-    }
 
 #endif

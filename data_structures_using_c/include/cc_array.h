@@ -39,6 +39,13 @@ int cc_array_new(cc_array_t **self, cc_size_t elem_nums, cc_size_t elem_size);
 
 int cc_array_delete(struct cc_array *self, cc_delete_fn_t remove_fn);
 
+#define CC_ARRAY_STATIC_DECLARE(name, elem_num, elem_size) \
+    unsigned char name##_heap[(elem_num) * (elem_size)] = {0}; \
+    cc_array_t name = { \
+        .data = name##_heap, \
+        .elem_nums = (elem_num), \
+        .elem_size = (elem_size) \
+    }
 
 int cc_array_get_unsafe(cc_array_t *self, cc_size_t index, void *result);
 int cc_array_get_ref(cc_array_t *self, cc_size_t index, void **ref);
