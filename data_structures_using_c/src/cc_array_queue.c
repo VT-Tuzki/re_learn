@@ -11,7 +11,7 @@ cc_queue_i_t cc_array_queue_interface = {
     .size = (cc_queue_size_fn_t) cc_array_queue_size,
 };
 
-int cc_array_queue_new(cc_array_queue_t **self, cc_size_t elem_nums, cc_size_t elem_size)
+int cc_array_queue_new(cc_array_queue_t **self, cc_size_t elem_nums, cc_size_t elem_size, cc_delete_fn_t remove_fn)
 {
     cc_array_queue_t *temp_array_queue;
     cc_array_t *temp_array;
@@ -22,7 +22,7 @@ int cc_array_queue_new(cc_array_queue_t **self, cc_size_t elem_nums, cc_size_t e
         goto fail1;
     }
 
-    res = cc_array_new(&temp_array, elem_nums, elem_size);
+    res = cc_array_new(&temp_array, elem_nums, elem_size, remove_fn);
     if(res != ERR_CC_COMMON_OK) {
         goto fail2;
     }
@@ -41,12 +41,12 @@ fail1:
     return res;
 }
 
-int cc_array_queue_delete(cc_array_queue_t *self, cc_delete_fn_t remove_fn)
+int cc_array_queue_delete(cc_array_queue_t *self)
 {
     int res = ERR_CC_COMMON_OK;
     if(self == NULL) return ERR_CC_COMMON_INVALID_ARG;
 
-    res = cc_array_delete(self->array, remove_fn);
+    res = cc_array_delete(self->array);
     if(res != ERR_CC_COMMON_OK) {
         goto fail1;
     }

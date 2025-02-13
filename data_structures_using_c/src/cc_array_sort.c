@@ -59,13 +59,13 @@ int cc_array_sort_bubble(struct cc_array *self, cc_cmp_fn_t cmp)
     return 0;
 }
 
-static int cc_array_sort_merge_array_merge(struct cc_array *self, cc_cmp_fn_t cmp, cc_delete_fn_t remove_fn, cc_size_t left, cc_size_t mid,cc_size_t right)
+static int cc_array_sort_merge_array_merge(struct cc_array *self, cc_cmp_fn_t cmp, cc_size_t left, cc_size_t mid,cc_size_t right)
 {
     cc_size_t i,j,k;
 
     struct cc_array *tmp_array;
 
-    if(cc_array_new(&tmp_array, right - left + 1,self->elem_size)) {
+    if(cc_array_new(&tmp_array, right - left + 1,self->elem_size, self->remove_fn)) {
         return 1;
     }
 
@@ -90,32 +90,32 @@ static int cc_array_sort_merge_array_merge(struct cc_array *self, cc_cmp_fn_t cm
         cc_array_copy_index(tmp_array,self,k,left + k);
     }
 
-    cc_array_delete(tmp_array, remove_fn);
+    cc_array_delete(tmp_array);
     return 0;
 }
 
-int cc_array_sort_merge_(struct cc_array *self, cc_cmp_fn_t cmp, cc_delete_fn_t remove_fn, cc_size_t start, cc_size_t end)
+int cc_array_sort_merge_(struct cc_array *self, cc_cmp_fn_t cmp, cc_size_t start, cc_size_t end)
 {
     cc_size_t mid;
     if(end == start) return 0;
 
     mid = start + ((end - start) >> 1);
-    if(cc_array_sort_merge_(self, cmp, remove_fn, start, mid)) {
+    if(cc_array_sort_merge_(self, cmp, start, mid)) {
         return 1;
     }
-    if(cc_array_sort_merge_(self, cmp, remove_fn, mid + 1, end)) {
+    if(cc_array_sort_merge_(self, cmp, mid + 1, end)) {
         return 1;
     }
 
-    return cc_array_sort_merge_array_merge(self, cmp, remove_fn, start, mid, end);
+    return cc_array_sort_merge_array_merge(self, cmp, start, mid, end);
 }
 
 
-int cc_array_sort_merge(struct cc_array *self, cc_cmp_fn_t cmp, cc_delete_fn_t remove_fn)
+int cc_array_sort_merge(struct cc_array *self, cc_cmp_fn_t cmp)
 {
     if(self == NULL) return 1;
     if(cmp == NULL) return 2;
 
-    cc_array_sort_merge_(self,cmp, remove_fn, 0,self->elem_nums - 1);
+    cc_array_sort_merge_(self,cmp, 0,self->elem_nums - 1);
     return 0;
 }

@@ -38,8 +38,8 @@ int main()
     cc_list_t *test_list_b = NULL;
     cc_size_t now_len = 0;
 
-    assert(cc_list_new(&test_list_a) == ERR_CC_LIST_OK);
-    assert(cc_list_new(&test_list_b) == ERR_CC_LIST_OK);
+    assert(cc_list_new(&test_list_a, (cc_delete_fn_t) cc_free) == ERR_CC_LIST_OK);
+    assert(cc_list_new(&test_list_b, (cc_delete_fn_t) cc_free) == ERR_CC_LIST_OK);
 
     now_len = cc_list_size(test_list_a);
     assert(now_len == 0);
@@ -179,9 +179,9 @@ int main()
     cc_list_iter_delete(iter);
     printf("distory\n");
 
-    assert(cc_list_destroy(test_list_a, (cc_delete_fn_t) cc_free) == ERR_CC_LIST_OK);
+    assert(cc_list_destroy(test_list_a) == ERR_CC_LIST_OK);
 
-    assert(cc_list_destroy(test_list_b, (cc_delete_fn_t) cc_free) == ERR_CC_LIST_OK);
+    assert(cc_list_destroy(test_list_b) == ERR_CC_LIST_OK);
 
 
     return 0;

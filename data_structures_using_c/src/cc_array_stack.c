@@ -59,7 +59,7 @@ int cc_array_stack_init(struct cc_array_stack *self, struct cc_array *data) {
 
 
 
-int cc_array_stack_new(struct cc_array_stack **self, cc_size_t elem_nums, cc_size_t elem_size) {
+int cc_array_stack_new(struct cc_array_stack **self, cc_size_t elem_nums, cc_size_t elem_size, cc_delete_fn_t remove_fn) {
     struct cc_array_stack *tmp;
     struct cc_array *array;
     tmp = cc_malloc(sizeof( *tmp));
@@ -68,7 +68,7 @@ int cc_array_stack_new(struct cc_array_stack **self, cc_size_t elem_nums, cc_siz
         goto fail1;
     }
 
-    if(cc_array_new(&array, elem_nums, elem_size)) {
+    if(cc_array_new(&array, elem_nums, elem_size, remove_fn)) {
         goto fail2;
     }
 
@@ -80,15 +80,15 @@ int cc_array_stack_new(struct cc_array_stack **self, cc_size_t elem_nums, cc_siz
     return 0;
 
 fail3:
-    cc_array_delete(array, NULL);
+    cc_array_delete(array);
 fail2:
     cc_free(tmp);
 fail1:
     return 1;
 }
 
-int cc_array_stack_delete(struct cc_array_stack *self, cc_delete_fn_t remove_fn) {
-    if(cc_array_delete(self->data, remove_fn)) {
+int cc_array_stack_delete(struct cc_array_stack *self) {
+    if(cc_array_delete(self->data)) {
         return 1;
     }
     cc_free(self);

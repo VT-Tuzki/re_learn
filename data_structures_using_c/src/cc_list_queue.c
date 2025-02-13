@@ -14,7 +14,7 @@ cc_queue_i_t cc_list_queue_interface = {
     .size = (cc_queue_size_fn_t) cc_list_queue_size,
 };
 
-int cc_list_queue_new(cc_list_queue_t **self)
+int cc_list_queue_new(cc_list_queue_t **self, cc_delete_fn_t remove_fn)
 {
     int res = ERR_CC_COMMON_OK;
     cc_list_queue_t *temp = cc_malloc(sizeof(*temp));
@@ -23,7 +23,7 @@ int cc_list_queue_new(cc_list_queue_t **self)
         goto fail1;
     }
 
-    res = cc_list_new(&temp->list);
+    res = cc_list_new(&temp->list, remove_fn);
     if(res != ERR_CC_COMMON_OK) {
         goto fail2;
     }
@@ -38,12 +38,12 @@ fail1:
     return res;
 }
 
-int cc_list_queue_delete(cc_list_queue_t *self, cc_delete_fn_t remove_fn)
+int cc_list_queue_delete(cc_list_queue_t *self)
 {
     int res = ERR_CC_COMMON_OK;
     if(self == NULL) return ERR_CC_LIST_INVALID_ARG;
 
-    res = cc_list_destroy( self->list, remove_fn);
+    res = cc_list_destroy(self->list);
     if(res != ERR_CC_COMMON_OK) {
         return res;
     }

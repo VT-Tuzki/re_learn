@@ -11,7 +11,7 @@ struct cc_stack_i cc_list_stack_interface = {
     .peek = (cc_stack_peek_fn_t)cc_list_stack_peek,
 };
 
-int cc_list_stack_new(cc_list_stack_t **self)
+int cc_list_stack_new(cc_list_stack_t **self, cc_delete_fn_t remove_fn)
 {
     int res = ERR_CC_LIST_OK;
     cc_list_stack_t *temp = NULL;
@@ -22,7 +22,7 @@ int cc_list_stack_new(cc_list_stack_t **self)
         goto fail1;
     }
 
-    res = cc_list_new(&temp->list);
+    res = cc_list_new(&temp->list, remove_fn);
     if(res != ERR_CC_LIST_OK) {
         goto fail2;
     }
@@ -38,13 +38,13 @@ fail1:
     return res;
 }
 
-int cc_list_stack_delete(cc_list_stack_t *self, cc_delete_fn_t remove_fn)
+int cc_list_stack_delete(cc_list_stack_t *self)
 {
     int res = ERR_CC_LIST_OK;
     if(self == NULL) return res;
 
     if(self->list != NULL) {
-        res = cc_list_destroy(self->list, remove_fn);
+        res = cc_list_destroy(self->list);
         if(res != ERR_CC_LIST_OK) return res;
     }
 

@@ -9,13 +9,13 @@ void test_queue_init_and_delete() {
     int res;
 
     // 测试正常创建
-    res = cc_array_queue_new(&queue, 5, sizeof(cc_list_stack_t*));
+    res = cc_array_queue_new(&queue, 5, sizeof(cc_list_stack_t*), NULL);
     assert(res == ERR_CC_COMMON_OK);
     assert(queue != NULL);
     assert(cc_array_queue_size(queue) == 0);
 
     // 测试销毁
-    res = cc_array_queue_delete(queue, NULL);
+    res = cc_array_queue_delete(queue);
     assert(res == ERR_CC_COMMON_OK);
 }
 
@@ -26,10 +26,10 @@ void test_enqueue_dequeue() {
     void *dequeued = NULL;
     int res;
 
-    cc_array_queue_new(&queue, 3, sizeof(cc_list_stack_t*));
+    cc_array_queue_new(&queue, 3, sizeof(cc_list_stack_t*), NULL);
 
     // 创建测试栈
-    res = cc_list_stack_new(&stack);
+    res = cc_list_stack_new(&stack, NULL);
     assert(res == ERR_CC_LIST_OK);
 
     // 测试空队列状态
@@ -47,8 +47,8 @@ void test_enqueue_dequeue() {
     assert(cc_array_queue_size(queue) == 0);
 
     // 清理
-    cc_list_stack_delete(stack, NULL);
-    cc_array_queue_delete(queue, NULL);
+    cc_list_stack_delete(stack);
+    cc_array_queue_delete(queue);
 }
 
 // 测试队列满/边界条件
@@ -57,11 +57,11 @@ void test_full_behavior() {
     cc_list_stack_t *stacks[3] = {NULL};
     int res;
 
-    cc_array_queue_new(&queue, 2, sizeof(cc_list_stack_t*));
+    cc_array_queue_new(&queue, 2, sizeof(cc_list_stack_t*), NULL);
 
     // 创建2个栈填满队列
     for (int i = 0; i < 2; i++) {
-        res = cc_list_stack_new(&stacks[i]);
+        res = cc_list_stack_new(&stacks[i], NULL);
         assert(res == ERR_CC_LIST_OK);
         res = cc_array_queue_enqueue(queue, &stacks[i]);
         assert(res == ERR_CC_COMMON_OK);
@@ -71,16 +71,16 @@ void test_full_behavior() {
     assert(cc_array_queue_is_full(queue) == ERR_CC_QUEUE_IS_FULL);
 
     // 测试超额入队
-    res = cc_list_stack_new(&stacks[2]);
+    res = cc_list_stack_new(&stacks[2], NULL);
     assert(res == ERR_CC_LIST_OK);
     res = cc_array_queue_enqueue(queue, &stacks[2]);
     assert(res == ERR_CC_QUEUE_IS_FULL);
 
     // 清理
     for (int i = 0; i < 3; i++) {
-        if (stacks[i]) cc_list_stack_delete(stacks[i], NULL);
+        if (stacks[i]) cc_list_stack_delete(stacks[i]);
     }
-    cc_array_queue_delete(queue, NULL);
+    cc_array_queue_delete(queue);
 }
 
 // 测试复杂结构操作
@@ -91,10 +91,10 @@ void test_stack_in_queue() {
     void *dequeued_stack = NULL;
     int res;
 
-    cc_array_queue_new(&queue, 1, sizeof(cc_list_stack_t*));
+    cc_array_queue_new(&queue, 1, sizeof(cc_list_stack_t*), NULL);
 
     // 创建并初始化栈
-    res = cc_list_stack_new(&stack);
+    res = cc_list_stack_new(&stack, NULL);
     assert(res == ERR_CC_LIST_OK);
     for (int i = 0; i < 3; i++) {
         res = cc_list_stack_push(stack, &values[i]);
@@ -115,8 +115,8 @@ void test_stack_in_queue() {
     assert(*peek_value == 30);
 
     // 清理
-    cc_list_stack_delete((cc_list_stack_t*)dequeued_stack, NULL);
-    cc_array_queue_delete(queue, NULL);
+    cc_list_stack_delete((cc_list_stack_t*)dequeued_stack);
+    cc_array_queue_delete(queue);
 }
 
 int main() {

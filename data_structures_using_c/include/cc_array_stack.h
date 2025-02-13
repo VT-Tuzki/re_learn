@@ -11,10 +11,9 @@ struct cc_array_stack {
     cc_size_t top;
 };
 
-int cc_array_stack_new(struct cc_array_stack **self, cc_size_t elem_nums, cc_size_t elem_size);
-int cc_array_stack_delete(struct cc_array_stack *self, cc_delete_fn_t remove_fn);
-
+int cc_array_stack_new(struct cc_array_stack **self, cc_size_t elem_nums, cc_size_t elem_size, cc_delete_fn_t remove_fn);
 int cc_array_stack_init(struct cc_array_stack *self, struct cc_array *data);
+int cc_array_stack_delete(struct cc_array_stack *self);
 
 int cc_array_stack_push(struct cc_array_stack *self, void *item);
 int cc_array_stack_pop(struct cc_array_stack *self, void *item);

@@ -17,6 +17,7 @@ typedef struct cc_list_node cc_list_node_t;
 
 struct cc_list {
     cc_list_node_t root;
+    cc_delete_fn_t remove_fn;
 };
 typedef struct cc_list cc_list_t;
 
@@ -39,9 +40,9 @@ int cc_list_node_delete_and_next(cc_list_node_t **current, cc_delete_fn_t remove
 
 
 
-int cc_list_init(cc_list_t *self);
-int cc_list_new(cc_list_t **self);
-int cc_list_destroy(cc_list_t *self, cc_delete_fn_t remove_fn);
+int cc_list_init(cc_list_t *self, cc_delete_fn_t remove_fn);
+int cc_list_new(cc_list_t **self, cc_delete_fn_t remove_fn);
+int cc_list_destroy(cc_list_t *self);
 
 int cc_list_concat(cc_list_t *left, cc_list_t *right);
 

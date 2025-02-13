@@ -13,9 +13,10 @@ typedef struct cc_array_ring_queue cc_array_ring_queue_t;
 
 
 
-int cc_array_ring_queue_new(cc_array_ring_queue_t **self, cc_size_t elem_nums, cc_size_t elem_size);
-int cc_array_ring_queue_delete(cc_array_ring_queue_t *self, cc_delete_fn_t remove_fn);
+int cc_array_ring_queue_new(cc_array_ring_queue_t **self, cc_size_t elem_nums, cc_size_t elem_size, cc_delete_fn_t remove_fn);
 int cc_array_ring_queue_init(cc_array_ring_queue_t *self, cc_array_t *data);
+int cc_array_ring_queue_delete(cc_array_ring_queue_t *self);
+
 int cc_array_ring_queue_enqueue(cc_array_ring_queue_t *self, void *data);
 int cc_array_ring_queue_dequeue(cc_array_ring_queue_t *self, void **result);
 int cc_array_ring_queue_peek(cc_array_ring_queue_t *self, void **result);
@@ -49,13 +50,14 @@ static inline cc_size_t cc_array_ring_queue_capacity(cc_array_ring_queue_t *self
     return self->array->elem_nums - 1;
 };
 
-#define CC_ARRAY_RING_QUEUE_STATIC_DECLARE(name, elem_num, elem_size) \
-    CC_ARRAY_STATIC_DECLARE(name##_array, elem_num, elem_size); \
+#define CC_ARRAY_RING_QUEUE_STATIC_DECLARE(name, elem_num, elem_size, remove_fn) \
+    CC_ARRAY_STATIC_DECLARE(name##_array, elem_num, elem_size, remove_fn); \
     cc_array_ring_queue_t name = { \
         .interface = &cc_array_ring_queue_interface, \
         .array = &name##_array, \
         .write_idx = 0, \
-        .read_idx = 0 \
+        .read_idx = 0, \
+        .remove_fn = (cc_delete_fn_t) (remove_fn), \
     }
 
 

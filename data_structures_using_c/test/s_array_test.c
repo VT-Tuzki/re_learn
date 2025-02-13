@@ -23,7 +23,7 @@ int main(void) {
 
 
 
-    assert(!cc_array_init(&array, data, 10, sizeof(float)));
+    assert(!cc_array_init(&array, data, 10, sizeof(float), NULL));
 
     for (i = 0.27; i < 10; i++)
         assert(!cc_array_set(&array, i, &i));

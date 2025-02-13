@@ -28,7 +28,7 @@ int main() {
 
     cc_list_stack_t *list_stack;
     test_node_t *temp = NULL;
-    assert(cc_list_stack_new(&list_stack) == ERR_CC_COMMON_OK);
+    assert(cc_list_stack_new(&list_stack, (cc_delete_fn_t)cc_free) == ERR_CC_COMMON_OK);
 
     assert(cc_stack_peek(list_stack, (void **)&temp) == ERR_CC_STACK_EMPTY);
     assert(cc_stack_pop(list_stack, (void **)&temp) == ERR_CC_STACK_EMPTY);
@@ -66,7 +66,7 @@ int main() {
         cc_free(temp);
     }
 
-    cc_list_stack_delete(list_stack, (cc_delete_fn_t)cc_free);
+    cc_list_stack_delete(list_stack);
 
     return 0;
 

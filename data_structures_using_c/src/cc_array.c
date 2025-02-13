@@ -1,20 +1,22 @@
 #include "cc_array.h"
 #include "cc_common.h"
 #include "cc_mem.h"
+#include <stdio.h>
 #include <string.h>
 #include "cc_atomic.h"
 
-int cc_array_init(struct cc_array *self, unsigned char *data, cc_size_t elem_nums, cc_size_t elem_size)
+int cc_array_init(struct cc_array *self, unsigned char *data, cc_size_t elem_nums, cc_size_t elem_size, cc_delete_fn_t remove_fn)
 {
     if(data == NULL || elem_size == 0) return ERR_CC_COMMON_INVALID_ARG;
     self->data = data;
     self->elem_nums = elem_nums;
     self->elem_size = elem_size;
+    self->remove_fn = remove_fn;
     return ERR_CC_ARRAY_OK;
 }
 
 
-int cc_array_new(struct cc_array **self, cc_size_t elem_nums, cc_size_t elem_size)
+int cc_array_new(struct cc_array **self, cc_size_t elem_nums, cc_size_t elem_size, cc_delete_fn_t remove_fn)
 {
     int res = ERR_CC_ARRAY_OK;
     struct cc_array *tmp = NULL;
@@ -32,7 +34,7 @@ int cc_array_new(struct cc_array **self, cc_size_t elem_nums, cc_size_t elem_siz
         goto fail2;
     }
 
-    res = cc_array_init(tmp, data, elem_nums, elem_size);
+    res = cc_array_init(tmp, data, elem_nums, elem_size, remove_fn);
     if(res != ERR_CC_ARRAY_OK)
         goto fail3;
 
@@ -49,12 +51,12 @@ fail1:
     return res;
 }
 
-int cc_array_delete(struct cc_array *self, cc_delete_fn_t remove_fn)
+int cc_array_delete(struct cc_array *self)
 {
-    if (remove_fn) {
+    if (self->remove_fn) {
         for (cc_size_t i = 0; i < self->elem_nums; i++) {
             void *elem = self->data + i * self->elem_size;
-            remove_fn(elem);
+            self->remove_fn(elem);
         }
     }
     cc_free((void *) (self->data));

@@ -9,7 +9,7 @@ int main(void) {
     cc_array_ring_queue_t *ring;
     char i, tmp;
 
-    assert(!cc_array_ring_queue_new(&ring, TEST_LEN, sizeof(char)));
+    assert(!cc_array_ring_queue_new(&ring, TEST_LEN, sizeof(char), NULL));
     assert(cc_ring_queue_size(ring) == 0);
     assert(cc_ring_queue_capacity(ring) == TEST_LEN - 1);
     assert(cc_ring_queue_dequeue(ring, (void **)&tmp) == ERR_CC_QUEUE_EMPTY);
@@ -46,7 +46,7 @@ int main(void) {
     assert(cc_ring_queue_space(ring) == TEST_LEN - 1);
     assert(cc_ring_queue_dequeue(ring, (void **)&tmp) == ERR_CC_QUEUE_EMPTY);
 
-    assert(!cc_array_ring_queue_delete(ring, NULL));
+    assert(!cc_array_ring_queue_delete(ring));
 
     return 0;
 }

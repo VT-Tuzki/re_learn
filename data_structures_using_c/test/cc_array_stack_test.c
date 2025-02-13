@@ -41,7 +41,7 @@ int main() {
     cc_size_t empty_space = 0;
     int i = 0;
     struct cc_array_stack *stack;
-    assert(!cc_array_stack_new(&stack, TEST_LEN, TEST_SIZE));
+    assert(!cc_array_stack_new(&stack, TEST_LEN, TEST_SIZE, NULL));
 
     empty_space = 0;
     assert(!cc_array_stack_space(stack, &empty_space));
@@ -100,7 +100,7 @@ int main() {
     assert(cc_stack_pop(stack, (void **)tmp_ref) == 1);
     assert(cc_array_stack_pop(stack, tmp_ref) == 1);
 
-    assert(!cc_array_stack_delete(stack, NULL));
+    assert(!cc_array_stack_delete(stack));
     cc_free(tmp_ref);
     return 0;
 }

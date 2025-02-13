@@ -25,8 +25,8 @@ typedef enum {
     ERR_CC_STACK_FULL,
 } cc_stack_err;
 
-int cc_list_stack_new(cc_list_stack_t **self);
-int cc_list_stack_delete(cc_list_stack_t *self, cc_delete_fn_t remove_fn);
+int cc_list_stack_new(cc_list_stack_t **self, cc_delete_fn_t remove_fn);
+int cc_list_stack_delete(cc_list_stack_t *self);
 
 int cc_list_stack_push(cc_list_stack_t *self, void *data);
 int cc_list_stack_pop(cc_list_stack_t *self, void **result);

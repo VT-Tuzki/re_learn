@@ -10,8 +10,8 @@ struct cc_list_queue {
 };
 typedef struct cc_list_queue cc_list_queue_t;
 
-int cc_list_queue_new(cc_list_queue_t **self);
-int cc_list_queue_delete(cc_list_queue_t *self, cc_delete_fn_t remove_fn);
+int cc_list_queue_new(cc_list_queue_t **self, cc_delete_fn_t remove_fn);
+int cc_list_queue_delete(cc_list_queue_t *self);
 int cc_list_queue_enqueue(cc_list_queue_t *self, void *data);
 int cc_list_queue_dequeue(cc_list_queue_t *self, void **result);
 int cc_list_queue_peek(cc_list_queue_t *self, void **result);

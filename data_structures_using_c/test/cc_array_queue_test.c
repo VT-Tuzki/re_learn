@@ -12,7 +12,7 @@ static void test_basic_operations(void) {
     int result;
 
     // 初始化队列（存储栈指针）
-    result = cc_array_queue_new(&queue, TEST_QUEUE_CAPACITY, sizeof(cc_list_stack_t*));
+    result = cc_array_queue_new(&queue, TEST_QUEUE_CAPACITY, sizeof(cc_list_stack_t*), NULL);
     assert(result == ERR_CC_COMMON_OK);
 
     // 验证初始状态
@@ -22,7 +22,7 @@ static void test_basic_operations(void) {
     // 创建并压入3个栈
     for (int i = 0; i < 3; i++) {
         cc_list_stack_t *stack;
-        cc_list_stack_new(&stack);
+        cc_list_stack_new(&stack, (cc_delete_fn_t)cc_free);
 
         // 在栈中压入测试数据
         int *data = cc_malloc(sizeof(int));
@@ -50,17 +50,17 @@ static void test_basic_operations(void) {
         cc_list_stack_pop(stack, (void**)&data);
         assert(*data == i);
         cc_free(data);
-        cc_list_stack_delete(stack, (cc_delete_fn_t)cc_free);
+        cc_list_stack_delete(stack);
     }
 
     // 验证最终状态
     assert(cc_array_queue_is_empty(queue) == ERR_CC_QUEUE_EMPTY);
-    cc_array_queue_delete(queue, NULL);
+    cc_array_queue_delete(queue);
 }
 
 static void test_boundary_conditions(void) {
     cc_array_queue_t *queue;
-    cc_array_queue_new(&queue, TEST_QUEUE_CAPACITY, sizeof(cc_list_stack_t*));
+    cc_array_queue_new(&queue, TEST_QUEUE_CAPACITY, sizeof(cc_list_stack_t*), NULL);
 
     // 测试空队列出队
     void *temp;
@@ -69,36 +69,36 @@ static void test_boundary_conditions(void) {
     // 填满队列
     for (int i = 0; i < TEST_QUEUE_CAPACITY; i++) {
         cc_list_stack_t *stack;
-        cc_list_stack_new(&stack);
+        cc_list_stack_new(&stack, NULL);
         assert(cc_array_queue_enqueue(queue, &stack) == ERR_CC_COMMON_OK);
     }
 
     // 测试满队列入队
     cc_list_stack_t *overflow_stack;
-    cc_list_stack_new(&overflow_stack);
+    cc_list_stack_new(&overflow_stack, NULL);
     assert(cc_array_queue_enqueue(queue, &overflow_stack) == ERR_CC_QUEUE_IS_FULL);
-    cc_list_stack_delete(overflow_stack, NULL);
+    cc_list_stack_delete(overflow_stack);
 
     // 清空队列
     while (cc_array_queue_size(queue) > 0) {
         cc_list_stack_t *stack;
         cc_array_queue_dequeue(queue, (void**)&stack);
-        cc_list_stack_delete(stack, NULL);
+        cc_list_stack_delete(stack);
     }
 
-    cc_array_queue_delete(queue, NULL);
+    cc_array_queue_delete(queue);
 }
 
 static void test_circular_behavior(void) {
     cc_array_queue_t *queue;
-    cc_array_queue_new(&queue, TEST_QUEUE_CAPACITY, sizeof(cc_list_stack_t*));
+    cc_array_queue_new(&queue, TEST_QUEUE_CAPACITY, sizeof(cc_list_stack_t*), NULL);
 
     // 测试循环特性
     for (int cycle = 0; cycle < 2; cycle++) {
         // 填充队列
         for (int i = 0; i < TEST_QUEUE_CAPACITY; i++) {
             cc_list_stack_t *stack;
-            cc_list_stack_new(&stack);
+            cc_list_stack_new(&stack, NULL);
             assert(cc_array_queue_enqueue(queue, &stack) == ERR_CC_COMMON_OK);
         }
 
@@ -106,11 +106,11 @@ static void test_circular_behavior(void) {
         for (int i = 0; i < TEST_QUEUE_CAPACITY; i++) {
             cc_list_stack_t *stack;
             assert(cc_array_queue_dequeue(queue, (void**)&stack) == ERR_CC_COMMON_OK);
-            cc_list_stack_delete(stack, NULL);
+            cc_list_stack_delete(stack);
         }
     }
 
-    cc_array_queue_delete(queue, NULL);
+    cc_array_queue_delete(queue);
 }
 
 int main(void) {

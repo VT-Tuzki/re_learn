@@ -15,7 +15,7 @@ int main(void)
     struct test_struct tmp;
     struct test_struct *tmpa;
 
-    if(cc_array_new(&array, 10, sizeof(struct test_struct))) {
+    if(cc_array_new(&array, 10, sizeof(struct test_struct), NULL)) {
         printf("error \n");
     }
 
@@ -49,7 +49,7 @@ int main(void)
         printf("i: %ld %d %d %d %f\n",index,tmp.infoa,tmp.infob,tmp.infoc,tmp.infod);
     }
 
-    cc_array_delete(array, NULL);
+    cc_array_delete(array);
 
     return 0;
 }

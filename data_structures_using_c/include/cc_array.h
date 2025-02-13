@@ -16,6 +16,7 @@ struct cc_array {
     unsigned char *data;
     cc_size_t elem_nums;
     cc_size_t elem_size;
+    cc_delete_fn_t remove_fn;
 };
 typedef struct cc_array cc_array_t;
 
@@ -27,7 +28,7 @@ typedef enum {
 } cc_array_err;
 
 
-int cc_array_init(cc_array_t *self, unsigned char *data, cc_size_t elem_nums, cc_size_t elem_size);
+int cc_array_init(cc_array_t *self, unsigned char *data, cc_size_t elem_nums, cc_size_t elem_size, cc_delete_fn_t remove_fn);
 /***
  * @description:
  * @param {cc_array} *
@@ -35,16 +36,17 @@ int cc_array_init(cc_array_t *self, unsigned char *data, cc_size_t elem_nums, cc
  * @param {cc_size_t} elem_size
  * @return {*}
  */
-int cc_array_new(cc_array_t **self, cc_size_t elem_nums, cc_size_t elem_size);
+int cc_array_new(cc_array_t **self, cc_size_t elem_nums, cc_size_t elem_size, cc_delete_fn_t remove_fn);
 
-int cc_array_delete(struct cc_array *self, cc_delete_fn_t remove_fn);
+int cc_array_delete(struct cc_array *self);
 
-#define CC_ARRAY_STATIC_DECLARE(name, elem_num, elem_size) \
+#define CC_ARRAY_STATIC_DECLARE(name, elem_num, elem_size, remove_fn) \
     unsigned char name##_heap[(elem_num) * (elem_size)] = {0}; \
     cc_array_t name = { \
         .data = name##_heap, \
         .elem_nums = (elem_num), \
-        .elem_size = (elem_size) \
+        .elem_size = (elem_size), \
+        .remove_fn = (cc_delete_fn_t) (remove_fn) \
     }
 
 int cc_array_get_unsafe(cc_array_t *self, cc_size_t index, void *result);

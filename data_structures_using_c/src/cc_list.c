@@ -110,7 +110,7 @@ int cc_list_node_delete_and_next(cc_list_node_t **current, cc_delete_fn_t remove
 }
 
 
-int cc_list_init(cc_list_t *self)
+int cc_list_init(cc_list_t *self, cc_delete_fn_t remove_fn)
 {
     if(self == NULL) {
         return ERR_CC_LIST_INVALID_ARG;
@@ -119,11 +119,11 @@ int cc_list_init(cc_list_t *self)
     self->root.prev = &self->root;
     self->root.next = &self->root;
     self->root.size = 0;
-
+    self->remove_fn = remove_fn;
     return ERR_CC_LIST_OK;
 }
 
-int cc_list_new(cc_list_t **self)
+int cc_list_new(cc_list_t **self, cc_delete_fn_t remove_fn)
 {
     cc_list_t *temp;
     temp = (cc_list_t *)cc_malloc(sizeof(cc_list_t));
@@ -131,13 +131,13 @@ int cc_list_new(cc_list_t **self)
         return ERR_CC_LIST_INVALID_ARG;
     }
 
-    cc_list_init(temp);
+    cc_list_init(temp, remove_fn);
 
     *self = temp;
     return ERR_CC_LIST_OK;
 }
 
-int cc_list_destroy(cc_list_t *self, cc_delete_fn_t remove_fn)
+int cc_list_destroy(cc_list_t *self)
 {
     int res = ERR_CC_LIST_OK;
     if(self == NULL) {
@@ -148,7 +148,7 @@ int cc_list_destroy(cc_list_t *self, cc_delete_fn_t remove_fn)
     temp = self->root.next;
 
     while(temp != &self->root) {
-        res = cc_list_node_delete_and_next(&temp, remove_fn);
+        res = cc_list_node_delete_and_next(&temp, self->remove_fn);
         if(res != ERR_CC_LIST_OK)
         return res;
     }
@@ -189,7 +189,7 @@ B: rootb-> rootb
     }
     left->root.size += right->root.size;
 
-    cc_list_init(right);
+    cc_list_init(right, right->remove_fn);
 
     return ERR_CC_LIST_OK;
 }

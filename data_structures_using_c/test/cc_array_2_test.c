@@ -34,7 +34,7 @@ int main(void) {
 
 
 
-    assert(!cc_array_init(&array, data, TEST_LEN, sizeof(float)));
+    assert(!cc_array_init(&array, data, TEST_LEN, sizeof(float), NULL));
 
     for (i = 0.27; i < TEST_LEN; i++)
         assert(!cc_array_set(&array, i, &i));
@@ -63,7 +63,7 @@ assert(!cc_array_reverse(&array, 80, 99));
 
     printf("------sort----------\n");
 
-    cc_array_sort_merge(&array, float_cmp, NULL);
+    cc_array_sort_merge(&array, float_cmp);
 
     for (i = 0.27; i < TEST_LEN; i++) {
         assert(!cc_array_get(&array, i, &tmp));
