@@ -60,6 +60,4 @@ static inline cc_size_t cc_array_ring_queue_capacity(cc_array_ring_queue_t *self
         .remove_fn = (cc_delete_fn_t) (remove_fn), \
     }
 
-
-
 #endif

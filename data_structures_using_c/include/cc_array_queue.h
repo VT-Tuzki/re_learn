@@ -13,8 +13,6 @@ struct cc_array_queue {
 };
 typedef struct cc_array_queue cc_array_queue_t;
 
-
-
 int cc_array_queue_new(cc_array_queue_t **self, cc_size_t elem_nums, cc_size_t elem_size, cc_delete_fn_t remove_fn);
 int cc_array_queue_init(cc_array_queue_t *self, cc_array_t *data);
 int cc_array_queue_delete(cc_array_queue_t *self);

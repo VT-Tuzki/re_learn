@@ -40,7 +40,7 @@ int main() {
     cc_size_t elem_nums = 0;
     cc_size_t empty_space = 0;
     int i = 0;
-    struct cc_array_stack *stack;
+    cc_array_stack_t *stack;
     assert(!cc_array_stack_new(&stack, TEST_LEN, TEST_SIZE, NULL));
 
     empty_space = 0;
