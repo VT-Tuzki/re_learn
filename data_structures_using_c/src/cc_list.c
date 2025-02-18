@@ -1,6 +1,8 @@
 #include "ds/list/cc_list.h"
 #include "core/cc_common.h"
 #include "core/cc_mem.h"
+#include <string.h>
+#include "core/cc_dbg.h"
 
 int cc_list_node_insert_before(cc_list_node_t *self, void *data)
 {
@@ -89,17 +91,19 @@ int cc_list_node_delete_and_next(cc_list_node_t **current, cc_delete_fn_t remove
 
 
     cc_list_node_t *temp, *next;
-
+    void *data;
     if(*current == NULL) {
         return ERR_CC_LIST_INVALID_ARG;
     }
 
     temp = *current;
-    next = temp->next;
+    next = (*current)->next;
+    data = (*current)->data;
 
     if(remove_fn != NULL) {
-        remove_fn(temp->data);
+        remove_fn(data);
     }
+    (*current)->data = NULL;
 
     temp->prev->next = next;
     next->prev = temp->prev;
@@ -149,23 +153,14 @@ int cc_list_destroy(cc_list_t *self)
 
     while(temp != &self->root) {
         res = cc_list_node_delete_and_next(&temp, self->remove_fn);
-        if(res != ERR_CC_LIST_OK)
-        return res;
+        if(res != ERR_CC_LIST_OK)   return res;
+        self->root.size--;
     }
 
     cc_free(self);
     return ERR_CC_LIST_OK;
 }
 
-int cc_list_concat(cc_list_t *left, cc_list_t *right)
-{
-    if(left == NULL) {
-        return ERR_CC_LIST_INVALID_ARG;
-    }
-
-    if(right == NULL || right->root.size == 0) {
-        return ERR_CC_LIST_OK;
-    }
 /*
 A: roota -> a1 -> a2 -> a3 -> a4 -> roota
 B: rootb -> b1 -> b2 -> b3 -> b4 -> rootb
@@ -174,6 +169,17 @@ A: roota-> a1 -> a2 -> a3 -> a4 -> b1 -> b2 -> b3 -> b4 -> roota
 roota.size = roota.size + rootb.size
 B: rootb-> rootb
 */
+
+int cc_list_concat(cc_list_t *left, cc_list_t *right)
+{
+    if(left == NULL || right == NULL) {
+        return ERR_CC_LIST_INVALID_ARG;
+    }
+
+    if(right->root.size == 0) {
+        return ERR_CC_LIST_OK;
+    }
+
     if(left->root.size == 0) {
         left->root.next = right->root.next;
         left->root.prev = right->root.prev;
@@ -194,6 +200,79 @@ B: rootb-> rootb
     return ERR_CC_LIST_OK;
 }
 
+int cc_list_split(cc_list_t **new_list, cc_list_t *old_list, cc_check_fn_t check_fn)
+{
+    if(new_list == NULL || *new_list != NULL || old_list == NULL || check_fn == NULL) {
+        return ERR_CC_COMMON_INVALID_ARG;
+    }
+    int res = ERR_CC_COMMON_OK;
+    cc_list_t *temp_list = NULL;
+    res = cc_list_new(&temp_list, old_list->remove_fn);
+    if(res != ERR_CC_COMMON_OK) return res;
+
+    cc_list_node_t *old_list_node = old_list->root.next;
+    while(old_list_node != &old_list->root) {
+        cc_list_node_t *next_node = old_list_node->next;
+        if(check_fn(old_list_node->data) == ERR_CC_COMMON_OK) {
+            old_list_node->prev->next = old_list_node->next;
+            old_list_node->next->prev = old_list_node->prev;
+            old_list->root.size--;
+
+            old_list_node->prev = temp_list->root.prev;
+            old_list_node->next = &temp_list->root;
+            temp_list->root.prev->next = old_list_node;
+            temp_list->root.prev = old_list_node;
+            temp_list->root.size++;
+        }
+        old_list_node = next_node;
+    }
+
+    *new_list = temp_list;
+    return ERR_CC_COMMON_OK;
+}
+
+int cc_list_copy(cc_list_t **new_list, cc_list_t *old_list, cc_copy_data_fn_t copy_data)
+{
+    int res = ERR_CC_COMMON_OK;
+    if(new_list == NULL || copy_data == NULL) {
+        return ERR_CC_COMMON_INVALID_ARG;
+    }
+    *new_list = NULL;
+
+    cc_list_t *temp_list = NULL;
+    res = cc_list_new(&temp_list, old_list->remove_fn);
+    if(res != ERR_CC_COMMON_OK) {
+        goto fail1;
+    }
+
+
+    cc_list_node_t *temp_list_node = old_list->root.next;
+    while(temp_list_node != &old_list->root) {
+        void *data_ptr = NULL;
+        res = copy_data(temp_list_node->data, &data_ptr);
+        if(res != ERR_CC_COMMON_OK) {
+            goto fail2;
+        }
+        if(data_ptr == NULL) {
+            res = ERR_CC_COMMON_MEM_ERR;
+            goto fail2;
+        }
+
+        res = cc_list_insert_tail(temp_list, data_ptr);
+        if(res != ERR_CC_COMMON_OK) {
+            goto fail2;
+        }
+        temp_list_node = temp_list_node->next;
+    }
+    *new_list = temp_list;
+    return ERR_CC_LIST_OK;
+
+fail2:
+    cc_list_destroy(temp_list);
+fail1:
+    return res;
+}
+
 int cc_list_insert_head(cc_list_t *self, void *data)
 {
     int res = ERR_CC_LIST_OK;
@@ -208,6 +287,7 @@ int cc_list_insert_head(cc_list_t *self, void *data)
     }
     return res;
 }
+
 int cc_list_insert_tail(cc_list_t *self, void *data)
 {
     int res = ERR_CC_LIST_OK;
@@ -222,6 +302,7 @@ int cc_list_insert_tail(cc_list_t *self, void *data)
     }
     return res;
 }
+
 int cc_list_remove_head(cc_list_t *self, void **data)
 {
     int res = ERR_CC_LIST_OK;
@@ -240,6 +321,7 @@ int cc_list_remove_head(cc_list_t *self, void **data)
     }
     return res;
 }
+
 int cc_list_remove_tail(cc_list_t *self, void **data)
 {
     int res = ERR_CC_LIST_OK;
@@ -310,7 +392,8 @@ int cc_list_print_for(cc_list_t *self, int direction, cc_debug_print_fn_t cc_deb
         temp = self->root.next;
         for(cc_size_t i = 0; i < len; i++)
         {
-            cc_debug_print(temp->data);
+            if(cc_debug_print != NULL)
+                cc_debug_print(temp->data);
             temp = temp->next;
         }
     }
@@ -318,7 +401,8 @@ int cc_list_print_for(cc_list_t *self, int direction, cc_debug_print_fn_t cc_deb
         temp = self->root.prev;
         for(cc_size_t i = 0; i < len; i++)
         {
-            cc_debug_print(temp->data);
+            if(cc_debug_print != NULL)
+                cc_debug_print(temp->data);
             temp = temp->prev;
         }
     }
@@ -376,6 +460,7 @@ int cc_list_iter_new(cc_list_iterator_t **self, cc_list_t *list, int direction)
     *self = temp;
     return ERR_CC_COMMON_OK;
 }
+
 int cc_list_iter_delete(cc_list_iterator_t *self)
 {
     if(self == NULL) return ERR_CC_COMMON_INVALID_ARG;

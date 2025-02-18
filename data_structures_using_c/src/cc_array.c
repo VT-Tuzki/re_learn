@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "core/cc_atomic.h"
+#include "core/cc_dbg.h"
 
 int cc_array_init(struct cc_array *self, unsigned char *data, cc_size_t elem_nums, cc_size_t elem_size, cc_delete_fn_t remove_fn)
 {
@@ -22,13 +23,13 @@ int cc_array_new(struct cc_array **self, cc_size_t elem_nums, cc_size_t elem_siz
     struct cc_array *tmp = NULL;
     unsigned char* data = NULL;
 
-    tmp = cc_malloc(sizeof(struct cc_array));
+    tmp = calloc(1, sizeof(struct cc_array));
     if(tmp == NULL) {
         res = ERR_CC_ARRAY_MEM_ERR;
         goto fail1;
     }
 
-    data = cc_malloc(elem_size * elem_nums);
+    data = cc_calloc(1, elem_size * elem_nums);
     if(data == NULL) {
         res = ERR_CC_ARRAY_MEM_ERR;
         goto fail2;

@@ -9,16 +9,13 @@
 
 
 
-int cc_default_cmp_fn(void *left, void *right);
 
-typedef int (*cc_cmp_fn_t)(void *left, void *right);
-typedef int (*cc_delete_fn_t)(void *obj);
-typedef int (*cc_debug_print_fn_t)(void *value);
 
 
 
 typedef enum {
-    ERR_CC_COMMON_NOT_DEFINE = -1,
+    ERR_CC_COMMON_NOT_DEFINE = -2,
+    ERR_CC_COMMON_FAIL = -1,
     ERR_CC_COMMON_OK = 0,
     ERR_CC_COMMON_INVALID_ARG,
     ERR_CC_COMMON_MEM_ERR,
@@ -42,6 +39,13 @@ typedef enum {
 
 #define ERR_CC_CONNECT(element, error) (element | error)
 
+int cc_default_cmp_fn(void *left, void *right);
+
+typedef int (*cc_cmp_fn_t)(void *left, void *right);
+typedef int (*cc_copy_data_fn_t)(void *list_node, void *new_data_ptr);
+typedef int (*cc_delete_fn_t)(void *obj);
+typedef int (*cc_check_fn_t)(void *obj);
+typedef int (*cc_debug_print_fn_t)(void *value);
 
 static inline int try_reset_double_p(void *ptr) {
     if (ptr == NULL)

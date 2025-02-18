@@ -45,6 +45,8 @@ int cc_list_new(cc_list_t **self, cc_delete_fn_t remove_fn);
 int cc_list_destroy(cc_list_t *self);
 
 int cc_list_concat(cc_list_t *left, cc_list_t *right);
+int cc_list_copy(cc_list_t **new_list, cc_list_t *old_list, cc_copy_data_fn_t copy_fn);
+int cc_list_split(cc_list_t **new_list, cc_list_t *old_list, cc_check_fn_t check_fn);
 
 int cc_list_insert_head(cc_list_t *self, void *data);
 int cc_list_insert_tail(cc_list_t *self, void *data);
