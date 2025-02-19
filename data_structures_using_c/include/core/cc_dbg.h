@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
+#include <stdlib.h>
 
 #ifdef NDEBUG
 #define debug(M, ...)
@@ -19,7 +20,12 @@
 
 #define log_info(M, ...) fprintf(stderr, "[INFO] ([%s]%s:%d) " M "\n",  __func__,__FILE__, __LINE__, ##__VA_ARGS__)
 
+#define log_res_err(A,M, ...) fprintf(stderr, "[ERROR] ([%s]%s:%d: errno: %s res:%d) " M "\n", __func__, __FILE__, __LINE__, clean_errno(), (A), ##__VA_ARGS__)
+
+
 #define check(A, M, ...) if(!(A)) { log_err(M, ##__VA_ARGS__); errno=0; goto error; }
+
+#define check_res_ok(A, M, ...) if(((A) != 0)) { log_res_err((A), M, ##__VA_ARGS__); errno=0; goto error; }
 
 #define sentinel(M, ...)  { log_err(M, ##__VA_ARGS__); errno=0; goto error; }
 

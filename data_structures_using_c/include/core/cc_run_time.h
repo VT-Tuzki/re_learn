@@ -1,7 +1,12 @@
-#ifndef __RUN_TIME_H
-#define __RUN_TIME_H
+#ifndef __CC_RUN_TIME_H__
+#define __CC_RUN_TIME_H__
 
+#ifndef __USE_POSIX199309
+#define __USE_POSIX199309
+#endif
 #include <time.h>
+
+
 
 #define connect(a, b) a##b
 
@@ -21,4 +26,4 @@
     macro_cpu_time_used(name) = (macro_end_name(name).tv_sec - macro_start_name(name).tv_sec) + (macro_end_name(name).tv_nsec - macro_start_name(name).tv_nsec) / 1000000000.0; \
     printf("Time taken by %s:%f\n", #name, macro_cpu_time_used(name));
 
-#endif
+#endif //__CC_RUN_TIME_H__

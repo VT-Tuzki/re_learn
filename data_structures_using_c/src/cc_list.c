@@ -78,9 +78,6 @@ int cc_list_node_remove_after(cc_list_node_t *self, void **result)
     return ERR_CC_LIST_OK;
 }
 
-int cc_list_node_delete_and_next(cc_list_node_t **current, cc_delete_fn_t remove_fn)
-{
-
 /*
     list: ...->others_before->current->others_after->....
     cc_list_node_t *temp = current
@@ -88,6 +85,10 @@ int cc_list_node_delete_and_next(cc_list_node_t **current, cc_delete_fn_t remove
     result: temp = others_after cc_free(current);
     list: ...->others_before->others_after->....
 */
+int cc_list_node_delete_and_next(cc_list_node_t **current, cc_delete_fn_t remove_fn)
+{
+
+
 
 
     cc_list_node_t *temp, *next;
