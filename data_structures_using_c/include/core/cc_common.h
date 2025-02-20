@@ -33,7 +33,7 @@ typedef enum {
     ERR_CC_STACK_H = 0xB0,
     ERR_CC_STACK_SORT_H = 0xB1,
     ERR_CC_LIST_H = 0xC0,
-
+    ERR_CC_LIST_STACK_H = 0xC1,
     ERR_CC_ITER_H = 0xD0,
 } cc_element_err_e;
 

@@ -6,7 +6,7 @@
 #include "ds/list/cc_list.h"
 
 typedef enum {
-    ERR_CC_LIST_STACK_UNDEFINE = ERR_CC_LIST_STACK_BEGIN,
+    ERR_CC_LIST_STACK_UNDEFINE = ERR_CC_LIST_STACK_H,
     ERR_CC_LIST_STACK_EMPTY,
     ERR_CC_LIST_STACK_FULL,
 } cc_list_stack_err;
@@ -20,7 +20,7 @@ struct cc_list_stack {
 typedef struct cc_list_stack cc_list_stack_t;
 
 typedef enum {
-    ERR_CC_STACK_UNDEFINE = ERR_CC_STACK_BEGIN,
+    ERR_CC_STACK_UNDEFINE = ERR_CC_STACK_H,
     ERR_CC_STACK_EMPTY,
     ERR_CC_STACK_FULL,
 } cc_stack_err;

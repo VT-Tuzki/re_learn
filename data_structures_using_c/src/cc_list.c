@@ -1,4 +1,5 @@
 #include "ds/list/cc_list.h"
+#include "cc_stdint.h"
 #include "core/cc_common.h"
 #include "core/cc_mem.h"
 #include <string.h>
@@ -231,6 +232,71 @@ int cc_list_split(cc_list_t **new_list, cc_list_t *old_list, cc_check_fn_t check
     *new_list = temp_list;
     return ERR_CC_COMMON_OK;
 }
+
+/*
+    begin:  root1->a->b->c->d->e->root1
+    run:        slow a b c
+                fast b d root1 over
+    end:    root1->a->b->root1
+    end:    root2->c->d->e->root2
+    end:    slow: c
+    end:    fast: root1
+need_change:
+    root1->prev, root1->prev->next,
+    slow->prev->next, slow->prev,
+    root2->prev, root2->next,
+change:
+
+
+    root2->prev = root1->prev; 1 // e<-root2
+    root2->next = slow;        2 // e<-root2->c
+    root1->prev->next = root2; 3 // e-root2->c
+    root1->prev = slow->prev;  4 // b<-root1
+    slow->prev->next = root1;  5 // b-root1
+    slow->prev = root2;        6 // e-root2-c
+
+
+*/
+
+int cc_list_split_middle(cc_list_t **new_right_list, cc_list_t *old_left_list)
+{
+    if(new_right_list == NULL || *new_right_list != NULL || old_left_list == NULL) {
+        return ERR_CC_COMMON_INVALID_ARG;
+    }
+
+    if(cc_list_size(old_left_list) < 2) {
+        return ERR_CC_COMMON_INVALID_ARG;
+    }
+
+    int res = ERR_CC_COMMON_OK;
+    cc_list_t *temp_list = NULL;
+    res = cc_list_new(&temp_list, old_left_list->remove_fn);
+    if(res != ERR_CC_COMMON_OK) return res;
+
+    cc_list_node_t *slow,*fast;
+    slow = fast = old_left_list->root.next;
+    while(fast != &old_left_list->root && fast->next != &old_left_list->root) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+
+    temp_list->root.prev = old_left_list->root.prev;
+    temp_list->root.next = slow;
+
+    old_left_list->root.prev->next = &temp_list->root;
+    old_left_list->root.prev = slow->prev;
+
+    slow->prev->next = &old_left_list->root;
+    slow->prev = &temp_list->root;
+
+    temp_list->root.size = old_left_list->root.size - (old_left_list->root.size >> 1);
+    old_left_list->root.size = old_left_list->root.size >> 1;
+
+    *new_right_list = temp_list;
+    return ERR_CC_COMMON_OK;
+}
+
+
 
 int cc_list_copy(cc_list_t **new_list, cc_list_t *old_list, cc_copy_data_fn_t copy_data)
 {

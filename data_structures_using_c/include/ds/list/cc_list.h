@@ -26,7 +26,7 @@ typedef enum {
     ERR_CC_LIST_INVALID_ARG = ERR_CC_COMMON_INVALID_ARG,
     ERR_CC_LIST_MEM_ERR = ERR_CC_COMMON_MEM_ERR,
     ERR_CC_LIST_EMPTY,
-    ERR_CC_LIST_STACK_BEGIN = 16,
+    ERR_CC_LIST_CYCLE,
 
 } cc_list_err;
 
@@ -47,6 +47,7 @@ int cc_list_destroy(cc_list_t *self);
 int cc_list_concat(cc_list_t *left, cc_list_t *right);
 int cc_list_copy(cc_list_t **new_list, cc_list_t *old_list, cc_copy_data_fn_t copy_fn);
 int cc_list_split(cc_list_t **new_list, cc_list_t *old_list, cc_check_fn_t check_fn);
+int cc_list_split_middle(cc_list_t **new_right_list, cc_list_t *old_left_list);
 
 int cc_list_insert_head(cc_list_t *self, void *data);
 int cc_list_insert_tail(cc_list_t *self, void *data);

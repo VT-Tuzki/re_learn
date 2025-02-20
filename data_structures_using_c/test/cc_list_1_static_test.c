@@ -32,6 +32,7 @@ char array_name_str[ARRAY_LIST_LEN][NAME_LEN] = {
 int free_test_data(test_data_t *self);
 int get_array(cc_array_t **self, char *str);
 int print_array(cc_array_t *self);
+int print_int(void *a);
 /*  basic */
 //new init
 void test_lifecycle();
@@ -57,9 +58,10 @@ void test_concat_error_handling();
 void test_split_empty_left();
 void test_split_normal_list();
 void test_split_error_handling();
+void test_split_middle_empty_error_handling();
+void test_split_middle_normal_list();
 
 int main(){
-
 /*  basic */
 
 /* new init */
@@ -84,6 +86,8 @@ int main(){
     test_split_normal_list();
     test_split_error_handling();
 
+    test_split_middle_empty_error_handling();
+    test_split_middle_normal_list();
     return 0;
 }
 
@@ -139,7 +143,11 @@ fail1:
 error:
     exit(1);
 }
-
+int print_int(void *a) {
+    int val_a = *(int *)a;
+    printf("%d,",val_a);
+    return 0;
+}
 /*  basic */
 //new init
 void test_lifecycle()
@@ -541,6 +549,68 @@ void test_split_error_handling()
     check((res == ERR_CC_COMMON_INVALID_ARG), "arg err");
     res = cc_list_split(&new_list, &list, NULL);
     check((res == ERR_CC_COMMON_INVALID_ARG), "arg err");
+    return;
+error:
+    exit(1);
+}
+
+void test_split_middle_empty_error_handling()
+{
+    int res = ERR_CC_COMMON_OK;
+    cc_list_t list;
+    cc_list_t *new_list = NULL;
+    res = cc_list_split_middle(NULL, &list);
+    check((res == ERR_CC_COMMON_INVALID_ARG), "arg err");
+    res = cc_list_split_middle(&new_list, NULL);
+    check((res == ERR_CC_COMMON_INVALID_ARG), "arg err");
+    cc_list_new(&new_list, NULL);
+    res = cc_list_split_middle(&new_list, &list);
+    check((res == ERR_CC_COMMON_INVALID_ARG), "arg err");
+    cc_list_destroy(new_list);
+    return;
+error:
+    exit(1);
+}
+void test_split_middle_normal_list()
+{
+    int res = ERR_CC_COMMON_OK;
+    cc_list_t *old_list;
+    cc_list_new(&old_list, cc_free);
+    for(int i = 0; i < ARRAY_LEN; i++) {
+        int *data = malloc(sizeof(*data));
+        *data = i;
+        cc_list_insert_tail(old_list, data);
+    }
+    check((cc_list_size(old_list) == ARRAY_LEN), "insert err");
+
+    cc_list_t *new_list = NULL;
+    res = cc_list_split_middle(&new_list, old_list);
+    check((res == ERR_CC_COMMON_OK), "split fail %d", res);
+
+    check((cc_list_size(old_list) == (ARRAY_LEN /2)),
+        "old_list size err %ld ,%d",cc_list_size(old_list), (ARRAY_LEN /2));
+    check((cc_list_size(new_list) == (ARRAY_LEN - (ARRAY_LEN /2))),
+        "new_list size err %ld ,%d", cc_list_size(new_list),(ARRAY_LEN - (ARRAY_LEN /2)));
+
+    res = cc_list_concat(old_list, new_list);
+    check_res_ok(res, "concat err");
+    cc_list_destroy(new_list);
+    new_list = NULL;
+    int *data = malloc(sizeof(*data));
+    *data = ARRAY_LEN;
+    cc_list_insert_tail(old_list, data);
+
+    res = cc_list_split_middle(&new_list, old_list);
+    check((res == ERR_CC_COMMON_OK), "split fail %d", res);
+
+    cc_size_t now_len = ARRAY_LEN + 1;
+    check((cc_list_size(old_list) == (now_len / 2)),
+        "old_list size err %ld ,%ld",cc_list_size(old_list), (now_len / 2));
+    check((cc_list_size(new_list) == (now_len - (now_len /2))),
+        "new_list size err %ld ,%ld", cc_list_size(new_list),(now_len - (now_len / 2)));
+
+    cc_list_destroy(old_list);
+    cc_list_destroy(new_list);
     return;
 error:
     exit(1);

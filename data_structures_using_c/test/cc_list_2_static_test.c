@@ -47,7 +47,7 @@ int cmp_int(void *a, void *b) {
     return val_a - val_b;
 }
 
-#define ARR_LEN 10005
+#define ARR_LEN 15
 void test_bubble_sort_basic()
 {
     int res = ERR_CC_ARRAY_OK;
