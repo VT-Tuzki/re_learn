@@ -3,6 +3,7 @@
 #include "cc_common.h"
 #include "cc_list.h"
 #include "cc_dbg.h"
+#include "cc_stdint.h"
 /*
 
 
@@ -103,8 +104,12 @@ error:
     exit(1);
 }
 
+int cc_list_sort_bubble(cc_list_t *self, cc_cmp_fn_t cc_list_cmp)
+{
+    return cc_list_sort_bubble_get_end(self, cc_list_cmp);
+}
 
-int cc_list_sort_bubble(cc_list_t *self, cc_cmp_fn_t cmp, cc_size_t optimize)
+int _cc_list_sort_bubble(cc_list_t *self, cc_cmp_fn_t cmp, cc_size_t optimize)
 {
     if(self == NULL || cmp == NULL) return ERR_CC_COMMON_INVALID_ARG;
 
@@ -120,6 +125,107 @@ int cc_list_sort_bubble(cc_list_t *self, cc_cmp_fn_t cmp, cc_size_t optimize)
     }
     return ERR_CC_COMMON_OK;
 }
+#include <stdio.h>
+int print_int__(void *a) {
+    int val_a = *(int *)a;
+    printf("%d,",val_a);
+    return 0;
+}
+int cc_list_sort_merge_traditional(cc_list_t *self, cc_cmp_fn_t cmp)
+{
+    if(self == NULL || cmp == NULL) return ERR_CC_COMMON_INVALID_ARG;
+    int res = ERR_CC_COMMON_OK;
+    if(self->root.size <= 1) return ERR_CC_COMMON_OK;
+
+    cc_list_t *right_list = NULL;
+    res = cc_list_split_middle(&right_list, self);
+    if(res != ERR_CC_COMMON_OK) {
+        printf("cc_list_split_middle res: %d\n",res);
+        goto fail1;
+    }
+    res = cc_list_sort_merge_traditional(self, cmp);
+    if(res != ERR_CC_COMMON_OK) {
+        printf("cc_list_sort_merge_traditional self res: %d\n",res);
+        goto fail2;
+    }
+    res = cc_list_sort_merge_traditional(right_list, cmp);
+    if(res != ERR_CC_COMMON_OK) {
+        printf("cc_list_sort_merge_traditional right_list res: %d\n",res);
+        goto fail2;
+    }
+    res = cc_list_concat_by_cmp(self, right_list, cmp);
+    if(res != ERR_CC_COMMON_OK) {
+        printf("cc_list_concat_by_cmp self right_list res: %d\n",res);
+        goto fail2;
+    }
+    cc_list_destroy(right_list);
+    // cc_list_print(self, 1, print_int__);
+    // printf("\n");
+    return ERR_CC_COMMON_OK;
+fail2:
+    cc_list_destroy(right_list);
+fail1:
+    return res;
+}
+
+int cc_list_sort_merge_bottom_up(cc_list_t *self, cc_cmp_fn_t cmp)
+{
+    int res = ERR_CC_COMMON_OK;
+    cc_size_t block_size = 1;
+    while(block_size < self->root.size) {
+        cc_list_node_t *current = self->root.next;
+        cc_list_t *temp_merge_list;
+        res = cc_list_new(&temp_merge_list, self->remove_fn);
+        if(res != ERR_CC_COMMON_OK) return res;
+
+        while(current != &self->root) {
+            cc_list_t *left,*right;
+            res = cc_list_split_block(&left, self, block_size, &current);
+            if(res != ERR_CC_COMMON_OK) return res;
+            res = cc_list_split_block(&right, self, block_size, &current);
+            if(res != ERR_CC_COMMON_OK) return res;
+
+            // res = cc_list_concat_ab_by_cmp_to_c(temp_merge_list, left, right, cmp);
+            // if(res != ERR_CC_COMMON_OK) return res;
+            res = cc_list_concat_by_cmp(temp_merge_list, left, cmp);
+            if(res != ERR_CC_COMMON_OK) return res;
+            res = cc_list_concat_by_cmp(temp_merge_list, right, cmp);
+            if(res != ERR_CC_COMMON_OK) return res;
+
+            cc_list_destroy(left);
+            cc_list_destroy(right);
+        }
+        res = cc_list_root_swap(self, temp_merge_list);
+        if(res != ERR_CC_COMMON_OK) return res;
+        cc_list_destroy(temp_merge_list);
+        block_size <<= 1;
+    }
+    return ERR_CC_COMMON_OK;
+}
+
+int cc_list_sort_merge(cc_list_t *self, cc_cmp_fn_t cmp)
+{
+    return cc_list_sort_bubble_get_end(self, cmp);
+}
+
+int _cc_list_sort_merge(cc_list_t *self, cc_cmp_fn_t cmp, cc_size_t optimize)
+{
+    if(self == NULL || cmp == NULL) return ERR_CC_COMMON_INVALID_ARG;
+
+    switch(optimize){
+        case 1:
+            return cc_list_sort_merge_traditional(self, cmp);
+        case 2:
+            return cc_list_sort_merge_bottom_up(self, cmp);
+        // case 3:
+        //     return cc_list_sort_merge_get_end(self, cmp);
+        default:
+            return ERR_CC_COMMON_INVALID_ARG;
+    }
+    return ERR_CC_COMMON_OK;
+}
+
+
 
 
 

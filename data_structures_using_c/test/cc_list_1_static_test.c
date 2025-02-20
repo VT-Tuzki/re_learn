@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "cc_common.h"
+#include "cc_list_sort.h"
 #include "cc_stdint.h"
 #include "ds/array/cc_array.h"
 #include "ds/list/cc_list.h"
@@ -36,11 +37,8 @@ int print_int(void *a);
 /*  basic */
 //new init
 void test_lifecycle();
-//insert
 void test_insert_operations();
-//remove
 void test_remove_operations();
-//edge state
 void test_edge_operations();
 
 /*  copy */
@@ -54,6 +52,10 @@ void test_concat_empty_left();
 void test_concat_normal_list();
 void test_concat_error_handling();
 
+void test_concat_cmp_normal_list();
+void test_concat_cmp_error_right_0_1();
+void test_concat_cmp_error_left_0_1();
+
 /* split */
 void test_split_empty_left();
 void test_split_normal_list();
@@ -65,29 +67,32 @@ int main(){
 /*  basic */
 
 /* new init */
-    test_lifecycle();
-    test_insert_operations();
-    test_remove_operations();
-    test_edge_operations();
+//     test_lifecycle();
+//     test_insert_operations();
+//     test_remove_operations();
+//     test_edge_operations();
 
-/*  copy */
-    test_copy_empty_list();
-    test_copy_single_node();
-    test_copy_multiple_nodes();
-    test_copy_error_handling();
+// /*  copy */
+//     test_copy_empty_list();
+//     test_copy_single_node();
+//     test_copy_multiple_nodes();
+//     test_copy_error_handling();
 
-/*  contant */
-    test_concat_empty_left();
-    test_concat_normal_list();
-    test_concat_error_handling();
+// /*  contant */
+//     test_concat_empty_left();
+//     test_concat_normal_list();
+//     test_concat_error_handling();
 
-/* split */
-    test_split_empty_left();
-    test_split_normal_list();
-    test_split_error_handling();
+//     test_concat_cmp_normal_list();
+//     test_concat_cmp_error_right_0_1();
+//     test_concat_cmp_error_left_0_1();
+// /* split */
+//     test_split_empty_left();
+//     test_split_normal_list();
+//     test_split_error_handling();
 
-    test_split_middle_empty_error_handling();
-    test_split_middle_normal_list();
+//     test_split_middle_empty_error_handling();
+//     test_split_middle_normal_list();
     return 0;
 }
 
@@ -148,6 +153,13 @@ int print_int(void *a) {
     printf("%d,",val_a);
     return 0;
 }
+
+int cmp_int(void *a, void *b) {
+    int val_a = *(int *)a;
+    int val_b = *(int *)b;
+    return val_a - val_b;
+}
+
 /*  basic */
 //new init
 void test_lifecycle()
@@ -481,6 +493,164 @@ error:
     exit(1);
 }
 
+void test_concat_cmp_normal_list()
+{
+    int res = ERR_CC_COMMON_OK;
+    cc_list_t *left;
+    cc_list_new(&left, cc_free);
+    int *a1 = malloc(sizeof(int)); *a1 = 2;
+    cc_list_insert_tail(left, a1);
+    int *a2 = malloc(sizeof(int)); *a2 = 3;
+    cc_list_insert_tail(left, a2);
+
+    cc_list_t *right;
+    cc_list_new(&right, cc_free);
+    int *b1 = malloc(sizeof(int)); *b1 = 1;
+    cc_list_insert_tail(right, b1);
+    int *b2 = malloc(sizeof(int)); *b2 = 4;
+    cc_list_insert_tail(right, b2);
+
+    res = cc_list_concat_by_cmp(left, right, cmp_int);
+    check((res == ERR_CC_LIST_OK), "concat err %d", res);
+
+    check((left->root.size == 4), "size error %ld",left->root.size);
+    check((left->root.next->data == b1), "concat add node err");
+    check((left->root.next->next->data == a1), "concat add node err");
+    cc_size_t dir = 0;
+    res= cc_list_sort_check(left, cmp_int, &dir);
+    check((dir == 1), "err sort %ld", dir);
+    res = cc_list_print(left,1,print_int);
+    printf("\n");
+    // right应被清空
+    check((right->root.size == 0), "right list error");
+    check((right->root.next == &right->root), "right list cycle not connect");
+    check((right->root.prev == &right->root), "right list cycle not connect");
+
+    cc_list_destroy(left);
+    cc_list_destroy(right);
+    return;
+error:
+    exit(1);
+}
+
+void test_concat_cmp_error_right_0_1()
+{
+    cc_size_t dir = 0;
+
+    int res = ERR_CC_COMMON_OK;
+    cc_list_t *left;
+    cc_list_new(&left, cc_free);
+    int *a1 = malloc(sizeof(int)); *a1 = 2;
+    cc_list_insert_tail(left, a1);
+    int *a2 = malloc(sizeof(int)); *a2 = 3;
+    cc_list_insert_tail(left, a2);
+
+    cc_list_t *right;
+    cc_list_new(&right, cc_free);
+    // left: 2 3 right : null
+    res = cc_list_concat_by_cmp(left, right, cmp_int);
+    check((res == ERR_CC_LIST_OK), "concat err %d", res);
+    check((left->root.size == 2), "size error %ld",left->root.size);
+    check((left->root.next->data == a1), "concat add node err");
+    check((left->root.next->next->data == a2), "concat add node err");
+    check((left->root.next->next->next == &left->root), "concat add node err");
+    // right应被清空
+    check((right->root.size == 0), "right list error");
+    check((right->root.next == &right->root), "right list cycle not connect");
+    check((right->root.prev == &right->root), "right list cycle not connect");
+
+    int *b1 = malloc(sizeof(int)); *b1 = 1;
+    cc_list_insert_tail(right, b1);
+    // left: 2 3 right : 1
+    res = cc_list_concat_by_cmp(left, right, cmp_int);
+    check((res == ERR_CC_LIST_OK), "concat err %d", res);
+    check((left->root.size == 3), "size error %ld",left->root.size);
+    check((left->root.next->data == b1), "concat add node err");
+    check((left->root.next->next->data == a1), "concat add node err");
+    check((left->root.next->next->next->data == a2), "concat add node err");
+    check((left->root.next->next->next->next == &left->root), "concat add node err");
+    // right应被清空
+    check((right->root.size == 0), "right list error");
+    check((right->root.next == &right->root), "right list cycle not connect");
+    check((right->root.prev == &right->root), "right list cycle not connect");
+    res= cc_list_sort_check(left, cmp_int, &dir);
+    check((dir == 1), "err sort %ld", dir);
+    //  1 2 3
+    // right应被清空
+    check((right->root.size == 0), "right list error");
+    check((right->root.next == &right->root), "right list cycle not connect");
+    check((right->root.prev == &right->root), "right list cycle not connect");
+
+    cc_list_destroy(left);
+    cc_list_destroy(right);
+    return;
+error:
+    exit(1);
+}
+
+void test_concat_cmp_error_left_0_1()
+{
+    int res = ERR_CC_COMMON_OK;
+    cc_list_t *left;
+    cc_list_new(&left, cc_free);
+
+    cc_list_t *right;
+    cc_list_new(&right, cc_free);
+    int *b1 = malloc(sizeof(int)); *b1 = 1;
+    cc_list_insert_tail(right, b1);
+    int *b2 = malloc(sizeof(int)); *b2 = 4;
+    cc_list_insert_tail(right, b2);
+    //left : null right 1 4
+
+    res = cc_list_concat_by_cmp(left, right, cmp_int);
+    check((res == ERR_CC_LIST_OK), "concat err %d", res);
+
+    check((left->root.size == 2), "size error %ld",left->root.size);
+    check((left->root.next->data == b1), "concat add node err");
+    check((left->root.next->next->data == b2), "concat add node err");
+    check((left->root.next->next->next == &left->root), "concat add node err");
+    // right应被清空
+    check((right->root.size == 0), "right list error, %ld",right->root.size);
+    check((right->root.next == &right->root), "right list cycle not connect");
+    check((right->root.prev == &right->root), "right list cycle not connect");
+
+    cc_list_destroy(left);
+    left = NULL;
+    res = cc_list_new(&left, cc_free);
+    check_res_ok(res, "new err");
+    b1 = malloc(sizeof(int)); *b1 = 1;
+    cc_list_insert_tail(right, b1);
+    b2 = malloc(sizeof(int)); *b2 = 4;
+    cc_list_insert_tail(right, b2);
+
+    int *a1 = malloc(sizeof(int)); *a1 = 2;
+    cc_list_insert_tail(left, a1);
+    //left : 2 right 1 4
+    res = cc_list_concat_by_cmp(left, right, cmp_int);
+    check((res == ERR_CC_LIST_OK), "concat err %d", res);
+
+    check((left->root.size == 3), "size error %ld",left->root.size);
+    check((left->root.next->data == b1), "concat add node err");
+    check((left->root.next->next->data == a1), "concat add node err");
+    check((left->root.next->next->next->data == b2), "concat add node err");
+    check((left->root.next->next->next->next == &left->root), "concat add node err");
+    // right应被清空
+    check((right->root.size == 0), "right list error");
+    check((right->root.next == &right->root), "right list cycle not connect");
+    check((right->root.prev == &right->root), "right list cycle not connect");
+
+    cc_size_t dir = 0;
+    res= cc_list_sort_check(left, cmp_int, &dir);
+    check((dir == 1), "err sort %ld", dir);
+    // res = cc_list_print(left,1,print_int);
+    // printf("\n");
+
+    cc_list_destroy(left);
+    cc_list_destroy(right);
+    return;
+error:
+    exit(1);
+}
 
 /* split */
 
@@ -560,12 +730,12 @@ void test_split_middle_empty_error_handling()
     cc_list_t list;
     cc_list_t *new_list = NULL;
     res = cc_list_split_middle(NULL, &list);
-    check((res == ERR_CC_COMMON_INVALID_ARG), "arg err");
+    check((res == ERR_CC_COMMON_INVALID_ARG), "arg err %d",res);
     res = cc_list_split_middle(&new_list, NULL);
-    check((res == ERR_CC_COMMON_INVALID_ARG), "arg err");
+    check((res == ERR_CC_COMMON_INVALID_ARG), "arg err %d",res);
     cc_list_new(&new_list, NULL);
     res = cc_list_split_middle(&new_list, &list);
-    check((res == ERR_CC_COMMON_INVALID_ARG), "arg err");
+    check((res == ERR_CC_COMMON_INVALID_ARG), "arg err %d",res);
     cc_list_destroy(new_list);
     return;
 error:

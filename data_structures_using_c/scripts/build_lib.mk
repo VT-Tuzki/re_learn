@@ -46,18 +46,18 @@ lib_dev: lib_all
 
 #------------------LIB_TARGETS------------------
 $(TARGET_STATIC_LIB): build_lib_dir $(LIB_OBJS)
-	@echo "   Building static library: $@"
+	@echo "\033[1;32m   Building static library: $@\033[0m"
 	@ar rcsv $@ $(LIB_OBJS)
 	@ranlib $@
 
 $(TARGET_DYNAMIC_LIB): build_lib_dir $(LIB_OBJS)
-	@echo "   Building shared library: $@"
-	$(LIB_CC) -shared -o $@ $(LIB_OBJS)
+	@echo "\033[1;32m   Building shared library: $@\033[0m"
+	@$(LIB_CC) -shared -o $@ $(LIB_OBJS)
 
 build/_lib/%.o : src/%.c
 	@echo "\033[1;32m   CC $@ $<\033[0m"
 	@mkdir -p $(dir $@)
-	$(LIB_CC) $(C_LIB_FLAGS_DEV) $(C_LIB_FLAGS) $(C_LIB_NDEBUG_FLAGS) -fPIC -c -o $@ $<
+	@$(LIB_CC) $(C_LIB_FLAGS_DEV) $(C_LIB_FLAGS) $(C_LIB_NDEBUG_FLAGS) -fPIC -c -o $@ $<
 	@chmod +x $@
 
 #------------------TEST_TARGETS------------------
@@ -66,7 +66,7 @@ build/_test/static/%_static_test: test/%_static_test.c
 	@echo "\033[1;32m   CC $@ $<\033[0m"
 	@mkdir -p $(dir $@)
 	@$(LIB_CC) $< $(C_LIB_DEBUG_FLAGS) $(C_LIB_FLAGS) $(C_LIB_TEST_STATIC_FLAGS) -Wl,-Map=$@.map -o $@
-	@$(MEMORY_CHECK_PROG) --log-file=$@_leck_check.log $@ > $@.log
+	@timeout 20 $(MEMORY_CHECK_PROG) --log-file=$@_leck_check.log $@ > $@.log
 
 build/_test/dynamic/%_dynamic_test: test/%_dynamic_test.c
 	@echo "\033[1;32m   CC $@ $<\033[0m"

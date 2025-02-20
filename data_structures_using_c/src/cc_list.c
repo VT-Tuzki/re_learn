@@ -202,6 +202,198 @@ int cc_list_concat(cc_list_t *left, cc_list_t *right)
     return ERR_CC_LIST_OK;
 }
 
+int cc_list_concat_by_cmp(cc_list_t *left, cc_list_t *right, cc_cmp_fn_t cmp) {
+    if (left == NULL || right == NULL || cmp == NULL)
+        return ERR_CC_COMMON_INVALID_ARG;
+
+    // ➤ 空链表快速返回
+    if (cc_list_size(right) == 0) {
+        return ERR_CC_COMMON_OK; // 右链表为空，直接保留左链表
+    }
+    if (cc_list_size(left) == 0) {
+        // 左链表为空时，全量复制右链表节点到左
+        left->root.next = right->root.next;
+        left->root.prev = right->root.prev;
+        right->root.next->prev = &left->root;
+        right->root.prev->next = &left->root;
+        left->root.size = right->root.size;
+
+        cc_list_init(right, right->remove_fn);
+        return ERR_CC_COMMON_OK;
+    }
+
+    // ➤ 创建哨兵节点（临时头，统一操作逻辑）
+    cc_list_node_t sentinel;
+    sentinel.next = &sentinel;
+    sentinel.prev = &sentinel;
+
+    // ➤ 双指针模式接管节点，无需新建节点
+    cc_list_node_t *l_ptr = left->root.next;
+    cc_list_node_t *r_ptr = right->root.next;
+    cc_list_node_t *tail = &sentinel;
+
+    // ▶ 合并两链表主循环
+    while (l_ptr != &left->root && r_ptr != &right->root) {
+        int res = cmp(l_ptr->data, r_ptr->data);
+        if (res <= 0) { // 左链表值较小或相等 → 插入左节点
+            // 从原链表断链
+            l_ptr->prev->next = l_ptr->next;
+            l_ptr->next->prev = l_ptr->prev;
+
+            // 添加到合并链尾部
+            l_ptr->prev = tail;
+            l_ptr->next = tail->next;
+            tail->next = l_ptr;
+            l_ptr->next->prev = l_ptr;
+            tail = l_ptr; // 尾指针更新
+
+            l_ptr = left->root.next; // 重新指向左链表头节点下一个
+        } else { // 右链表值较小 → 插入右节点
+            // 从原链表断链
+            r_ptr->prev->next = r_ptr->next;
+            r_ptr->next->prev = r_ptr->prev;
+
+            // 添加到合并链尾部
+            r_ptr->prev = tail;
+            r_ptr->next = tail->next;
+            tail->next = r_ptr;
+            r_ptr->next->prev = r_ptr;
+            tail = r_ptr; // 尾指针更新
+
+            r_ptr = right->root.next; // 重新指向右链表头节点下一个
+        }
+    }
+
+    // ▶ 处理剩余节点（左或右链表尚未遍历完）
+    // 左链表剩余
+    while (l_ptr != &left->root) {
+        l_ptr->prev->next = l_ptr->next;
+        l_ptr->next->prev = l_ptr->prev;
+
+        l_ptr->prev = tail;
+        l_ptr->next = tail->next;
+        tail->next = l_ptr;
+        l_ptr->next->prev = l_ptr;
+        tail = l_ptr;
+
+        l_ptr = left->root.next;
+    }
+    // 右链表剩余
+    while (r_ptr != &right->root) {
+        r_ptr->prev->next = r_ptr->next;
+        r_ptr->next->prev = r_ptr->prev;
+
+        r_ptr->prev = tail;
+        r_ptr->next = tail->next;
+        tail->next = r_ptr;
+        r_ptr->next->prev = r_ptr;
+        tail = r_ptr;
+
+        r_ptr = right->root.next;
+    }
+
+    // ▶ 更新左链表并恢复循环结构
+    left->root.prev = tail;
+    tail->next = &left->root;
+    sentinel.next->prev = &left->root;
+    left->root.next = sentinel.next;
+
+    left->root.size += right->root.size;
+
+    cc_list_init(right, right->remove_fn);
+    return ERR_CC_COMMON_OK;
+}
+
+int cc_list_concat_ab_by_cmp_to_c(cc_list_t *merge, cc_list_t *left, cc_list_t *right, cc_cmp_fn_t cmp)
+{
+    if (left == NULL || right == NULL || cmp == NULL)
+        return ERR_CC_COMMON_INVALID_ARG;
+
+    // ➤ 创建哨兵节点（临时头，统一操作逻辑）
+    cc_list_node_t sentinel;
+    sentinel.next = &sentinel;
+    sentinel.prev = &sentinel;
+
+    // ➤ 双指针模式接管节点，无需新建节点
+    cc_list_node_t *l_ptr = left->root.next;
+    cc_list_node_t *r_ptr = right->root.next;
+    cc_list_node_t *tail = &sentinel;
+
+    // ▶ 合并两链表主循环
+    while (l_ptr != &left->root && r_ptr != &right->root) {
+        int res = cmp(l_ptr->data, r_ptr->data);
+        if (res <= 0) { // 左链表值较小或相等 → 插入左节点
+            // 从原链表断链
+            l_ptr->prev->next = l_ptr->next;
+            l_ptr->next->prev = l_ptr->prev;
+
+            // 添加到合并链尾部
+            l_ptr->prev = tail;
+            l_ptr->next = tail->next;
+            tail->next = l_ptr;
+            l_ptr->next->prev = l_ptr;
+            tail = l_ptr; // 尾指针更新
+
+            l_ptr = left->root.next; // 重新指向左链表头节点下一个
+        } else { // 右链表值较小 → 插入右节点
+            // 从原链表断链
+            r_ptr->prev->next = r_ptr->next;
+            r_ptr->next->prev = r_ptr->prev;
+
+            // 添加到合并链尾部
+            r_ptr->prev = tail;
+            r_ptr->next = tail->next;
+            tail->next = r_ptr;
+            r_ptr->next->prev = r_ptr;
+            tail = r_ptr; // 尾指针更新
+
+            r_ptr = right->root.next; // 重新指向右链表头节点下一个
+        }
+    }
+
+    // ▶ 处理剩余节点（左或右链表尚未遍历完）
+    // 左链表剩余
+    while (l_ptr != &left->root) {
+        l_ptr->prev->next = l_ptr->next;
+        l_ptr->next->prev = l_ptr->prev;
+
+        l_ptr->prev = tail;
+        l_ptr->next = tail->next;
+        tail->next = l_ptr;
+        l_ptr->next->prev = l_ptr;
+        tail = l_ptr;
+
+        l_ptr = left->root.next;
+    }
+    // 右链表剩余
+    while (r_ptr != &right->root) {
+        r_ptr->prev->next = r_ptr->next;
+        r_ptr->next->prev = r_ptr->prev;
+
+        r_ptr->prev = tail;
+        r_ptr->next = tail->next;
+        tail->next = r_ptr;
+        r_ptr->next->prev = r_ptr;
+        tail = r_ptr;
+
+        r_ptr = right->root.next;
+    }
+
+    // ▶ 更新左链表并恢复循环结构
+    merge->root.prev = tail;
+    tail->next = &merge->root;
+    sentinel.next->prev = &merge->root;
+    merge->root.next = sentinel.next;
+
+    merge->root.size += right->root.size;
+    merge->root.size += left->root.size;
+
+    cc_list_init(right, right->remove_fn);
+    cc_list_init(left, left->remove_fn);
+    return ERR_CC_COMMON_OK;
+}
+
+
 int cc_list_split(cc_list_t **new_list, cc_list_t *old_list, cc_check_fn_t check_fn)
 {
     if(new_list == NULL || *new_list != NULL || old_list == NULL || check_fn == NULL) {
@@ -296,7 +488,30 @@ int cc_list_split_middle(cc_list_t **new_right_list, cc_list_t *old_left_list)
     return ERR_CC_COMMON_OK;
 }
 
+int cc_list_split_block(cc_list_t **new_block_list, cc_list_t *old_left_list, cc_size_t block_size, cc_list_node_t **current)
+{
+    int res = ERR_CC_COMMON_OK;
+    cc_list_t *temp_block_list;
+    res = cc_list_new(&temp_block_list, old_left_list->remove_fn);
+    if(res != ERR_CC_COMMON_OK) return res;
+    for(cc_size_t i = 0; (i < block_size) && (*current != &old_left_list->root); i++) {
+        cc_list_node_t *next_node = (*current)->next;
 
+        (*current)->prev->next = (*current)->next;
+        (*current)->next->prev = (*current)->prev;
+        old_left_list->root.size--;
+
+        (*current)->prev = temp_block_list->root.prev;
+        (*current)->next = &temp_block_list->root;
+        temp_block_list->root.prev->next = (*current);
+        temp_block_list->root.prev = (*current);
+        temp_block_list->root.size++;
+
+        (*current) = next_node;
+    }
+    *new_block_list = temp_block_list;
+    return res;
+}
 
 int cc_list_copy(cc_list_t **new_list, cc_list_t *old_list, cc_copy_data_fn_t copy_data)
 {
@@ -441,12 +656,64 @@ int cc_list_get_tail(cc_list_t *self, void **data)
     return res;
 }
 
+int cc_list_root_swap(cc_list_t *self, cc_list_t *others)
+{
+    int res = ERR_CC_COMMON_OK;
+    if(self == NULL || others == NULL) {
+        return ERR_CC_LIST_INVALID_ARG;
+    }
+
+    if(self->root.size == 0) {
+        self->root.next = others->root.next;
+        self->root.prev = others->root.prev;
+        self->root.size = others->root.size;
+
+        others->root.prev->next = &self->root;
+        others->root.next->prev = &self->root;
+
+        cc_list_init(others, others->remove_fn);
+        return ERR_CC_COMMON_OK;
+    }
+
+    if(others->root.size == 0) {
+        others->root.next = self->root.next;
+        others->root.prev = self->root.prev;
+        others->root.size = self->root.size;
+
+        self->root.prev->next = &others->root;
+        self->root.next->prev = &others->root;
+
+        cc_list_init(self, others->remove_fn);
+        return ERR_CC_COMMON_OK;
+    }
+
+    cc_list_node_t temp_node;
+    temp_node.next = self->root.next;
+    temp_node.prev = self->root.prev;
+    temp_node.size = self->root.size;
+
+    temp_node.prev->next = &others->root;
+    temp_node.next->prev = &others->root;
+
+    self->root.next = others->root.next;
+    self->root.prev = others->root.prev;
+    self->root.size = others->root.size;
+
+    others->root.prev->next = &self->root;
+    others->root.next->prev = &self->root;
+
+    others->root.prev = temp_node.prev;
+    others->root.next = temp_node.next;
+    others->root.size = temp_node.size;
+    return res;
+}
+
 int cc_list_is_empty(cc_list_t *self)
 {
     return self->root.next == &self->root;
 }
 
-cc_size_t cc_list_size(cc_list_t *self)
+inline cc_size_t cc_list_size(cc_list_t *self)
 {
     return self->root.size;
 }
