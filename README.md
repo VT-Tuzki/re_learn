@@ -8,7 +8,7 @@
 支持多处理器， 在一生一芯学习到os的时候进行加入
 
 这个憧憬就不更新了 后面每次看到都能反省下
-# workdir/data_structures_using_c
+
 
 使用方法
 待整理
@@ -22,16 +22,7 @@
    2. 更新make构建流程, 重新翻别的大型多仓库项目代码, 看看怎么能让这个项目直接扔进去改改上层构建参数就能运行
    3. 增加`make check/configre.sh check`等流程, 环境检测
    4. 待定
-## workdir/make
 
-Makefile `doc_makefile 的实现`
-
-doc_makefile `https://gist.github.com/isaacs/62a2d1825d04437c6f08`
-
-## workdir/simple_progream
-files: simple c files `def.h,def.c,hello.c`
-
-`Makefile`:复习Makefile所使用的文件夹
 
 
 
