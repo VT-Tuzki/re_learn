@@ -585,6 +585,36 @@ int cc_list_insert_tail(cc_list_t *self, void *data)
     return res;
 }
 
+int cc_list_insert_sort(cc_list_t *self, void *data, cc_cmp_fn_t cmp)
+{
+    int res = ERR_CC_COMMON_OK;
+    if(self == NULL || cmp == NULL) {
+        return ERR_CC_COMMON_INVALID_ARG;
+    }
+
+    if(self->root.size == 0) {
+        res = cc_list_insert_tail(self, data);
+        return res;
+    }
+
+    cc_list_node_t *temp = self->root.next;
+    int is_insert = 0;
+    while(temp != &self->root) {
+        if(cmp(temp->data, data) > 0) {
+            res = cc_list_node_insert_after(temp, data);
+            is_insert = 1;
+            break;
+        }
+        temp = temp->next;
+    }
+
+    if(!is_insert) {
+        res = cc_list_insert_tail(self,data);
+    }
+
+    return res;
+}
+
 int cc_list_remove_head(cc_list_t *self, void **data)
 {
     int res = ERR_CC_LIST_OK;

@@ -125,12 +125,7 @@ int _cc_list_sort_bubble(cc_list_t *self, cc_cmp_fn_t cmp, cc_size_t optimize)
     }
     return ERR_CC_COMMON_OK;
 }
-#include <stdio.h>
-int print_int__(void *a) {
-    int val_a = *(int *)a;
-    printf("%d,",val_a);
-    return 0;
-}
+
 int cc_list_sort_merge_traditional(cc_list_t *self, cc_cmp_fn_t cmp)
 {
     if(self == NULL || cmp == NULL) return ERR_CC_COMMON_INVALID_ARG;
@@ -159,8 +154,7 @@ int cc_list_sort_merge_traditional(cc_list_t *self, cc_cmp_fn_t cmp)
         goto fail2;
     }
     cc_list_destroy(right_list);
-    // cc_list_print(self, 1, print_int__);
-    // printf("\n");
+
     return ERR_CC_COMMON_OK;
 fail2:
     cc_list_destroy(right_list);

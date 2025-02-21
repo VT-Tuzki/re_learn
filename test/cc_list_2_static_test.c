@@ -19,8 +19,8 @@ void test_merge_sort_basic();
 int main()
 {
     /*bubble_sort*/
-    //test_bubble_sort_basic();
-    test_merge_sort_basic();
+    test_bubble_sort_basic();
+    //test_merge_sort_basic();
 
 
     return 0;

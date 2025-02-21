@@ -57,6 +57,9 @@ int cc_list_split_block_no_malloc(cc_list_t *new_block_list, cc_list_t *old_left
 
 int cc_list_insert_head(cc_list_t *self, void *data);
 int cc_list_insert_tail(cc_list_t *self, void *data);
+int cc_list_insert_sort(cc_list_t *self, void *data, cc_cmp_fn_t cmp);
+
+
 int cc_list_remove_head(cc_list_t *self, void **data);
 int cc_list_remove_tail(cc_list_t *self, void **data);
 int cc_list_get_head(cc_list_t *self, void **data);
