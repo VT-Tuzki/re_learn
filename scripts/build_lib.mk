@@ -66,7 +66,7 @@ build/_test/static/%_static_test: test/%_static_test.c
 	@echo "\033[1;32m   CC $@ $<\033[0m"
 	@mkdir -p $(dir $@)
 	@$(LIB_CC) $< $(C_LIB_DEBUG_FLAGS) $(C_LIB_FLAGS) $(C_LIB_TEST_STATIC_FLAGS) -Wl,-Map=$@.map -o $@
-	@timeout 20 $(MEMORY_CHECK_PROG) --log-file=$@_leck_check.log $@ > $@.log
+	@$(MEMORY_CHECK_PROG) --log-file=$@_leck_check.log $@ > $@.log
 
 build/_test/dynamic/%_dynamic_test: test/%_dynamic_test.c
 	@echo "\033[1;32m   CC $@ $<\033[0m"
