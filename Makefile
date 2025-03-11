@@ -6,7 +6,7 @@ LIB_LOCAL_INSTALL_DIR = $(WORK_DIR)/lib
 ALL_DIRS_IN_LIB_INCLUDE = $(shell find $(WORK_DIR)/include -type d)
 
 #configure.sh > will chenge this line LANGUAGE_STANDARD
-LANGUAGE_STANDARD = c11
+LANGUAGE_STANDARD = c99
 #configure.sh  explain: set language standard, such as c90 c99 c11 c17 c23<
 
 #configure.sh > will chenge this line LIB_GOLBAL_INSTALL_DIR
@@ -36,13 +36,13 @@ C_APP_LOCAL_STATIC_LIB = $(LIB_LOCAL_INSTALL_DIR)/$(C_LIB_STATIC_NAMES)
 C_APP_LOCAL_DYNAMIC_LIB = $(LIB_LOCAL_INSTALL_DIR)/$(C_LIB_DYNAMIC_NAMES)
 #configure.sh will chenge this line IS_C_APP_USE_LIB
 #configure.sh explain: set app use lib or not, such as yes <
-IS_C_APP_USE_LIB = no
+IS_C_APP_USE_LIB = yes
 #configure.sh explain: set app use lib or not, such as yes or no <
 
 
 #configure.sh will chenge this line USE_LIB_STATIC_OR_DYNAMIC
 #configure.sh explain: set app use lib$(C_LIB_NAMES).a, or lib$(C_LIB_NAMES).so, such as yes <
-USE_LIB_STATIC_OR_DYNAMIC = dynamic
+USE_LIB_STATIC_OR_DYNAMIC = static
 #configure.sh explain: set app use lib$(C_LIB_NAMES).a, or lib$(C_LIB_NAMES).so, such as static or dynamic <
 
 
