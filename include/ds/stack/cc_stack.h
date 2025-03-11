@@ -1,6 +1,9 @@
 #ifndef __CC_STACK_H
 #define __CC_STACK_H
 
+#include "../../core/cc_common.h"
+#include "../../core/cc_stdint.h"
+
 typedef int (*cc_stack_push_fn_t)(void *self, void *data);
 typedef int (*cc_stack_pop_fn_t)(void *self, void **result);
 typedef int (*cc_stack_peek_fn_t)(void *self, void**result);

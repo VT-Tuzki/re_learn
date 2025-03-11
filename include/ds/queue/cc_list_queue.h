@@ -1,7 +1,7 @@
 #ifndef __CC_LIST_QUEUE_H__
 #define __CC_LIST_QUEUE_H__
 
-#include "ds/list/cc_list.h"
+#include "../list/cc_list.h"
 #include "cc_queue.h"
 
 struct cc_list_queue {

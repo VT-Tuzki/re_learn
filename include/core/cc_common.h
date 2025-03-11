@@ -1,7 +1,7 @@
 #ifndef __CC_COMMON_H_
 #define __CC_COMMON_H_
 
-#include "core/cc_stdint.h"
+#include "cc_stdint.h"
 
 #ifndef NOTUSED
 #define NOTUSED(x) (void)(x);

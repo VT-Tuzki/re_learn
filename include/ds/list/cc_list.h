@@ -1,10 +1,13 @@
 #ifndef __CC_LIST_H__
 #define __CC_LIST_H__
 
-#include "core/cc_common.h"
-#include "ds/array/cc_array.h"
-#include "core/cc_stdint.h"
-#include "ds/iter/cc_iter.h"
+#include "../../core/cc_common.h"
+#include "../../core/cc_stdint.h"
+
+#include "../array/cc_array.h"
+#include "../iter/cc_iter.h"
+
+
 struct cc_list_node {
     struct cc_list_node *next;
     struct cc_list_node *prev;

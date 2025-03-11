@@ -1,8 +1,9 @@
 #ifndef __CC_ARRAY_QUEUE_H__
 #define __CC_ARRAY_QUEUE_H__
 
-#include "ds/array/cc_array.h"
+#include "../array/cc_array.h"
 #include "cc_ring_queue.h"
+
 struct cc_array_ring_queue {
     cc_ring_queue_i_t *interface;
     cc_array_t *array;
