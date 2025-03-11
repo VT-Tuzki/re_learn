@@ -74,13 +74,18 @@ build/_test/dynamic/%_dynamic_test: test/%_dynamic_test.c
 	@$(LIB_CC) $< $(C_LIB_DEBUG_FLAGS) $(C_LIB_FLAGS) $(C_LIB_TEST_DYNAMIC_FLAGS) -Wl,-Map=$@.map -o $@
 	@$(MEMORY_CHECK_PROG) --log-file=$@_leck_check.log $@ > $@.log
 #------------------INSTALL_TARGETS------------------
-install: install_local
+install: install_golbal
 
 install_local:
 	@echo "\033[1;32m   Installing library directory: $(LIB_LOCAL_INSTALL_DIR) \033[0m"
 	@install -d $(LIB_LOCAL_INSTALL_DIR)
 	@install $(TARGET_DYNAMIC_LIB) $(LIB_LOCAL_INSTALL_DIR)
 	@install $(TARGET_STATIC_LIB) $(LIB_LOCAL_INSTALL_DIR)
+
+install_golbal:
+	@echo "\033[1;32m   Installing library directory: $(LIB_GOLBAL_INSTALL_DIR) \033[0m"
+	@install -d $(LIB_GOLBAL_INSTALL_DIR)
+	@install $(TARGET_STATIC_LIB) $(LIB_GOLBAL_INSTALL_DIR)
 
 build_lib_dir:
 	@mkdir -p build
