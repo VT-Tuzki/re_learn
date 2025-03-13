@@ -16,7 +16,7 @@ int cc_list_stack_new(cc_list_stack_t **self, cc_delete_fn_t remove_fn)
     int res = ERR_CC_LIST_OK;
     cc_list_stack_t *temp = NULL;
 
-    temp = cc_malloc(sizeof(*temp));
+    temp = malloc(sizeof(*temp));
     if(temp == NULL) {
         res = ERR_CC_LIST_MEM_ERR;
         goto fail1;
@@ -33,7 +33,7 @@ int cc_list_stack_new(cc_list_stack_t **self, cc_delete_fn_t remove_fn)
     return ERR_CC_LIST_OK;
 
 fail2:
-    cc_free(temp);
+    adapter_free(temp);
 fail1:
     return res;
 }
@@ -49,7 +49,7 @@ int cc_list_stack_delete(cc_list_stack_t *self)
     }
 
     self->interface = NULL;
-    cc_free(self);
+    adapter_free(self);
     return res;
 }
 

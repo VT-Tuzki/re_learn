@@ -16,7 +16,7 @@ int cc_array_queue_new(cc_array_queue_t **self, cc_size_t elem_nums, cc_size_t e
     cc_array_queue_t *temp_array_queue;
     cc_array_t *temp_array;
     int res = ERR_CC_COMMON_OK;
-    temp_array_queue = cc_malloc(sizeof(*temp_array_queue));
+    temp_array_queue = malloc(sizeof(*temp_array_queue));
     if(temp_array_queue == NULL) {
         res = ERR_CC_COMMON_MEM_ERR;
         goto fail1;
@@ -34,9 +34,9 @@ int cc_array_queue_new(cc_array_queue_t **self, cc_size_t elem_nums, cc_size_t e
     *self = temp_array_queue;
     return ERR_CC_COMMON_OK;
 fail3:
-    cc_free(temp_array);
+    adapter_free(temp_array);
 fail2:
-    cc_free(temp_array_queue);
+    adapter_free(temp_array_queue);
 fail1:
     return res;
 }
@@ -50,7 +50,7 @@ int cc_array_queue_delete(cc_array_queue_t *self)
     if(res != ERR_CC_COMMON_OK) {
         goto fail1;
     }
-    cc_free(self);
+    adapter_free(self);
 
     return ERR_CC_COMMON_OK;
 fail1:

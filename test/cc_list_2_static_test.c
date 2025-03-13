@@ -53,7 +53,7 @@ void test_merge_sort_basic()
 {
     int res = ERR_CC_ARRAY_OK;
     cc_list_t *list;
-    cc_list_new(&list, cc_free);
+    cc_list_new(&list, adapter_free);
     for(int i = 0; i < ARR_LEN; i++){
         int *num = malloc(sizeof(int));
         *num = rand() % 1000;
@@ -106,7 +106,7 @@ void test_bubble_sort_basic()
 {
     int res = ERR_CC_ARRAY_OK;
     cc_list_t *list;
-    cc_list_new(&list, cc_free);
+    cc_list_new(&list, adapter_free);
     for(int i = 0; i < ARR_LEN; i++){
         int *num = malloc(sizeof(int));
         *num = rand() % 1000;

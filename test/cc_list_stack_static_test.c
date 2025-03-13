@@ -28,13 +28,13 @@ int main() {
 
     cc_list_stack_t *list_stack;
     test_node_t *temp = NULL;
-    assert(cc_list_stack_new(&list_stack, (cc_delete_fn_t)cc_free) == ERR_CC_COMMON_OK);
+    assert(cc_list_stack_new(&list_stack, (cc_delete_fn_t)adapter_free) == ERR_CC_COMMON_OK);
 
     assert(cc_stack_peek(list_stack, (void **)&temp) == ERR_CC_STACK_EMPTY);
     assert(cc_stack_pop(list_stack, (void **)&temp) == ERR_CC_STACK_EMPTY);
 
 
-    temp = cc_malloc(sizeof(*temp));
+    temp = malloc(sizeof(*temp));
     strcpy(temp->name,"list_stack");
     temp->number = 1;
     assert(cc_stack_push(list_stack, temp) == ERR_CC_COMMON_OK);
@@ -44,12 +44,12 @@ int main() {
     print_list_node_data(temp);
     assert((temp->number == 1));
     assert(cc_stack_pop(list_stack, (void **)&temp) == ERR_CC_COMMON_OK);
-    cc_free(temp);
+    adapter_free(temp);
     assert(cc_stack_pop(list_stack, (void **)&temp) == ERR_CC_STACK_EMPTY);
 
     for(int i = 0; i < LOOP_LEN; i++) {
-        temp = cc_malloc(sizeof(*temp));
-        check(temp,"temp cc_malloc failed");
+        temp = malloc(sizeof(*temp));
+        check(temp,"temp malloc failed");
         strcpy(temp->name,"list_stack");
         temp->number = i;
         assert(cc_stack_push(list_stack, temp) == ERR_CC_COMMON_OK);
@@ -63,7 +63,7 @@ int main() {
     {
         assert(cc_stack_peek(list_stack, (void **)&temp) == ERR_CC_COMMON_OK);
         print_list_node_data(temp);
-        cc_free(temp);
+        adapter_free(temp);
     }
 
     cc_list_stack_delete(list_stack);

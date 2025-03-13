@@ -29,7 +29,7 @@ int cc_array_new(struct cc_array **self, cc_size_t elem_nums, cc_size_t elem_siz
         goto fail1;
     }
 
-    data = cc_calloc(1, elem_size * elem_nums);
+    data = calloc(1, elem_size * elem_nums);
     if(data == NULL) {
         res = ERR_CC_ARRAY_MEM_ERR;
         goto fail2;
@@ -45,9 +45,9 @@ int cc_array_new(struct cc_array **self, cc_size_t elem_nums, cc_size_t elem_siz
 
 
 fail3:
-    cc_free(data);
+    adapter_free(data);
 fail2:
-    cc_free(tmp);
+    adapter_free(tmp);
 fail1:
     return res;
 }
@@ -60,8 +60,8 @@ int cc_array_delete(struct cc_array *self)
             self->remove_fn(elem);
         }
     }
-    cc_free((void *) (self->data));
-    cc_free(self);
+    adapter_free((void *) (self->data));
+    adapter_free(self);
     return ERR_CC_ARRAY_OK;
 }
 
@@ -161,10 +161,10 @@ int cc_array_copy_index(struct cc_array *array_a, struct cc_array * array_b, cc_
     if(!cc_array_is_vaild_index(array_a, index_a)) return ERR_CC_ARRAY_INVALID_ARG;
     if(!cc_array_is_vaild_index(array_b, index_b)) return ERR_CC_ARRAY_INVALID_ARG;
 
-    unsigned char *tmp = cc_malloc(array_a->elem_size);
+    unsigned char *tmp = malloc(array_a->elem_size);
     cc_array_get_(array_a, index_a, tmp);
     cc_array_set_(array_b, index_b, tmp);
-    cc_free(tmp);
+    adapter_free(tmp);
     return ERR_CC_ARRAY_OK;
 }
 
@@ -172,7 +172,7 @@ int cc_array_resize_by_copy(cc_array_t *self, cc_size_t new_elem_nums) {
     int res = ERR_CC_ARRAY_OK;
     cc_size_t copy_elements = (new_elem_nums < self->elem_nums) ? new_elem_nums : self->elem_nums;
     cc_size_t copy_len = copy_elements * self->elem_size;
-    unsigned char *temp = cc_malloc(self->elem_size * new_elem_nums);
+    unsigned char *temp = malloc(self->elem_size * new_elem_nums);
 
     if (temp == NULL) {
         res = ERR_CC_ARRAY_MEM_ERR;
@@ -180,7 +180,7 @@ int cc_array_resize_by_copy(cc_array_t *self, cc_size_t new_elem_nums) {
     }
 
     memcpy(temp, self->data, copy_len);
-    cc_free(self->data);
+    adapter_free(self->data);
     self->data = temp;
     self->elem_nums = new_elem_nums; // 更新元素数量
 
@@ -218,7 +218,7 @@ int cc_array_iterator_new(cc_array_iter_t **self, cc_array_t *data)
 {
     if(data == NULL) return ERR_CC_COMMON_INVALID_ARG;
 
-    cc_array_iter_t *temp = cc_malloc(sizeof(*temp));
+    cc_array_iter_t *temp = malloc(sizeof(*temp));
     if(temp == NULL) return ERR_CC_COMMON_MEM_ERR;
 
     cc_array_iterator_init(temp, data);

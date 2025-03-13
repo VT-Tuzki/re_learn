@@ -9,7 +9,7 @@ int cc_list_node_insert_before(cc_list_node_t *self, void *data)
 {
     cc_list_node_t *temp;
 
-    temp = (cc_list_node_t *)cc_malloc(sizeof(cc_list_node_t));
+    temp = (cc_list_node_t *)malloc(sizeof(cc_list_node_t));
     if (temp == NULL) {
         return ERR_CC_COMMON_INVALID_ARG;
     }
@@ -27,7 +27,7 @@ int cc_list_node_insert_after(cc_list_node_t *self, void *data)
 {
     cc_list_node_t *temp;
 
-    temp = (cc_list_node_t *)cc_malloc(sizeof(cc_list_node_t));
+    temp = (cc_list_node_t *)malloc(sizeof(cc_list_node_t));
     if (temp == NULL) {
         return ERR_CC_COMMON_INVALID_ARG;
     }
@@ -70,7 +70,7 @@ int cc_list_node_remove_before(cc_list_node_t *self, void **result)
     self->prev = temp->prev;
 
 
-    cc_free(temp);
+    adapter_free(temp);
     return ERR_CC_COMMON_OK;
 }
 
@@ -89,7 +89,7 @@ int cc_list_node_remove_after(cc_list_node_t *self, void **result)
     temp->next->prev = self;
     self->next = temp->next;
 
-    cc_free(temp);
+    adapter_free(temp);
     return ERR_CC_COMMON_OK;
 }
 
@@ -113,7 +113,7 @@ int cc_list_node_delete_node(cc_list_node_t *node)
     list: ...->others_before->current->others_after->....
     cc_list_node_t *temp = current
     cc_list_node_delete_and_next(&temp);
-    result: temp = others_after cc_free(current);
+    result: temp = others_after adapter_free(current);
     list: ...->others_before->others_after->....
 */
 int cc_list_node_delete_and_next(cc_list_node_t **current, cc_delete_fn_t remove_fn)
@@ -135,7 +135,7 @@ int cc_list_node_delete_and_next(cc_list_node_t **current, cc_delete_fn_t remove
 
     temp->prev->next = next;
     next->prev = temp->prev;
-    cc_free(temp);
+    adapter_free(temp);
 
     *current = next;
     return ERR_CC_COMMON_OK;
@@ -158,7 +158,7 @@ int cc_list_init(cc_list_t *self, cc_delete_fn_t remove_fn)
 int cc_list_new(cc_list_t **self, cc_delete_fn_t remove_fn)
 {
     cc_list_t *temp;
-    temp = (cc_list_t *)cc_malloc(sizeof(cc_list_t));
+    temp = (cc_list_t *)malloc(sizeof(cc_list_t));
     if (temp == NULL) {
         return ERR_CC_COMMON_INVALID_ARG;
     }
@@ -185,7 +185,7 @@ int cc_list_destroy(cc_list_t *self)
         self->root.size--;
     }
 
-    cc_free(self);
+    adapter_free(self);
     return ERR_CC_COMMON_OK;
 }
 

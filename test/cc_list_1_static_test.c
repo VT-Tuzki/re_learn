@@ -165,7 +165,7 @@ int cmp_int(void *a, void *b) {
 void test_lifecycle()
 {
     cc_list_t *list;
-    assert(cc_list_new(&list, cc_free) == ERR_CC_COMMON_OK);
+    assert(cc_list_new(&list, adapter_free) == ERR_CC_COMMON_OK);
     assert(list->root.next == &list->root);
     assert(list->root.prev == &list->root);
     assert(list->root.size == 0);
@@ -248,7 +248,7 @@ error:
 void test_edge_operations()
 {
     cc_list_t list;
-    cc_list_init(&list, cc_free);
+    cc_list_init(&list, adapter_free);
     assert(cc_list_remove_head(&list, NULL) == ERR_CC_LIST_EMPTY);
     assert(cc_list_remove_tail(&list, NULL) == ERR_CC_LIST_EMPTY);
     assert(cc_list_remove_head(NULL, NULL) == ERR_CC_LIST_INVALID_ARG);
@@ -292,7 +292,7 @@ void test_copy_empty_list()
 {
     int res = ERR_CC_COMMON_OK;
     cc_list_t *list;
-    res = cc_list_new(&list, cc_free);
+    res = cc_list_new(&list, adapter_free);
     check((res == ERR_CC_COMMON_OK), "new fail");
     cc_list_t *copy_list;
     res = cc_list_copy(&copy_list, list, (cc_copy_data_fn_t)copy_int_data);
@@ -317,7 +317,7 @@ void test_copy_single_node()
 
     int res = ERR_CC_COMMON_OK;
     cc_list_t *list;
-    res = cc_list_new(&list, cc_free);
+    res = cc_list_new(&list, adapter_free);
     check((res == ERR_CC_COMMON_OK), "new fail");
 
     int *data = malloc(sizeof(int));
@@ -359,7 +359,7 @@ void test_copy_multiple_nodes()
     int res = ERR_CC_COMMON_OK;
     cc_list_t *old_list;
 
-    res = cc_list_new(&old_list, (cc_delete_fn_t)cc_free);
+    res = cc_list_new(&old_list, (cc_delete_fn_t)adapter_free);
     check((res == ERR_CC_COMMON_OK), "new error");
 
     for(int i = 0; i < ARRAY_LIST_LEN; i++) {
@@ -418,10 +418,10 @@ void test_concat_empty_left()
 {
     int res = ERR_CC_COMMON_OK;
     cc_list_t *left;
-    cc_list_new(&left, cc_free);
+    cc_list_new(&left, adapter_free);
 
     cc_list_t *right;
-    cc_list_new(&right, cc_free);
+    cc_list_new(&right, adapter_free);
     int *b1 = malloc(sizeof(int)); *b1 = 5;
     cc_list_insert_tail(right, b1);
     int *b2 = malloc(sizeof(int)); *b2 = 6;
@@ -449,14 +449,14 @@ void test_concat_normal_list()
 {
     int res = ERR_CC_COMMON_OK;
     cc_list_t *left;
-    cc_list_new(&left, cc_free);
+    cc_list_new(&left, adapter_free);
     int *a1 = malloc(sizeof(int)); *a1 = 1;
     cc_list_insert_tail(left, a1);
     int *a2 = malloc(sizeof(int)); *a2 = 2;
     cc_list_insert_tail(left, a2);
 
     cc_list_t *right;
-    cc_list_new(&right, cc_free);
+    cc_list_new(&right, adapter_free);
     int *b1 = malloc(sizeof(int)); *b1 = 3;
     cc_list_insert_tail(right, b1);
     int *b2 = malloc(sizeof(int)); *b2 = 4;
@@ -497,14 +497,14 @@ void test_concat_cmp_normal_list()
 {
     int res = ERR_CC_COMMON_OK;
     cc_list_t *left;
-    cc_list_new(&left, cc_free);
+    cc_list_new(&left, adapter_free);
     int *a1 = malloc(sizeof(int)); *a1 = 2;
     cc_list_insert_tail(left, a1);
     int *a2 = malloc(sizeof(int)); *a2 = 3;
     cc_list_insert_tail(left, a2);
 
     cc_list_t *right;
-    cc_list_new(&right, cc_free);
+    cc_list_new(&right, adapter_free);
     int *b1 = malloc(sizeof(int)); *b1 = 1;
     cc_list_insert_tail(right, b1);
     int *b2 = malloc(sizeof(int)); *b2 = 4;
@@ -539,14 +539,14 @@ void test_concat_cmp_error_right_0_1()
 
     int res = ERR_CC_COMMON_OK;
     cc_list_t *left;
-    cc_list_new(&left, cc_free);
+    cc_list_new(&left, adapter_free);
     int *a1 = malloc(sizeof(int)); *a1 = 2;
     cc_list_insert_tail(left, a1);
     int *a2 = malloc(sizeof(int)); *a2 = 3;
     cc_list_insert_tail(left, a2);
 
     cc_list_t *right;
-    cc_list_new(&right, cc_free);
+    cc_list_new(&right, adapter_free);
     // left: 2 3 right : null
     res = cc_list_concat_by_cmp(left, right, cmp_int);
     check((res == ERR_CC_LIST_OK), "concat err %d", res);
@@ -592,10 +592,10 @@ void test_concat_cmp_error_left_0_1()
 {
     int res = ERR_CC_COMMON_OK;
     cc_list_t *left;
-    cc_list_new(&left, cc_free);
+    cc_list_new(&left, adapter_free);
 
     cc_list_t *right;
-    cc_list_new(&right, cc_free);
+    cc_list_new(&right, adapter_free);
     int *b1 = malloc(sizeof(int)); *b1 = 1;
     cc_list_insert_tail(right, b1);
     int *b2 = malloc(sizeof(int)); *b2 = 4;
@@ -616,7 +616,7 @@ void test_concat_cmp_error_left_0_1()
 
     cc_list_destroy(left);
     left = NULL;
-    res = cc_list_new(&left, cc_free);
+    res = cc_list_new(&left, adapter_free);
     check_res_ok(res, "new err");
     b1 = malloc(sizeof(int)); *b1 = 1;
     cc_list_insert_tail(right, b1);
@@ -665,7 +665,7 @@ void test_split_empty_left()
 {
     int res = ERR_CC_COMMON_OK;
     cc_list_t *old_list;
-    cc_list_new(&old_list, cc_free);
+    cc_list_new(&old_list, adapter_free);
     check((cc_list_size(old_list) == 0), "insert err");
 
     cc_list_t *new_list = NULL;
@@ -686,7 +686,7 @@ void test_split_normal_list()
 {
     int res = ERR_CC_COMMON_OK;
     cc_list_t *old_list;
-    cc_list_new(&old_list, cc_free);
+    cc_list_new(&old_list, adapter_free);
     for(int i = 0; i < ARRAY_LEN; i++) {
         int *data = malloc(sizeof(*data));
         *data = i;
@@ -745,7 +745,7 @@ void test_split_middle_normal_list()
 {
     int res = ERR_CC_COMMON_OK;
     cc_list_t *old_list;
-    cc_list_new(&old_list, cc_free);
+    cc_list_new(&old_list, adapter_free);
     for(int i = 0; i < ARRAY_LEN; i++) {
         int *data = malloc(sizeof(*data));
         *data = i;

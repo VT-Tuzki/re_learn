@@ -22,10 +22,10 @@ static void test_basic_operations(void) {
     // 创建并压入3个栈
     for (int i = 0; i < 3; i++) {
         cc_list_stack_t *stack;
-        cc_list_stack_new(&stack, (cc_delete_fn_t)cc_free);
+        cc_list_stack_new(&stack, (cc_delete_fn_t)adapter_free);
 
         // 在栈中压入测试数据
-        int *data = cc_malloc(sizeof(int));
+        int *data = malloc(sizeof(int));
         *data = i;
         cc_list_stack_push(stack, data);
 
@@ -49,7 +49,7 @@ static void test_basic_operations(void) {
         int *data;
         cc_list_stack_pop(stack, (void**)&data);
         assert(*data == i);
-        cc_free(data);
+        adapter_free(data);
         cc_list_stack_delete(stack);
     }
 

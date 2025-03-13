@@ -38,8 +38,8 @@ int main()
     cc_list_t *test_list_b = NULL;
     cc_size_t now_len = 0;
 
-    assert(cc_list_new(&test_list_a, (cc_delete_fn_t) cc_free) == ERR_CC_LIST_OK);
-    assert(cc_list_new(&test_list_b, (cc_delete_fn_t) cc_free) == ERR_CC_LIST_OK);
+    assert(cc_list_new(&test_list_a, (cc_delete_fn_t) adapter_free) == ERR_CC_LIST_OK);
+    assert(cc_list_new(&test_list_b, (cc_delete_fn_t) adapter_free) == ERR_CC_LIST_OK);
 
     now_len = cc_list_size(test_list_a);
     assert(now_len == 0);
@@ -47,7 +47,7 @@ int main()
 
 
     for(cc_size_t i = 0; i < LOOP_LEN; i++) {
-        list_node_t *temp_list_node = cc_malloc(sizeof(*temp_list_node));
+        list_node_t *temp_list_node = malloc(sizeof(*temp_list_node));
         assert(temp_list_node != NULL);
         temp_list_node->number = i;
         strcpy(temp_list_node->name,"insert_head");
@@ -64,7 +64,7 @@ int main()
     assert(cc_list_print(test_list_a, 1, (cc_debug_print_fn_t) print_list_node_data) == ERR_CC_LIST_OK);
 
     for(cc_size_t i = 0; i < LOOP_LEN; i++) {
-        list_node_t *temp_list_node = cc_malloc(sizeof(*temp_list_node));
+        list_node_t *temp_list_node = malloc(sizeof(*temp_list_node));
         assert(temp_list_node != NULL);
         temp_list_node->number = i;
         strcpy(temp_list_node->name,"insert_tail");
@@ -94,7 +94,7 @@ int main()
     assert(cc_list_remove_head(test_list_a, (void **) &(temp)) == ERR_CC_LIST_OK);
     assert(temp->number == 2);
     now_len = cc_list_size(test_list_a);
-    cc_free(temp);
+    adapter_free(temp);
     assert(now_len == LOOP_LEN*2 - 1);
     /*
         1-0-0-1-2
@@ -103,7 +103,7 @@ int main()
 
     assert(cc_list_remove_tail(test_list_a, (void **) &(temp)) == ERR_CC_LIST_OK);
     assert(temp->number == 2);
-        cc_free(temp);
+        adapter_free(temp);
 
     now_len = cc_list_size(test_list_a);
     assert(now_len == LOOP_LEN*2 - 2);
@@ -112,29 +112,29 @@ int main()
 
     */
     assert(cc_list_remove_head(test_list_a, (void **) &(temp)) == ERR_CC_LIST_OK);
-    cc_free(temp);
+    adapter_free(temp);
     now_len = cc_list_size(test_list_a);
     assert(now_len == LOOP_LEN*2 - 3);
 
     assert(cc_list_remove_head(test_list_a, (void **) &(temp)) == ERR_CC_LIST_OK);
-    cc_free(temp);
+    adapter_free(temp);
     now_len = cc_list_size(test_list_a);
     assert(now_len == LOOP_LEN*2 - 4);
 
     assert(cc_list_remove_tail(test_list_a, (void **) &(temp)) == ERR_CC_LIST_OK);
-    cc_free(temp);
+    adapter_free(temp);
     now_len = cc_list_size(test_list_a);
     assert(now_len == LOOP_LEN*2 - 5);
 
     assert(cc_list_remove_tail(test_list_a, (void **) &(temp)) == ERR_CC_LIST_OK);
-    cc_free(temp);
+    adapter_free(temp);
     now_len = cc_list_size(test_list_a);
     assert(now_len == LOOP_LEN*2 - 6);
 
     assert(cc_list_remove_tail(test_list_a, (void **) &(temp)) == ERR_CC_LIST_EMPTY);
 
     for(cc_size_t i = 0; i < LOOP_LEN; i++) {
-        list_node_t *temp_list_node = cc_malloc(sizeof(*temp_list_node));
+        list_node_t *temp_list_node = malloc(sizeof(*temp_list_node));
         assert(temp_list_node != NULL);
         temp_list_node->number = i;
         strcpy(temp_list_node->name,"insert_head_a");
@@ -146,7 +146,7 @@ int main()
 
 
     for(cc_size_t i = 0; i < LOOP_LEN; i++) {
-        list_node_t *temp_list_node = cc_malloc(sizeof(*temp_list_node));
+        list_node_t *temp_list_node = malloc(sizeof(*temp_list_node));
         assert(temp_list_node != NULL);
         temp_list_node->number = i;
         strcpy(temp_list_node->name,"insert_head_b");
