@@ -7,11 +7,33 @@
 #define NOTUSED(x) (void)(x);
 #endif
 
+#ifndef align_up
+#define align_up(num, align) (((num) + ((align)-1)) & ~((align)-1))
+#endif  // align_up
 
+#ifndef offsetof
+#ifdef __compiler_offsetof
+#define offsetof(TYPE, MEMBER) __compiler_offsetof(TYPE, MEMBER)
+#else
+#define offsetof(TYPE, MEMBER) ((cc_size_t) & ((TYPE*)0)->MEMBER)
+#endif
+#endif // offsetof
 
-
-
-
+#ifndef container_of
+#ifdef __GNUC__
+#ifndef __clang__
+#define container_of(ptr, type, member)                       \
+	({                                                        \
+		const __typeof__(((type*)0)->member)* __mptr = (ptr); \
+		(type*)((uintptr_t)__mptr - offsetof(type, member));  \
+	})
+#else
+#define container_of(ptr, type, member) ((type*)((uintptr_t)(ptr)-offsetof(type, member)))
+#endif
+#else
+#define container_of(ptr, type, member) ((type*)((uintptr_t)(ptr)-offsetof(type, member)))
+#endif
+#endif // container_of
 
 typedef enum {
     ERR_CC_COMMON_NOT_DEFINE = -2,

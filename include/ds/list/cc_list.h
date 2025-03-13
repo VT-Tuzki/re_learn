@@ -44,14 +44,19 @@ int cc_list_node_delete_node(cc_list_node_t *node);
 
 int cc_list_node_delete_and_next(cc_list_node_t **current, cc_delete_fn_t remove_fn);
 
-#define CC_LIST_HEAD_INIT(name) \
-    {                           \
-        &(name), &(name),(0)    \
-    }
 
-#define CC_LIST_INIT(name) cc_list_t name = \
-    {                                       \
-        CC_LIST_HEAD_INIT(name),(NULL)      \
+#define CC_LIST_NODE_INIT(name) {&(name), &(name),(0)}
+
+
+#define CC_LIST_INIT(name, remove_fn_)  \
+    cc_list_t name =                    \
+    {                                   \
+        .root = {                       \
+            .next = &((name).root),     \
+            .prev = &((name).root),     \
+            .size = 0                   \
+        },                              \
+        .remove_fn = (remove_fn_)       \
     }
 
 int cc_list_init(cc_list_t *self, cc_delete_fn_t remove_fn);
@@ -150,9 +155,9 @@ int cc_list_iter_next(cc_list_iterator_t *self, void **item, cc_size_t *index);
     for(pos = cc_list_entry(((head)->next), __typeof__(*pos), member); &pos->member != (head); \
         pos = cc_list_entry(pos->member.next, __typeof__(*pos), member))
 
-#define cc_list_for_each_entry_safe(pos, next, head, member) \
-    for(pos = cc_list_entry(((head)->next), __typeof__(*pos), member) , next = cc_list_entry(pos->member.next, __typeof__(*pos), member); \
+#define cc_list_for_each_entry_safe(pos, pos_next, head, member) \
+    for(pos = cc_list_entry(((head)->next), __typeof__(*pos), member) , pos_next = cc_list_entry(pos->member.next, __typeof__(*pos), member); \
         &pos->member != (head); \
-        pos = next, next = cc_list_entry(next->member.next, __typeof__ (*next), member))
+        pos = pos_next, pos_next = cc_list_entry(pos_next->member.next, __typeof__ (*pos_next), member))
 
 #endif // __CC_LIST_H__
