@@ -1,9 +1,11 @@
-#include "core/cc_common.h"
-#include "ds/list/cc_list.h"
-#include "ds/stack/cc_stack.h"
-#include "ds/stack/cc_list_stack.h"
-#include "core/cc_dbg.h"
-#include "core/cc_mem.h"
+#include "cc_common.h"
+#include "cc_dbg.h"
+#include "cc_mem.h"
+
+#include "cc_list.h"
+#include "cc_stack.h"
+#include "cc_list_stack.h"
+
 
 struct cc_stack_i cc_list_stack_interface = {
     .push = (cc_stack_push_fn_t)cc_list_stack_push,

@@ -1,8 +1,9 @@
-#include "core/cc_mem.h"
 
-#include "core/cc_common.h"
-#include "ds/stack/cc_stack.h"
-#include "ds/array/cc_array.h"
+#include "cc_mem.h"
+#include "cc_common.h"
+
+#include "cc_stack.h"
+#include "cc_array.h"
 #include "cc_array_stack.h"
 
 struct cc_stack_i cc_array_stack_interface = {

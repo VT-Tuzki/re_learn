@@ -1,9 +1,12 @@
-#include "ds/list/cc_list_sort.h"
-#include "cc_array.h"
 #include "cc_common.h"
-#include "cc_list.h"
 #include "cc_dbg.h"
 #include "cc_stdint.h"
+
+#include "cc_array.h"
+#include "cc_list.h"
+#include "cc_list_sort.h"
+
+
 /*
 
 

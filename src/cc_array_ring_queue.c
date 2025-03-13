@@ -1,6 +1,8 @@
+
+#include "cc_mem.h"
+
 #include "cc_array_ring_queue.h"
-#include "ds/array/cc_array.h"
-#include "core/cc_mem.h"
+#include "cc_array.h"
 
 cc_ring_queue_i_t cc_array_ring_queue_interface = {
     .enqueue = (cc_ring_queue_enqueue_fn_t) cc_array_ring_queue_enqueue,
