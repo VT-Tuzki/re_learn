@@ -41,14 +41,12 @@ int cc_array_new(cc_array_t **self, cc_size_t elem_nums, cc_size_t elem_size, cc
 
 int cc_array_delete(struct cc_array *self);
 
-#define CC_ARRAY_STATIC_DECLARE(name, elem_num, elem_size, remove_fn) \
-    unsigned char name##_heap[(elem_num) * (elem_size)] = {0}; \
-    cc_array_t name = { \
-        .data = name##_heap, \
-        .elem_nums = (elem_num), \
-        .elem_size = (elem_size), \
-        .remove_fn = (cc_delete_fn_t) (remove_fn) \
-    }
+#define CC_ARRAY_STATIC_DECLARE(name, set_elem_num, set_elem_size, set_remove_fn)       \
+    unsigned char name##_heap[(set_elem_num) * (set_elem_size)] = {0};                  \
+    cc_array_t name = {.data = name##_heap,                                             \
+                        .elem_nums = (set_elem_num),                                    \
+                        .elem_size = (set_elem_size),                                   \
+                        .remove_fn = (cc_delete_fn_t)(set_remove_fn)}
 
 int cc_array_get_unsafe(cc_array_t *self, cc_size_t index, void *result);
 int cc_array_get_ref(cc_array_t *self, cc_size_t index, void **ref);

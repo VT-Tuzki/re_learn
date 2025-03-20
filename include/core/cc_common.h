@@ -35,6 +35,9 @@
 #endif
 #endif // container_of
 
+#define CC_MAGIC_INIT 0xA5
+
+
 typedef enum {
     ERR_CC_COMMON_NOT_DEFINE = -2,
     ERR_CC_COMMON_FAIL = -1,
