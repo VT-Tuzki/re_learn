@@ -22,7 +22,7 @@ int cc_pool_init(cc_pool_t *pool,  cc_size_t user_elem_size, cc_size_t capacity,
         pool_node_t *node;
         res = cc_array_get_ref(pool->storage, i, (void**)&node);
         if(res != ERR_CC_COMMON_OK) return res;
-        node->next_free = (i == capacity-1) ? 0 : i+1;
+        node->next_free = (i == capacity-1) ? (pool->capacity+1) : i+1;
         node->is_allocated = 0;
     }
     pool->free_head = 0;
@@ -42,7 +42,7 @@ int cc_pool_static_init(cc_pool_t *pool)
         pool_node_t *node;
         res = cc_array_get_ref(pool->storage, i, (void**)&node);
         if(res != ERR_CC_COMMON_OK) return res;
-        node->next_free = (i == pool->capacity - 1) ? pool->capacity+1 : i+1;
+        node->next_free = (i == pool->capacity - 1) ? (pool->capacity+1) : i+1;
         node->is_allocated = 0;
     }
     pool->free_head = 0;
