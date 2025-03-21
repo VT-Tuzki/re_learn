@@ -28,6 +28,7 @@ struct cc_pool {
     cc_size_t user_elem_size;
     cc_size_t free_head;
     cc_size_t capacity;
+    cc_size_t available_size;
     cc_delete_fn_t remove_fn;
     uint8_t init_flag;
 };
@@ -62,6 +63,7 @@ int cc_pool_init(cc_pool_t *pool,  cc_size_t user_elem_size, cc_size_t capacity,
                             (offset_userdata##_name) + sizeof(set_elem_type),       \
                         .user_elem_size = sizeof(set_elem_type),                    \
                         .capacity = (set_capacity),                                 \
+                        .available_size = (0),                                      \
                         .remove_fn = (set_remove_fn),                               \
                         .free_head = (0)};
 
@@ -69,6 +71,12 @@ int cc_pool_static_init(cc_pool_t *pool);
 
 int cc_pool_acquire(cc_pool_t *pool, void **ptr);
 int cc_pool_acquire_batch(cc_pool_t *pool, void **ptr_array, cc_size_t count);
+
 int cc_pool_release_ptr(cc_pool_t *pool, void *ptr);
 int cc_pool_destroy(cc_pool_t *pool);
+
+int cc_pool_get_available_size(cc_pool_t *pool, cc_size_t *available_size);
+int cc_pool_get_capacity(cc_pool_t *pool, cc_size_t *capacity);
+int cc_pool_is_full(cc_pool_t *pool, uint8_t *is_full);
+
 #endif //__CC_POOL_H__

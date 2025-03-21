@@ -26,7 +26,7 @@ int cc_pool_init(cc_pool_t *pool,  cc_size_t user_elem_size, cc_size_t capacity,
         node->is_allocated = 0;
     }
     pool->free_head = 0;
-
+    pool->available_size = pool->capacity;
     pool->init_flag = CC_MAGIC_INIT;
     return res;
 }
@@ -46,6 +46,7 @@ int cc_pool_static_init(cc_pool_t *pool)
         node->is_allocated = 0;
     }
     pool->free_head = 0;
+    pool->available_size = pool->capacity;
     pool->init_flag = CC_MAGIC_INIT;
     return res;
 }
@@ -62,6 +63,7 @@ int cc_pool_acquire(cc_pool_t *pool, void **ptr)
 
     pool->free_head = node->next_free;
     node->is_allocated = 1;
+    pool->available_size--;
     *ptr = node->user_data;
 
     return res;
@@ -96,6 +98,7 @@ int cc_pool_release_ptr(cc_pool_t *pool, void *ptr)
     //头插法
     node->next_free = pool->free_head;
     node->is_allocated = 0;
+    pool->available_size++;
     pool->free_head = offset / pool->elem_size;
 
     return ERR_CC_COMMON_OK;
@@ -111,5 +114,35 @@ int cc_pool_destroy(cc_pool_t *pool)
         if(res != ERR_CC_COMMON_OK) return res;
         pool->storage = NULL;
     }
+    return ERR_CC_COMMON_OK;
+}
+
+
+int cc_pool_get_available_size(cc_pool_t *pool, cc_size_t *available_size)
+{
+    if(pool == NULL) return ERR_CC_COMMON_INVALID_ARG;
+
+    *available_size = pool->available_size;
+    return ERR_CC_COMMON_OK;
+}
+
+int cc_pool_get_capacity(cc_pool_t *pool, cc_size_t *capacity)
+{
+    if(pool == NULL) return ERR_CC_COMMON_INVALID_ARG;
+
+    *capacity = pool->capacity;
+    return ERR_CC_COMMON_OK;
+}
+
+int cc_pool_is_full(cc_pool_t *pool, uint8_t *is_full)
+{
+    if(pool == NULL) return ERR_CC_COMMON_INVALID_ARG;
+
+    if(pool->free_head == pool->capacity+1) {
+        *is_full = 1;
+    } else {
+        *is_full = 0;
+    }
+
     return ERR_CC_COMMON_OK;
 }

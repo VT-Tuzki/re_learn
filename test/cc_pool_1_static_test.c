@@ -5,13 +5,14 @@
 #include <string.h>
 #include <assert.h>
 #include "cc_dbg.h"
+#include "cc_stdint.h"
 // 测试结构体定义
 typedef struct {
     char name[32];
     int age;
     double score;
 } student_t;
-#define STATIC_POOL_SIZE 20
+#define STATIC_POOL_SIZE 1000
 // 声明静态对象池（测试新方案）
 CC_POOL_STATIC_DECLARE(static_stu_pool, student_t, STATIC_POOL_SIZE, NULL);
 
@@ -27,18 +28,32 @@ void test_static_pool() {
     res = cc_pool_static_init(&static_stu_pool);
     check_res_ok(res, "cc_pool_static_init errr");
     assert(cc_pool_static_init(&static_stu_pool) == ERR_CC_COMMON_FAIL);
-
+    cc_size_t available_size = 0;
+    cc_size_t capacity = 0;
+    uint8_t is_full = 0;
+    assert(cc_pool_get_capacity(&static_stu_pool, &capacity) == ERR_CC_COMMON_OK);
+    assert(capacity == STATIC_POOL_SIZE);
+    assert(cc_pool_get_available_size(&static_stu_pool, &available_size) == ERR_CC_COMMON_OK);
+    assert(available_size == STATIC_POOL_SIZE);
+    assert(cc_pool_is_full(&static_stu_pool, &is_full) == ERR_CC_COMMON_OK);
+    assert(is_full == 0);
     // 批量分配测试
     student_t* students[STATIC_POOL_SIZE] = {0};
     for (int i = 0; i < STATIC_POOL_SIZE; i++) {
-        printf("%d\n",i);
+
         res = cc_pool_acquire(&static_stu_pool, (void**)&students[i]);
         check_res_ok(res, "cc_pool_acquire errr");
         snprintf(students[i]->name, 32, "Student%d", i);
         students[i]->age = i % 100 + 18;
         students[i]->score = i % 100;
+        assert(cc_pool_get_available_size(&static_stu_pool, &available_size) == ERR_CC_COMMON_OK);
+        // printf("%d, %ld\n",i,available_size);
+        assert(available_size == (cc_size_t)(STATIC_POOL_SIZE - i - 1));
     }
-
+    assert(cc_pool_get_available_size(&static_stu_pool, &available_size) == ERR_CC_COMMON_OK);
+    assert(available_size == 0);
+    assert(cc_pool_is_full(&static_stu_pool, &is_full) == ERR_CC_COMMON_OK);
+    assert(is_full == 1);
     // 测试池耗尽
     student_t* overflow = NULL;
     res = cc_pool_acquire(&static_stu_pool, (void**)&overflow);
