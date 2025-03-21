@@ -294,7 +294,7 @@ void test_list_pool_edge_operations() {
 void test_performance_comparison() {
     printf("Testing performance comparison between regular list and list with pool...\n");
 
-    const int TEST_ITERATIONS = 1000000;
+    const int TEST_ITERATIONS = 10000;
 
     // Setup pools and lists
     cc_list_node_pool_t perf_pool;

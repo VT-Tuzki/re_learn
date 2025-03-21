@@ -3,6 +3,24 @@
 #include "cc_pool.h"
 #include <stdint.h>
 
+static int cc_pool_init_nodes(cc_pool_t *pool)
+{
+    int res = ERR_CC_COMMON_OK;
+
+    for(cc_size_t i = 0; i < pool->capacity; i++) {
+        pool_node_t *node;
+        res = cc_array_get_ref(pool->storage, i, (void**)&node);
+        if(res != ERR_CC_COMMON_OK) return res;
+        node->next_free = (i == pool->capacity-1) ? (pool->capacity+1) : i+1;
+        node->is_allocated = 0;
+    }
+
+    pool->free_head = 0;
+    pool->available_size = pool->capacity;
+
+    return res;
+}
+
 
 
 int cc_pool_init(cc_pool_t *pool,  cc_size_t user_elem_size, cc_size_t capacity, cc_delete_fn_t remove_fn)
@@ -18,15 +36,9 @@ int cc_pool_init(cc_pool_t *pool,  cc_size_t user_elem_size, cc_size_t capacity,
     res = cc_array_new(&pool->storage, capacity, pool->elem_size, NULL);
     if(res != ERR_CC_COMMON_OK) return res;
 
-    for(cc_size_t i = 0; i < capacity; i++) {
-        pool_node_t *node;
-        res = cc_array_get_ref(pool->storage, i, (void**)&node);
-        if(res != ERR_CC_COMMON_OK) return res;
-        node->next_free = (i == capacity-1) ? (pool->capacity+1) : i+1;
-        node->is_allocated = 0;
-    }
-    pool->free_head = 0;
-    pool->available_size = pool->capacity;
+    res = cc_pool_init_nodes(pool);
+    if(res != ERR_CC_COMMON_OK) return res;
+
     pool->init_flag = CC_MAGIC_INIT;
     return res;
 }
@@ -38,15 +50,9 @@ int cc_pool_static_init(cc_pool_t *pool)
         return ERR_CC_COMMON_FAIL;
     }
 
-    for(cc_size_t i = 0; i < pool->capacity; i++) {
-        pool_node_t *node;
-        res = cc_array_get_ref(pool->storage, i, (void**)&node);
-        if(res != ERR_CC_COMMON_OK) return res;
-        node->next_free = (i == pool->capacity - 1) ? (pool->capacity+1) : i+1;
-        node->is_allocated = 0;
-    }
-    pool->free_head = 0;
-    pool->available_size = pool->capacity;
+    res = cc_pool_init_nodes(pool);
+    if(res != ERR_CC_COMMON_OK) return res;
+
     pool->init_flag = CC_MAGIC_INIT;
     return res;
 }
@@ -56,6 +62,7 @@ int cc_pool_acquire(cc_pool_t *pool, void **ptr)
     pool_node_t *node;
     int res = ERR_CC_COMMON_OK;
     *ptr = NULL;
+    if(pool == NULL) return ERR_CC_COMMON_INVALID_ARG;
     if(pool->free_head == pool->capacity+1) return ERR_CC_POOL_EMPTY;
 
     res = cc_array_get_ref(pool->storage, pool->free_head, (void**)&node);
@@ -72,6 +79,7 @@ int cc_pool_acquire_batch(cc_pool_t *pool, void **ptr_array, cc_size_t count)
 {
     cc_size_t acuired = 0;
     int res = ERR_CC_COMMON_OK;
+    if(pool == NULL) return ERR_CC_COMMON_INVALID_ARG;
     while(pool->free_head != pool->capacity+1 && acuired < count) {
         res = cc_pool_acquire(pool, &ptr_array[acuired++]);
         if(res != ERR_CC_COMMON_OK) return res;
