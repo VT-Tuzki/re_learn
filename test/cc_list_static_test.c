@@ -183,6 +183,51 @@ int main()
 
     assert(cc_list_destroy(test_list_b) == ERR_CC_LIST_OK);
 
+    // Test cc_list_node_remove_node
+    printf("=== Testing cc_list_node_remove_node ===\n");
+    cc_list_t *test_list_node_remove;
+    assert(cc_list_new(&test_list_node_remove, adapter_free) == ERR_CC_LIST_OK);
+
+    // Insert test nodes
+    for(cc_size_t i = 0; i < 5; i++) {
+        list_node_t *temp_node = malloc(sizeof(*temp_node));
+        assert(temp_node != NULL);
+        temp_node->number = i;
+        strcpy(temp_node->name, "test_remove");
+        assert(cc_list_insert_tail(test_list_node_remove, temp_node) == ERR_CC_LIST_OK);
+    }
+
+    // The list should have 5 elements now
+    assert(cc_list_size(test_list_node_remove) == 5);
+    printf("List before node removal:\n");
+    assert(cc_list_print(test_list_node_remove, 1, (cc_debug_print_fn_t) print_list_node_data) == ERR_CC_LIST_OK);
+
+    // Get the 3rd node (node with number 2)
+    cc_list_node_t *target_node = test_list_node_remove->root.next->next->next;
+    void *target_data = target_node->data;
+    void *target_data_get = NULL;
+    // Get the nodes before and after the target
+    cc_list_node_t *prev_node = target_node->prev;
+    cc_list_node_t *next_node = target_node->next;
+
+    // Remove the node using cc_list_node_remove_node
+    assert(cc_list_remove_node(test_list_node_remove, target_node, &target_data_get) == ERR_CC_LIST_OK);
+     assert(target_data_get == target_data);
+    // Free the node and its data
+    adapter_free(target_data);
+
+    // The list should have 4 elements now
+    assert(cc_list_size(test_list_node_remove) == 4);
+    printf("List after node removal:\n");
+    assert(cc_list_print(test_list_node_remove, 1, (cc_debug_print_fn_t) print_list_node_data) == ERR_CC_LIST_OK);
+
+    // Verify the links are correct
+    assert(prev_node->next == next_node);
+    assert(next_node->prev == prev_node);
+
+    // Clean up
+    assert(cc_list_destroy(test_list_node_remove) == ERR_CC_COMMON_OK);
+    printf("cc_list_node_remove_node test completed successfully!\n");
 
     return 0;
 }

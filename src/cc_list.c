@@ -729,6 +729,40 @@ int cc_list_remove_tail(cc_list_t *self, void **data)
     return res;
 }
 
+int cc_list_remove_node(cc_list_t *self, cc_list_node_t *node, void **data)
+{
+    if (self == NULL || node == NULL) return ERR_CC_LIST_INVALID_ARG;
+
+    // Check if node is within this list
+    cc_list_node_t *curr;
+    int found = 0;
+    cc_list_for_each(curr, &(self->root)) {
+        if (curr == node) {
+            found = 1;
+            break;
+        }
+    }
+
+    if (!found) return ERR_CC_LIST_INVALID_ARG;
+
+    // Save data if requested
+    if (data != NULL) {
+        *data = node->data;
+    }
+
+    // Unlink node from list
+    node->prev->next = node->next;
+    node->next->prev = node->prev;
+
+    // Update list size
+    self->root.size--;
+
+    // Free the node itself (but not the data)
+    free(node);
+
+    return ERR_CC_LIST_OK;
+}
+
 int cc_list_get_head(cc_list_t *self, void **data)
 {
     int res = ERR_CC_COMMON_OK;

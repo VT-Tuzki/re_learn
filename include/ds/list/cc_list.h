@@ -82,6 +82,7 @@ int cc_list_insert_sort(cc_list_t *self, void *data, cc_cmp_fn_t cmp);
 
 int cc_list_remove_head(cc_list_t *self, void **data);
 int cc_list_remove_tail(cc_list_t *self, void **data);
+int cc_list_remove_node(cc_list_t *self, cc_list_node_t *node, void **data);
 int cc_list_get_head(cc_list_t *self, void **data);
 int cc_list_get_tail(cc_list_t *self, void **data);
 int cc_list_root_swap(cc_list_t *self, cc_list_t *others);
@@ -134,7 +135,7 @@ int cc_list_iter_next(cc_list_iterator_t *self, void **item, cc_size_t *index);
     }
 
 */
-#define cc_list_for_each(pos, head) for(pos = (head->next); pos != (head); pos = pos->next)
+#define cc_list_for_each(pos, head) for(pos = ((head)->next); (pos) != (head); (pos) = (pos)->next)
 
 /*
     cc_list_t list; // 已经有很多数据, 这里指代有这个链表
@@ -147,7 +148,7 @@ int cc_list_iter_next(cc_list_iterator_t *self, void **item, cc_size_t *index);
 */
 
 #define cc_list_for_each_safe(pos, next, head) \
-    for(pos = (head)->next, next = pos->next; pos != (head); pos = next, next = next->next)
+    for(pos = (head)->next, next = (pos)->next; pos != (head); pos = next, (next) = (next)->next)
 
 
 

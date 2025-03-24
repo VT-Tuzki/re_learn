@@ -42,5 +42,6 @@ int cc_list_insert_head_with_pool(cc_list_with_pool_t *list_with_pool, void *dat
 int cc_list_insert_tail_with_pool(cc_list_with_pool_t *list_with_pool, void *data);
 int cc_list_remove_head_with_pool(cc_list_with_pool_t *list_with_pool, void **data);
 int cc_list_remove_tail_with_pool(cc_list_with_pool_t *list_with_pool, void **data);
+int cc_list_remove_node_with_pool(cc_list_with_pool_t *list_with_pool, cc_list_node_t *node, void **data);
 
 #endif // __CC_LIST_POOL_H__

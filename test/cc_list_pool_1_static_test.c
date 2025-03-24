@@ -40,6 +40,9 @@ void test_list_pool_insert_operations();
 void test_list_pool_remove_operations();
 void test_list_pool_edge_operations();
 
+/* Add a new test function declaration */
+void test_list_node_remove_with_pool();
+
 /* Performance comparison */
 void test_performance_comparison();
 
@@ -56,6 +59,9 @@ int main() {
     test_list_pool_insert_operations();
     test_list_pool_remove_operations();
     test_list_pool_edge_operations();
+
+    /* Add the new test to the main function */
+    test_list_node_remove_with_pool();
 
     /* Performance comparison */
     test_performance_comparison();
@@ -92,8 +98,8 @@ test_data_t *create_test_data(cc_size_t number, const char *name) {
 }
 
 int print_test_data(void *data) {
-    test_data_t *test_data = *(test_data_t **)data;
-    printf("Number: %zu, Name: %s\n", test_data->number, test_data->name);
+    test_data_t test_data = *(test_data_t *)data;
+    printf("Number: %zu, Name: %s\n", test_data.number, test_data.name);
     return ERR_CC_COMMON_OK;
 }
 
@@ -341,4 +347,64 @@ void test_performance_comparison() {
     cc_list_node_pool_destroy(&perf_pool);
 
     printf("Performance comparison completed!\n\n");
+}
+
+/* Add the new test function implementation after the other test functions */
+void test_list_node_remove_with_pool() {
+    printf("Testing cc_list_remove_node_with_pool...\n");
+
+    cc_list_with_pool_t *list;
+    assert(cc_list_new_with_pool(&list, &static_list_node_pool, (cc_delete_fn_t)free_test_data) == ERR_CC_COMMON_OK);
+
+    // Setup test data - create a list with 5 nodes
+    for (int i = 0; i < 5; i++) {
+        test_data_t *data = create_test_data(i, "node_test");
+        assert(cc_list_insert_tail_with_pool(list, data) == ERR_CC_COMMON_OK);
+    }
+
+    assert(list->list.root.size == 5);
+    printf("List before node removal:\n");
+    cc_list_print(&(list->list), 1, print_test_data);
+
+    // Target the middle node (index 2)
+    cc_list_node_t *target_node = list->list.root.next->next->next;
+    void *removed_data = NULL;
+
+    // Test cc_list_remove_node_with_pool
+    assert(cc_list_remove_node_with_pool(list, target_node, &removed_data) == ERR_CC_COMMON_OK);
+
+    // Verify the data was removed correctly
+    test_data_t *test_data = (test_data_t *)removed_data;
+    assert(test_data->number == 2); // Middle node should have number 2
+    free_test_data(test_data);
+
+    // Verify the list size decreased
+    assert(list->list.root.size == 4);
+
+    printf("List after node removal:\n");
+    cc_list_print(&list->list, 1, print_test_data);
+
+    // Verify the list structure is still intact
+    cc_list_node_t *current = list->list.root.next;
+    for (int i = 0; i < 4; i++) {
+        test_data_t *node_data = (test_data_t *)current->data;
+        if (i >= 2) {
+            // After removing index 2, the remaining higher indices shift down
+            assert(node_data->number == (cc_size_t)i + 1);
+        } else {
+            assert(node_data->number == (cc_size_t)i);
+        }
+        current = current->next;
+    }
+
+    // Try removing a NULL node (should fail)
+    assert(cc_list_remove_node_with_pool(list, NULL, &removed_data) == ERR_CC_COMMON_INVALID_ARG);
+
+    // Try removing with NULL list (should fail)
+    assert(cc_list_remove_node_with_pool(NULL, target_node, &removed_data) == ERR_CC_COMMON_INVALID_ARG);
+
+    // Clean up
+    cc_list_destroy_with_pool(list);
+
+    printf("cc_list_remove_node_with_pool test passed!\n\n");
 }
