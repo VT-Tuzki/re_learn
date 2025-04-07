@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 4.0)
 project(re_learn VERSION 0.1.0 LANGUAGES C)
-
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build" FORCE)
 endif()

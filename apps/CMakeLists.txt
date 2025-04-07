@@ -19,9 +19,9 @@ if(DEFINED APPS_TO_BUILD AND NOT "${APPS_TO_BUILD}" STREQUAL "ALL")
 else()
     # For "build all" case, add all available apps
     list(APPEND AVAILABLE_APPS
-        app1
         lib_vtuzki_test
         template_app
+        VEMU
         # Add any other apps here
     )
     message(STATUS "Building all available apps: ${AVAILABLE_APPS}")

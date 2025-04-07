@@ -41,7 +41,7 @@ function(target_use_external TARGET)
     foreach(lib ${ARG_LIBRARIES})
         # Enable this library
         if(DEFINED USE_EXTERNAL_${lib})
-            set(USE_EXTERNAL_${lib} ON CACHE BOOL "Use external library: ${lib}" FORCE)
+            set(USE_EXTERNAL_${lib} OFF CACHE BOOL "Use external library: ${lib}" FORCE)
             message(STATUS "Enabling external library: ${lib} for ${TARGET}")
 
             # Add the subdirectory if not already added
