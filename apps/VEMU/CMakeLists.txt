@@ -8,6 +8,8 @@ set(APP_NAME VEMU)
 
 add_library(RV32I
     ${CMAKE_CURRENT_SOURCE_DIR}/src/RISC_V_integer_reg.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/RV32I_memory.c
+
 )
 
 target_use_external(RV32I LIBRARIES vtuzkicc)
