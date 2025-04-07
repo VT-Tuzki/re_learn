@@ -1,0 +1,3 @@
+[submodule "external/vtuzkicc"]
+	path = external/vtuzkicc
+	url = https://github.com/VT-Tuzki/libvtuzkicc.git
