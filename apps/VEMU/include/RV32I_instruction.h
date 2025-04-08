@@ -63,6 +63,15 @@ typedef union {
 
 } rv32i_inst_t;
 
+enum
+
+uint32_t rv32i_opcode_fetch(rv32i_inst_t *inst);
+uint32_t rv32i_opcode_decode(rv32i_inst_t inst);
+uint32_t rv32i_opcode_execute(rv32i_inst_t inst);
+
+
+uint32_t rv32i_exec_once();
+
 
 
 #endif  //__RV32I_INSTRUCTION_H__

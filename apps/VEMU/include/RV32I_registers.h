@@ -1,5 +1,5 @@
-#ifndef __RISC_V_INTEGER_REG_H__
-#define __RISC_V_INTEGER_REG_H__
+#ifndef __RV32I_REGISTERS_H__
+#define __RV32I_REGISTERS_H__
 
 #include "core/cc_stdint.h"
 
@@ -38,4 +38,4 @@ void rv32i_print_reg();
 */
 
 
-#endif //__RISC_V_INTEGER_REG_H__
+#endif //__RV32I_REGISTERS_H__

@@ -8,9 +8,9 @@ VEMU是一个RISC-V RV32I指令集模拟器，用于模拟和执行RISC-V基础�
 
 ### 系统组件
 - [ ] **寄存器组**: 32个32位通用寄存器(x0~x31)，其中x0恒为0
-  - 文件: `include/RISC_V_integer_reg.h`, `src/RISC_V_integer_reg.c`
+  - 文件: `include/RV32I_registers.h`, `src/RV32I_registers.c`
 - [ ] **程序计数器(PC)**: 32位地址
-  - 文件: `include/RISC_V_integer_reg.h`, `src/RISC_V_integer_reg.c`
+  - 文件: `include/RV32I_registers.h`, `src/RV32I_registers.c`
 - [ ] **内存系统**: 支持字节寻址的内存空间
   - 文件: `include/RV32I_memory.h`, `src/RV32I_memory.c`
 - [ ] **指令解码器**: 解析不同指令格式

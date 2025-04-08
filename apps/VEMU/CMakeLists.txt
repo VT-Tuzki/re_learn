@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.10)
 set(APP_NAME VEMU)
 
 add_library(RV32I
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/RISC_V_integer_reg.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/RV32I_registers.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/RV32I_memory.c
 
 )
