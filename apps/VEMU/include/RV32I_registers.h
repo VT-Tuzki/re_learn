@@ -3,12 +3,17 @@
 
 #include "core/cc_stdint.h"
 
+typedef struct {
+    uint32_t x[32];
+    uint32_t pc;
+} rv32i_register_t;
+
+extern rv32i_register_t rv32i_regs;
 
 
 void rv32i_reset_registers();
 
 uint32_t rv32i_read_reg(int reg_num, uint32_t *value);
-
 uint32_t rv32i_write_reg(int reg_num, uint32_t value);
 
 
