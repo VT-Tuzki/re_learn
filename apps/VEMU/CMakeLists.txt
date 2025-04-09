@@ -10,6 +10,8 @@ add_library(RV32I
     ${CMAKE_CURRENT_SOURCE_DIR}/src/RV32I_registers.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/RV32I_memory.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/RV32I_opcodes.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/RV32I_base_inst.c
+
 )
 
 target_use_external(RV32I LIBRARIES vtuzkicc)

@@ -51,6 +51,7 @@ uint32_t rv32i_read_pc(uint32_t *value) {
 
     return 0;
 }
+
 uint32_t rv32i_set_pc(uint32_t set_pc) {
     rv32i_regs.pc = set_pc;
     return 0;

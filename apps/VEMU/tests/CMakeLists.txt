@@ -42,3 +42,4 @@ endfunction()
 
 add_vemu_test(test_rv32i_registers test_registers.c)
 add_vemu_test(test_rv32i_memory test_memory.c)
+add_vemu_test(test_rv32i_add_sub test_add_sub.c)
