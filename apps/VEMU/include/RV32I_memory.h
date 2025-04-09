@@ -3,17 +3,45 @@
 
 #include "core/cc_stdint.h"
 
+typedef struct {
+    uint8_t *data;
+    uint32_t size;
+    uint32_t base_addr;
+} rv32i_memory_t;
 
-uint32_t rv32i_init_memory();
+extern rv32i_memory_t rv32i_memory;
 
-uint32_t rv32i_load_byte(uint32_t addr, uint8_t *value);
-uint32_t rv32i_store_byte(uint32_t addr, uint8_t value);
+typedef enum {
+    RV32I_MEMORY_OK = 0,
+    RV32I_MEMORY_ADDR_NOALIGNED,
+    RV32I_MEMORY_ADDR_OUT,
+    RV32I_MEMORY_NULL
+}rv32i_memory_status_e;
 
-uint32_t rv32i_load_halfword(uint32_t addr, uint16_t *value);
-uint32_t rv32i_store_halfword(uint32_t addr, uint16_t value);
 
-uint32_t rv32i_load_word(uint32_t addr, uint32_t *value);
-uint32_t rv32i_store_word(uint32_t addr, uint32_t value);
+/*
+
+*/
+uint32_t rv32i_init_memory(rv32i_memory_t *rv32i_memory, uint32_t size, uint32_t base_addr);
+uint32_t rv32i_free_memory(rv32i_memory_t *rv32i_memory);
+uint32_t rv32i_reset_memory(rv32i_memory_t *rv32i_memory);
+
+uint32_t rv32i_memory_load_block(rv32i_memory_t *rv32i_memory, uint32_t addr, uint8_t *data, uint32_t size);
+uint32_t rv32i_memory_load_progream(rv32i_memory_t *rv32i_memory, uint32_t addr, char *filename);
+uint32_t rv32i_memory_print(rv32i_memory_t *rv32i_memory, uint32_t addr, uint32_t size);
+
+
+uint32_t rv32i_load_byte(rv32i_memory_t *rv32i_memory, uint32_t addr, uint8_t *value);
+uint32_t rv32i_store_byte(rv32i_memory_t *rv32i_memory, uint32_t addr, uint8_t value);
+
+uint32_t rv32i_load_halfword(rv32i_memory_t *rv32i_memory, uint32_t addr, uint16_t *value);
+uint32_t rv32i_store_halfword(rv32i_memory_t *rv32i_memory, uint32_t addr, uint16_t value);
+
+uint32_t rv32i_load_word(rv32i_memory_t *rv32i_memory, uint32_t addr, uint32_t *value);
+uint32_t rv32i_store_word(rv32i_memory_t *rv32i_memory, uint32_t addr, uint32_t value);
+
+
+
 
 /*
     from RISC-V Volume I
