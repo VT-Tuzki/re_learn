@@ -22,24 +22,40 @@
 - 自动生成Linux C测试验证程序
 - 完整的单元测试与集成测试覆盖
 
-多处理器支持计划：
-- 在学习一生一芯OS阶段实现
 
 ## 项目结构
 
 ```
 re_learn/
-├── apps/           # 应用程序目录，每个应用有自己的子目录
-├── cmake/          # CMake工具函数和模块
-├── common/         # 公共代码库
-├── external/       # 外部依赖项
-│   └── libvtuzkicc # 引入的C容器库
-├── include/        # 全局头文件
-├── src/            # 源代码
-├── tests/          # 项目级测试
-├── build/          # 构建输出目录（自动生成）
-└── CMakeLists.txt  # 主CMake配置文件
+├── apps/                # 应用程序目录，每个应用有自己的子目录
+│   ├── VEMU/           # RISC-V RV32I指令集模拟器
+│   ├── lib_vtuzki_test/ # VtuzkiCC库测试应用
+│   └── template_app/   # 应用程序模板
+├── cmake/               # CMake工具函数和模块
+├── common/              # 公共代码库
+├── external/            # 外部依赖项
+│   ├── vtuzkicc/       # C通用数据结构容器库
+│   └── cmockery/       # 单元测试框架
+├── include/             # 全局头文件
+├── src/                 # 源代码
+├── tests/               # 项目级测试
+├── build/               # 构建输出目录（自动生成）
+└── CMakeLists.txt       # 主CMake配置文件
 ```
+
+## 当前应用状态
+### VEMU (RISC-V RV32I 模拟器)
+- 基础架构基本完成
+- 内存\ 寄存器系统已经实现
+- 指令取指 译码 运行相关模块已完成
+- 执行单元正在开发中 目前只有 addi add sub命令
+- 待完成 完整RV32I 指令集 调试工具 测试工具
+
+### lib_vtuzki_test
+- 是另一个仓库libvtuzkicc 作为子模块的一个测试项目
+
+### template_app
+- 是新建项目时的模板应用
 
 ## 使用方法
 
@@ -94,7 +110,7 @@ cmake -DRE_LEARN_SELECTED_APPS="lib_vtuzki_test,other_app" ..
 2. 借鉴《Learn C the Hard Way》项目，改进了Makefile和shell脚本，增加了静态/动态库输出
 3. 学习[一生一芯(ysyx)项目](http://ysyx.org/)的makefile目录结构，研究了automake流程，重构了makefile的include树结构，增加了自动配置项
 4. 升级到现代CMake构建系统，实现模块化组织和自动化测试
-
+5. 实现RV32I模拟器 , 学习计算机体系结构和处理器设计
 ## 未来计划
 
 1. 测试流程改进
