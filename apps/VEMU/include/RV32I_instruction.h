@@ -138,7 +138,6 @@ uint32_t rv32i_inst_get_b_imm(rv32i_inst_t inst, uint32_t *imm);
 uint32_t rv32i_inst_get_u_imm(rv32i_inst_t inst, uint32_t *imm);
 uint32_t rv32i_inst_get_j_imm(rv32i_inst_t inst, uint32_t *imm);
 
-
 /*
     in memory.c
     memory by rv32i_load_word -> inst

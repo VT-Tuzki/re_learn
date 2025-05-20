@@ -10,6 +10,36 @@
 #include "core/cc_dbg.h"
 
 #define RV32I_MAX_INSTRUCTIONS 105
+#define BITMASK(bits) ((1ull << (bits)) - 1)
+#define BITS(x, hi, lo) (((x) >> (lo)) & BITMASK((hi) - (lo) + 1)) // similar to x[hi:lo] in verilog
+#define SEXT(x, len) ({ struct { int64_t n : len; } __x = { .n = x }; (uint64_t)__x.n; })
+
+
+#define DEFINE_RV32I_R_TYPE_EXEC(name, operation) \
+uint32_t rv32i_exec_##name (rv32i_decoded_inst_t decoded_inst) { \
+    uint32_t rs1_val, rs2_val; \
+    rv32i_read_reg(decoded_inst.rs1, &rs1_val); \
+    rv32i_read_reg(decoded_inst.rs2, &rs2_val); \
+    uint32_t result = operation; \
+    rv32i_write_reg(decoded_inst.rd, result); \
+    printf("run rv32i " #name " inst %x\n", *(uint32_t*)&decoded_inst); \
+    printf("target reg:%d,value:%d rs1 reg:%d,value:%d,rs2 reg:%d,value:%d\n", \
+           decoded_inst.rd, result, decoded_inst.rs1, rs1_val, decoded_inst.rs2, rs2_val); \
+    return 0; \
+}
+
+#define DEFINE_RV32I_I_TYPE_EXEC(name, operation) \
+uint32_t rv32i_exec_##name (rv32i_decoded_inst_t decoded_inst) { \
+    uint32_t rs1_val; \
+    rv32i_read_reg(decoded_inst.rs1, &rs1_val); \
+    uint32_t result = operation; \
+    rv32i_write_reg(decoded_inst.rd, result); \
+    printf("run rv32i " #name " inst: %x rs1:%u imm:%u rd:%u \n", \
+           *(uint32_t*)&decoded_inst, rs1_val, decoded_inst.imm, result); \
+    printf("target reg:%d,value:%d rs1 reg:%d,value:%d, imm:%d\n", \
+           decoded_inst.rd, result, decoded_inst.rs1, rs1_val, decoded_inst.imm); \
+    return 0; \
+}
 
 typedef struct {
     rv32i_base_inst_t instructions[RV32I_MAX_INSTRUCTIONS];
@@ -18,50 +48,26 @@ typedef struct {
 
 rv32i_base_table_t rv32i_base_table = {};
 
+DEFINE_RV32I_R_TYPE_EXEC(add, rs1_val + rs2_val)
+DEFINE_RV32I_R_TYPE_EXEC(sub, rs1_val - rs2_val)
+DEFINE_RV32I_R_TYPE_EXEC(sll, rs1_val << rs2_val)
+DEFINE_RV32I_R_TYPE_EXEC(slt, ((int32_t)rs1_val < (int32_t)rs2_val) ? 1 : 0)
+DEFINE_RV32I_R_TYPE_EXEC(sltu, ((uint32_t)rs1_val < (uint32_t)rs2_val) ? 1 : 0)
+DEFINE_RV32I_R_TYPE_EXEC(xor, rs1_val ^ rs2_val)
+DEFINE_RV32I_R_TYPE_EXEC(srl, rs1_val >> rs2_val)
+DEFINE_RV32I_R_TYPE_EXEC(sra, (int32_t)rs1_val >> rs2_val)
+DEFINE_RV32I_R_TYPE_EXEC(or, rs1_val | rs2_val)
+DEFINE_RV32I_R_TYPE_EXEC(and, rs1_val & rs2_val)
 
-uint32_t rv32i_exec_add (rv32i_decoded_inst_t decoded_inst) {
-
-    uint32_t rs1_val, rs2_val;
-
-    rv32i_read_reg(decoded_inst.rs1, &rs1_val);
-    rv32i_read_reg(decoded_inst.rs2, &rs2_val);
-
-    uint32_t result = rs1_val + rs2_val;
-
-    rv32i_write_reg(decoded_inst.rd, result);
-
-    printf("run rv32i add inst: %x \n", *(uint32_t*)&decoded_inst);
-    printf("target reg:%d,value:%d rs1 reg:%d,value:%d,rs2 reg:%d,value:%d\n",decoded_inst.rd, result, decoded_inst.rs1, rs1_val, decoded_inst.rs2, rs2_val);
-
-    return 0;
-}
-
-uint32_t rv32i_exec_sub (rv32i_decoded_inst_t decoded_inst) {
-    uint32_t rs1_val, rs2_val;
-
-    rv32i_read_reg(decoded_inst.rs1, &rs1_val);
-    rv32i_read_reg(decoded_inst.rs2, &rs2_val);
-
-    uint32_t result = rs1_val - rs2_val;
-
-    rv32i_write_reg(decoded_inst.rd, result);
-
-    printf("run rv32i sub inst %x\n", *(uint32_t*)&decoded_inst);
-    printf("target reg:%d,value:%d rs1 reg:%d,value:%d,rs2 reg:%d,value:%d\n",decoded_inst.rd, result, decoded_inst.rs1, rs1_val, decoded_inst.rs2, rs2_val);
-
-    return 0;
-}
-
-uint32_t rv32i_exec_addi (rv32i_decoded_inst_t decoded_inst) {
-    uint32_t rs1_val;
-    rv32i_read_reg(decoded_inst.rs1, &rs1_val);
-    uint32_t result = rs1_val + decoded_inst.imm;
-    rv32i_write_reg(decoded_inst.rd, result);
-
-    printf("run rv32i addi inst: %x rs1:%u imm:%u rd:%u \n", *(uint32_t*)&decoded_inst, rs1_val, decoded_inst.imm, result);
-    printf("target reg:%d,value:%d rs1 reg:%d,value:%d, imm:%d\n",decoded_inst.rd, result, decoded_inst.rs1, rs1_val, decoded_inst.imm);
-    return 0;
-}
+DEFINE_RV32I_I_TYPE_EXEC(addi, rs1_val + decoded_inst.imm)
+DEFINE_RV32I_I_TYPE_EXEC(slti, ((int32_t)rs1_val < (int32_t)decoded_inst.imm) ? 1 : 0)
+DEFINE_RV32I_I_TYPE_EXEC(sltiu, ((uint32_t)rs1_val < (uint32_t)decoded_inst.imm) ? 1 : 0)
+DEFINE_RV32I_I_TYPE_EXEC(xori, rs1_val ^ decoded_inst.imm)
+DEFINE_RV32I_I_TYPE_EXEC(ori, rs1_val | decoded_inst.imm)
+DEFINE_RV32I_I_TYPE_EXEC(andi, rs1_val & decoded_inst.imm)
+DEFINE_RV32I_I_TYPE_EXEC(slli, rs1_val << (decoded_inst.imm & 0x1F))
+DEFINE_RV32I_I_TYPE_EXEC(srli, rs1_val >> BITS(decoded_inst.imm, 4, 0))
+DEFINE_RV32I_I_TYPE_EXEC(srai, ((int32_t)rs1_val) >> (decoded_inst.imm & 0x1F))
 
 uint32_t rv32i_inst_table_find(rv32i_inst_t inst, rv32i_decoded_inst_t *decoded_inst, rv32i_base_inst_t *base_inst) {
     uint32_t now_inst = *(uint32_t*) &inst;
@@ -153,14 +159,30 @@ uint32_t rv32i_inst_table_find(rv32i_inst_t inst, rv32i_decoded_inst_t *decoded_
     return 3;
 }
 
-
-
-
 void rv32i_init_inst_table(void) {
 
-    RV32I_INST_DECLARE(rv32i_base_table, "add", RV32I_INST_TYPE_R, RV32I_OPCODE_CAL, 0b000, 0b0000000, NULL, rv32i_exec_add);
-    RV32I_INST_DECLARE(rv32i_base_table, "sub", RV32I_INST_TYPE_R, RV32I_OPCODE_CAL, 0b000, 0b0100000, NULL, rv32i_exec_sub);
-    RV32I_INST_DECLARE(rv32i_base_table, "addi", RV32I_INST_TYPE_I, RV32I_OPCODE_CAL_I, 0b000, 0, rv32i_inst_get_i_imm, rv32i_exec_addi);
+    //TODO : 将 fact3 fact7 改为字符串形式判断
+
+    RV32I_INST_DECLARE(rv32i_base_table, "add",     RV32I_INST_TYPE_R, RV32I_OPCODE_CAL,    0b000, 0b0000000,   NULL,                   rv32i_exec_add);
+    RV32I_INST_DECLARE(rv32i_base_table, "sub",     RV32I_INST_TYPE_R, RV32I_OPCODE_CAL,    0b000, 0b0100000,   NULL,                   rv32i_exec_sub);
+    // RV32I_INST_DECLARE(rv32i_base_table, "sll",     RV32I_INST_TYPE_R, RV32I_OPCODE_CAL,    0b001, 0b0000000,   NULL,                   rv32i_exec_sll);
+    // RV32I_INST_DECLARE(rv32i_base_table, "slt",     RV32I_INST_TYPE_R, RV32I_OPCODE_CAL,    0b010, 0b0000000,   NULL,                   rv32i_exec_slt);
+    // RV32I_INST_DECLARE(rv32i_base_table, "sltu",    RV32I_INST_TYPE_R, RV32I_OPCODE_CAL,    0b011, 0b0000000,   NULL,                   rv32i_exec_sltu);
+    // RV32I_INST_DECLARE(rv32i_base_table, "xor",     RV32I_INST_TYPE_R, RV32I_OPCODE_CAL,    0b100, 0b0000000,   NULL,                   rv32i_exec_xor);
+    // RV32I_INST_DECLARE(rv32i_base_table, "srl",     RV32I_INST_TYPE_R, RV32I_OPCODE_CAL,    0b101, 0b0000000,   NULL,                   rv32i_exec_srl);
+    // RV32I_INST_DECLARE(rv32i_base_table, "sra",     RV32I_INST_TYPE_R, RV32I_OPCODE_CAL,    0b101, 0b0100000,   NULL,                   rv32i_exec_sra);
+    // RV32I_INST_DECLARE(rv32i_base_table, "or",      RV32I_INST_TYPE_R, RV32I_OPCODE_CAL,    0b110, 0b0000000,   NULL,                   rv32i_exec_or);
+    // RV32I_INST_DECLARE(rv32i_base_table, "and",     RV32I_INST_TYPE_R, RV32I_OPCODE_CAL,    0b111, 0b0000000,   NULL,                   rv32i_exec_and);
+
+    RV32I_INST_DECLARE(rv32i_base_table, "addi",    RV32I_INST_TYPE_I, RV32I_OPCODE_CAL_I,  0b000, 0,           rv32i_inst_get_i_imm,   rv32i_exec_addi);
+    // RV32I_INST_DECLARE(rv32i_base_table, "slti",    RV32I_INST_TYPE_I, RV32I_OPCODE_CAL_I,  0b010, 0,           rv32i_inst_get_i_imm,   rv32i_exec_addi);
+    // RV32I_INST_DECLARE(rv32i_base_table, "sltiu",   RV32I_INST_TYPE_I, RV32I_OPCODE_CAL_I,  0b011, 0,           rv32i_inst_get_i_imm,   rv32i_exec_addi);
+    // RV32I_INST_DECLARE(rv32i_base_table, "xori",    RV32I_INST_TYPE_I, RV32I_OPCODE_CAL_I,  0b100, 0,           rv32i_inst_get_i_imm,   rv32i_exec_addi);
+    // RV32I_INST_DECLARE(rv32i_base_table, "ori",     RV32I_INST_TYPE_I, RV32I_OPCODE_CAL_I,  0b110, 0,           rv32i_inst_get_i_imm,   rv32i_exec_addi);
+    // RV32I_INST_DECLARE(rv32i_base_table, "andi",    RV32I_INST_TYPE_I, RV32I_OPCODE_CAL_I,  0b111, 0,           rv32i_inst_get_i_imm,   rv32i_exec_addi);
+    // RV32I_INST_DECLARE(rv32i_base_table, "slli",    RV32I_INST_TYPE_I, RV32I_OPCODE_CAL_I,  0b001, 0b0000000,   rv32i_inst_get_i_imm,   rv32i_exec_addi);
+    // RV32I_INST_DECLARE(rv32i_base_table, "srli",    RV32I_INST_TYPE_I, RV32I_OPCODE_CAL_I,  0b101, 0,           rv32i_inst_get_i_imm,   rv32i_exec_addi);
+    // RV32I_INST_DECLARE(rv32i_base_table, "srai",    RV32I_INST_TYPE_I, RV32I_OPCODE_CAL_I,  0b101, 0,           rv32i_inst_get_i_imm,   rv32i_exec_addi);
 
     return;
 }
